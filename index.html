@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
@@ -131,6 +131,21 @@
         color: rgba(231, 234, 243, 0.95);
         padding: 0 12px;
         outline: none;
+      }
+
+      input {
+        width: 100%;
+        height: 44px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(6, 10, 20, 0.65);
+        color: rgba(231, 234, 243, 0.95);
+        padding: 0 12px;
+        outline: none;
+      }
+
+      input::placeholder {
+        color: rgba(231, 234, 243, 0.45);
       }
 
       .volume-row {
@@ -348,12 +363,12 @@
         <div class="tabs" id="tabs">
           <div class="tab active" data-tab="water">💧 물/음료</div>
           <div class="tab disabled" title="준비중">🤖 음식 AI</div>
-          <div class="tab disabled" title="준비중">✍️ 음식 수동</div>
+          <div class="tab" data-tab="foodManual">✍️ 음식 수동</div>
           <div class="tab disabled" title="준비중">📌 오늘요약</div>
           <div class="tab disabled" title="준비중">🗓️ 월별요약</div>
         </div>
 
-        <div class="card" id="waterCard">
+        <div class="card" id="waterCard" data-panel="water">
           <div class="section-title-row">
             <div class="section-title">물/음료 기록</div>
           </div>
@@ -372,6 +387,79 @@
                 <div class="btn-icon" id="btnPlus" aria-label="용량 증가">+</div>
               </div>
             </div>
+          </div>
+
+          <button class="primary-btn" id="btnAdd">기록 추가</button>
+
+          <div class="hint">MVP에서는 음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
+
+          <div class="divider"></div>
+
+          <div class="records-header">
+            <div class="section-title">오늘 기록 — 물/음료</div>
+            <div class="pill" id="totalPill">총합: 0 ml</div>
+          </div>
+
+          <div class="list-wrap">
+            <div class="list-header">
+              <div>시간</div>
+              <div>종류</div>
+              <div class="right">용량</div>
+              <div class="right">삭제</div>
+            </div>
+            <div id="listBody"></div>
+          </div>
+
+          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
+        </div>
+
+        <!-- 음식 수동 (최소 입력 UI) -->
+        <div class="card" id="foodManualCard" data-panel="foodManual" style="display: none;">
+          <div class="section-title-row">
+            <div class="section-title">음식 수동 기록</div>
+          </div>
+
+          <div class="form-grid">
+            <div>
+              <div class="label">음식/메뉴명</div>
+              <input id="foodName" type="text" placeholder="예: 미역국, 라면, 샐러드" />
+            </div>
+
+            <div>
+              <div class="label">수분 추정(ml)</div>
+              <div class="volume-row">
+                <div class="btn-icon" id="btnFoodMinus" aria-label="수분 감소">−</div>
+                <div class="volume-box" id="foodVolumeBox">50</div>
+                <div class="btn-icon" id="btnFoodPlus" aria-label="수분 증가">+</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="primary-btn" id="btnFoodAdd">기록 추가</button>
+
+          <div class="hint">현재는 “수분 추정(ml)”을 수동으로 입력합니다. (음식 AI 탭은 추후 연결)</div>
+
+          <div class="divider"></div>
+
+          <div class="records-header">
+            <div class="section-title">오늘 기록 — 음식 수동</div>
+            <div class="pill" id="foodTotalPill">총합: 0 ml</div>
+          </div>
+
+          <div class="list-wrap">
+            <div class="list-header">
+              <div>시간</div>
+              <div>메뉴</div>
+              <div class="right">수분</div>
+              <div class="right">삭제</div>
+            </div>
+            <div id="foodListBody"></div>
+          </div>
+
+          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
+        </div>
+      </div>
+    </div>
           </div>
 
           <button class="primary-btn" id="btnAdd">기록 추가</button>
@@ -421,8 +509,11 @@
       //  - 삭제는 모달(확인/취소)
       // ==========================================================
 
-      const STORAGE_KEY = "hydration_html_water_drink_v1";
+      const STORAGE_KEY = "hydration_html_water_drink_v2";
+      const FOOD_KEY = "hydration_html_food_manual_v1";
       const DRINK_TYPES = ["물", "우유", "주스", "탄산", "유제품", "이온음료", "기타"];
+
+      const elTabs = document.getElementById("tabs");
 
       const elDrinkType = document.getElementById("drinkType");
       const elVolumeBox = document.getElementById("volumeBox");
@@ -432,13 +523,28 @@
       const elListBody = document.getElementById("listBody");
       const elTotal = document.getElementById("totalPill");
 
+      const elWaterCard = document.getElementById("waterCard");
+      const elFoodManualCard = document.getElementById("foodManualCard");
+
+      // Food manual
+      const elFoodName = document.getElementById("foodName");
+      const elFoodVolumeBox = document.getElementById("foodVolumeBox");
+      const elFoodMinus = document.getElementById("btnFoodMinus");
+      const elFoodPlus = document.getElementById("btnFoodPlus");
+      const elFoodAdd = document.getElementById("btnFoodAdd");
+      const elFoodListBody = document.getElementById("foodListBody");
+      const elFoodTotal = document.getElementById("foodTotalPill");
+
       const elModalOverlay = document.getElementById("modalOverlay");
       const elModal = document.getElementById("modal");
       const elCancel = document.getElementById("btnCancel");
       const elConfirm = document.getElementById("btnConfirm");
 
+      let activeTab = "water";
       let volume = 100;
+      let foodVolume = 50;
       let records = [];
+      let foodRecords = [];
       let deleteTargetId = null;
 
       function pad2(n) {
@@ -474,6 +580,27 @@
       function saveRecords(next) {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        } catch {}
+      }
+
+      function loadFoodRecords() {
+        try {
+          const raw = localStorage.getItem(FOOD_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveFoodRecords() {
+        try {
+          localStorage.setItem(FOOD_KEY, JSON.stringify(foodRecords));
+        } catch {}
+      }(next) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
         } catch {
           // ignore (storage full/blocked)
         }
@@ -482,11 +609,33 @@
       function setVolume(next) {
         volume = Math.max(10, Number(next) || 10);
         elVolumeBox.textContent = String(volume);
+        if (volume <= 10) elMinus.classList.add("disabled");
+        else elMinus.classList.remove("disabled");
+      }
 
-        // minus disable 처리
-        if (volume <= 10) {
-          elMinus.classList.add("disabled");
-        } else {
+      function setFoodVolume(next) {
+        foodVolume = Math.max(0, Number(next) || 0);
+        elFoodVolumeBox.textContent = String(foodVolume);
+        if (foodVolume <= 0) elFoodMinus.classList.add("disabled");
+        else elFoodMinus.classList.remove("disabled");
+      }
+
+      function setActiveTab(next) {
+        activeTab = next;
+
+        // tab class
+        Array.from(elTabs.querySelectorAll(".tab")).forEach((t) => {
+          if (t.classList.contains("disabled")) return;
+          const isActive = t.dataset.tab === next;
+          t.classList.toggle("active", isActive);
+        });
+
+        // panels
+        elWaterCard.style.display = next === "water" ? "block" : "none";
+        elFoodManualCard.style.display = next === "foodManual" ? "block" : "none";
+
+        render();
+      } else {
           elMinus.classList.remove("disabled");
         }
       }
@@ -504,6 +653,118 @@
       }
 
       function render() {
+        const todayKey = dateKeyLocal(new Date());
+
+        // Water tab
+        const todayWater = records.filter((r) => r.dateKey === todayKey && r.kind === "water");
+        const waterTotal = todayWater.reduce((sum, r) => sum + (Number(r.volume) || 0), 0);
+        elTotal.textContent = `총합: ${waterTotal} ml`;
+
+        elListBody.innerHTML = "";
+        if (todayWater.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "row";
+          empty.style.gridTemplateColumns = "1fr";
+          empty.textContent = "아직 기록이 없습니다.";
+          elListBody.appendChild(empty);
+        } else {
+          todayWater.forEach((r) => {
+            const row = document.createElement("div");
+            row.className = "row";
+
+            const c1 = document.createElement("div");
+            c1.textContent = r.timeLabel;
+
+            const c2 = document.createElement("div");
+            c2.textContent = r.type;
+
+            const c3 = document.createElement("div");
+            c3.className = "right";
+            c3.textContent = `${r.volume} ml`;
+
+            const c4 = document.createElement("button");
+            c4.className = "del-btn";
+            c4.textContent = "삭제";
+            c4.addEventListener("click", () => openModal(r.id));
+
+            row.appendChild(c1);
+            row.appendChild(c2);
+            row.appendChild(c3);
+            row.appendChild(c4);
+
+            elListBody.appendChild(row);
+          });
+        }
+
+        // Food manual tab
+        const todayFood = records.filter((r) => r.dateKey === todayKey && r.kind === "foodManual");
+        const foodTotal = todayFood.reduce((sum, r) => sum + (Number(r.volume) || 0), 0);
+        elFoodTotal.textContent = `총합: ${foodTotal} ml`;
+
+        elFoodListBody.innerHTML = "";
+        if (todayFood.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "row";
+          empty.style.gridTemplateColumns = "1fr";
+          empty.textContent = "아직 기록이 없습니다.";
+          elFoodListBody.appendChild(empty);
+        } else {
+          todayFood.forEach((r) => {
+            const row = document.createElement("div");
+            row.className = "row";
+
+            const c1 = document.createElement("div");
+            c1.textContent = r.timeLabel;
+
+            const c2 = document.createElement("div");
+            c2.textContent = r.name;
+
+            const c3 = document.createElement("div");
+            c3.className = "right";
+            c3.textContent = `${r.volume} ml`;
+
+            const c4 = document.createElement("button");
+            c4.className = "del-btn";
+            c4.textContent = "삭제";
+            c4.addEventListener("click", () => openModal(r.id));
+
+            row.appendChild(c1);
+            row.appendChild(c2);
+            row.appendChild(c3);
+            row.appendChild(c4);
+
+            elFoodListBody.appendChild(row);
+          });
+        }
+      }
+
+        todayRecords.forEach((r) => {
+          const row = document.createElement("div");
+          row.className = "row";
+
+          const c1 = document.createElement("div");
+          c1.textContent = r.timeLabel;
+          const c2 = document.createElement("div");
+          c2.textContent = r.type;
+          const c3 = document.createElement("div");
+          c3.className = "right";
+          c3.textContent = `${r.volume} ml`;
+          const c4 = document.createElement("button");
+          c4.className = "del-btn";
+          c4.textContent = "삭제";
+          c4.addEventListener("click", () => openModal(r.id));
+
+          row.append(c1, c2, c3, c4);
+          elListBody.appendChild(row);
+        });
+      }
+
+      function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+        document.getElementById('waterCard').style.display = tab === 'water' ? 'block' : 'none';
+        document.getElementById('foodManualCard').style.display = tab === 'foodManual' ? 'block' : 'none';
+      }
         const todayKey = dateKeyLocal(new Date());
         const todayRecords = records.filter((r) => r.dateKey === todayKey);
         const total = todayRecords.reduce((sum, r) => sum + (Number(r.volume) || 0), 0);
@@ -563,7 +824,19 @@
         setVolume(100);
 
         // data
-        records = loadRecords();
+        records = loadRecords().map((r) => {
+          // v0 호환: kind가 없으면 물/음료로 간주
+          if (!r.kind) {
+            return { ...r, kind: "water" };
+          }
+          return r;
+        });
+        foodRecords = loadFoodRecords();
+
+        // tab switching
+        document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+          tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+        });
 
         // handlers
         elMinus.addEventListener("click", () => {
@@ -573,6 +846,13 @@
 
         elPlus.addEventListener("click", () => setVolume(volume + 10));
 
+        elFoodMinus.addEventListener("click", () => {
+          if (foodVolume <= 0) return;
+          setFoodVolume(foodVolume - 10);
+        });
+
+        elFoodPlus.addEventListener("click", () => setFoodVolume(foodVolume + 10));
+
         elAdd.addEventListener("click", () => {
           const now = new Date();
           const item = {
@@ -580,6 +860,7 @@
             ts: now.toISOString(),
             dateKey: dateKeyLocal(now),
             timeLabel: formatTime12h(now),
+            kind: "water",
             type: elDrinkType.value,
             volume: volume,
           };
@@ -587,6 +868,84 @@
           saveRecords(records);
           render();
         });
+
+        elFoodAdd.addEventListener("click", () => {
+          const name = (elFoodName.value || "").trim();
+          if (!name) {
+            elFoodName.focus();
+            return;
+          }
+
+          const now = new Date();
+          const item = {
+            id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
+            ts: now.toISOString(),
+            dateKey: dateKeyLocal(now),
+            timeLabel: formatTime12h(now),
+            kind: "foodManual",
+            name: name,
+            volume: foodVolume,
+          };
+          records = [item, ...records];
+          saveRecords(records);
+
+          // UX: 입력 유지 피로감 줄이기
+          elFoodName.value = "";
+          elFoodName.focus();
+
+          render();
+        });
+
+        // food manual
+        document.getElementById('btnFoodAdd').addEventListener('click', () => {
+          const name = document.getElementById('foodName').value.trim();
+          const water = Number(document.getElementById('foodWater').value);
+          if (!name || !water) return alert('음식명과 수분량을 입력하세요');
+          const now = new Date();
+          foodRecords.unshift({
+            id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
+            ts: now.toISOString(),
+            dateKey: dateKeyLocal(now),
+            timeLabel: formatTime12h(now),
+            name,
+            water,
+          });
+          saveFoodRecords();
+          document.getElementById('foodName').value = '';
+          document.getElementById('foodWater').value = '';
+          alert('음식 기록이 추가되었습니다');
+        });
+
+        // modal
+        elModalOverlay.addEventListener("mousedown", (e) => {
+          if (e.target === elModalOverlay) closeModal();
+        });
+        elModal.addEventListener("mousedown", (e) => e.stopPropagation());
+        elCancel.addEventListener("click", closeModal);
+        elConfirm.addEventListener("click", () => {
+          if (!deleteTargetId) return;
+          records = records.filter((r) => r.id !== deleteTargetId);
+          saveRecords(records);
+          closeModal();
+          render();
+        });
+
+        // tabs
+        elTabs.addEventListener("click", (e) => {
+          const tab = e.target.closest(".tab");
+          if (!tab) return;
+          if (tab.classList.contains("disabled")) return;
+          const next = tab.dataset.tab;
+          if (!next) return;
+          setActiveTab(next);
+        });
+
+        // food volume
+        setFoodVolume(50);
+
+        // initial
+        setActiveTab("water");
+      });
 
         // modal
         elModalOverlay.addEventListener("mousedown", (e) => {
