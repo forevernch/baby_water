@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>수분 섭취 기록 (개인용)</title>
+    <style>
+      :root {
+        --bg0: #05070d;
+        --bg1: rgba(255, 255, 255, 0.04);
+        --bd1: rgba(255, 255, 255, 0.10);
+        --bd2: rgba(255, 255, 255, 0.08);
+        --txt0: rgba(231, 234, 243, 0.92);
+        --txt1: rgba(231, 234, 243, 0.70);
+        --txt2: rgba(231, 234, 243, 0.60);
+        --primary: rgba(56, 121, 255, 0.95);
+        --danger: rgba(255, 96, 96, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--txt0);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+          Apple Color Emoji, Segoe UI Emoji;
+        background: radial-gradient(1200px 600px at 20% 0%, #111a33 0%, #070b14 45%, #05070d 100%);
+      }
+
+      .page {
+        padding: 24px;
+      }
+
+      .container {
+        max-width: 980px;
+        margin: 0 auto;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      .title {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.2px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        color: rgba(231, 234, 243, 0.65);
+      }
+
+      .tabs {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
+
+      .tab {
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(231, 234, 243, 0.92);
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .tab.active {
+        background: rgba(56, 121, 255, 0.22);
+        box-shadow: 0 0 0 1px rgba(56, 121, 255, 0.35) inset;
+      }
+
+      .tab.disabled {
+        color: rgba(231, 234, 243, 0.35);
+        cursor: not-allowed;
+      }
+
+      .card {
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+        padding: 18px;
+      }
+
+      .section-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: -0.1px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 14px;
+        margin-top: 12px;
+      }
+
+      .label {
+        font-size: 12px;
+        color: rgba(231, 234, 243, 0.70);
+        margin-bottom: 8px;
+      }
+
+      select {
+        width: 100%;
+        height: 44px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(6, 10, 20, 0.65);
+        color: rgba(231, 234, 243, 0.95);
+        padding: 0 12px;
+        outline: none;
+      }
+
+      .volume-row {
+        display: grid;
+        grid-template-columns: 44px 1fr 44px;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .btn-icon {
+        height: 44px;
+        width: 44px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(255, 255, 255, 0.06);
+        color: rgba(231, 234, 243, 0.95);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+        font-weight: 800;
+        user-select: none;
+      }
+
+      .btn-icon.disabled {
+        background: rgba(255, 255, 255, 0.03);
+        color: rgba(231, 234, 243, 0.30);
+        cursor: not-allowed;
+      }
+
+      .volume-box {
+        height: 44px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(6, 10, 20, 0.65);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+
+      .primary-btn {
+        margin-top: 14px;
+        height: 48px;
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid rgba(56, 121, 255, 0.55);
+        background: linear-gradient(180deg, rgba(56, 121, 255, 0.95) 0%, rgba(41, 103, 241, 0.95) 100%);
+        color: white;
+        font-weight: 900;
+        letter-spacing: -0.1px;
+        cursor: pointer;
+        box-shadow: 0 16px 30px rgba(41, 103, 241, 0.35);
+      }
+
+      .divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.08);
+        margin: 18px 0;
+      }
+
+      .records-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(255, 255, 255, 0.04);
+        font-size: 12px;
+        color: rgba(231, 234, 243, 0.80);
+        white-space: nowrap;
+      }
+
+      /* 오늘 기록: 한 줄 리스트 */
+      .list-wrap {
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        overflow: hidden;
+        background: rgba(6, 10, 20, 0.55);
+      }
+
+      .list-header {
+        display: grid;
+        grid-template-columns: 110px 1fr 120px 90px;
+        gap: 10px;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 12px;
+        color: rgba(231, 234, 243, 0.70);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 110px 1fr 120px 90px;
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        align-items: center;
+        font-size: 13px;
+        color: rgba(231, 234, 243, 0.92);
+      }
+
+      .row:last-child {
+        border-bottom: none;
+      }
+
+      .right {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .del-btn {
+        height: 32px;
+        padding: 0 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(231, 234, 243, 0.92);
+        cursor: pointer;
+        font-weight: 800;
+        justify-self: end;
+      }
+
+      .hint {
+        margin-top: 12px;
+        font-size: 12px;
+        color: rgba(231, 234, 243, 0.60);
+      }
+
+      /* modal */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        z-index: 50;
+      }
+
+      .modal {
+        width: min(520px, 100%);
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(10, 14, 26, 0.95);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+        padding: 18px;
+      }
+
+      .modal-title {
+        font-size: 16px;
+        font-weight: 900;
+        margin-bottom: 8px;
+      }
+
+      .modal-text {
+        font-size: 13px;
+        color: rgba(231, 234, 243, 0.75);
+        line-height: 1.45;
+      }
+
+      .modal-btns {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .modal-btn {
+        height: 38px;
+        padding: 0 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(231, 234, 243, 0.92);
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .modal-btn.danger {
+        border: 1px solid rgba(255, 96, 96, 0.30);
+        background: rgba(255, 96, 96, 0.12);
+      }
+
+      @media (max-width: 720px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .list-header,
+        .row {
+          grid-template-columns: 92px 1fr 92px 76px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+      <div class="container">
+        <div class="header">
+          <div>
+            <div class="title">수분 섭취 기록</div>
+          </div>
+          <div class="subtitle">개인용 · 정적 웹페이지 · 로컬 저장</div>
+        </div>
+
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-tab="water">💧 물/음료</div>
+          <div class="tab disabled" title="준비중">🤖 음식 AI</div>
+          <div class="tab disabled" title="준비중">✍️ 음식 수동</div>
+          <div class="tab disabled" title="준비중">📌 오늘요약</div>
+          <div class="tab disabled" title="준비중">🗓️ 월별요약</div>
+        </div>
+
+        <div class="card" id="waterCard">
+          <div class="section-title-row">
+            <div class="section-title">물/음료 기록</div>
+          </div>
+
+          <div class="form-grid">
+            <div>
+              <div class="label">음료 종류</div>
+              <select id="drinkType"></select>
+            </div>
+
+            <div>
+              <div class="label">용량(ml)</div>
+              <div class="volume-row">
+                <div class="btn-icon" id="btnMinus" aria-label="용량 감소">−</div>
+                <div class="volume-box" id="volumeBox">100</div>
+                <div class="btn-icon" id="btnPlus" aria-label="용량 증가">+</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="primary-btn" id="btnAdd">기록 추가</button>
+
+          <div class="hint">MVP에서는 음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
+
+          <div class="divider"></div>
+
+          <div class="records-header">
+            <div class="section-title">오늘 기록 — 물/음료</div>
+            <div class="pill" id="totalPill">총합: 0 ml</div>
+          </div>
+
+          <div class="list-wrap">
+            <div class="list-header">
+              <div>시간</div>
+              <div>종류</div>
+              <div class="right">용량</div>
+              <div class="right">삭제</div>
+            </div>
+            <div id="listBody"></div>
+          </div>
+
+          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete confirmation modal (hidden by default) -->
+    <div class="modal-overlay" id="modalOverlay" style="display: none" aria-hidden="true">
+      <div class="modal" id="modal" role="dialog" aria-modal="true">
+        <div class="modal-title">기록을 삭제할까요?</div>
+        <div class="modal-text">선택한 항목이 즉시 삭제됩니다. 계속 진행하시겠습니까?</div>
+        <div class="modal-btns">
+          <button class="modal-btn" id="btnCancel">취소</button>
+          <button class="modal-btn danger" id="btnConfirm">삭제</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ==========================================================
+      // 수분 섭취 기록 (A안) - 단일 HTML 파일
+      //  - localStorage 저장
+      //  - 오늘 날짜만 필터링해 표시
+      //  - 오늘 기록: 한 줄 리스트
+      //  - 삭제는 모달(확인/취소)
+      // ==========================================================
+
+      const STORAGE_KEY = "hydration_html_water_drink_v1";
+      const DRINK_TYPES = ["물", "우유", "주스", "탄산", "유제품", "이온음료", "기타"];
+
+      const elDrinkType = document.getElementById("drinkType");
+      const elVolumeBox = document.getElementById("volumeBox");
+      const elMinus = document.getElementById("btnMinus");
+      const elPlus = document.getElementById("btnPlus");
+      const elAdd = document.getElementById("btnAdd");
+      const elListBody = document.getElementById("listBody");
+      const elTotal = document.getElementById("totalPill");
+
+      const elModalOverlay = document.getElementById("modalOverlay");
+      const elModal = document.getElementById("modal");
+      const elCancel = document.getElementById("btnCancel");
+      const elConfirm = document.getElementById("btnConfirm");
+
+      let volume = 100;
+      let records = [];
+      let deleteTargetId = null;
+
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
+
+      function formatTime12h(date) {
+        const h24 = date.getHours();
+        const m = date.getMinutes();
+        const ampm = h24 >= 12 ? "pm" : "am";
+        const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+        return `${ampm} ${pad2(h12)}:${pad2(m)}`;
+      }
+
+      function dateKeyLocal(date) {
+        const y = date.getFullYear();
+        const mm = pad2(date.getMonth() + 1);
+        const dd = pad2(date.getDate());
+        return `${y}-${mm}-${dd}`;
+      }
+
+      function loadRecords() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveRecords(next) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        } catch {
+          // ignore (storage full/blocked)
+        }
+      }
+
+      function setVolume(next) {
+        volume = Math.max(10, Number(next) || 10);
+        elVolumeBox.textContent = String(volume);
+
+        // minus disable 처리
+        if (volume <= 10) {
+          elMinus.classList.add("disabled");
+        } else {
+          elMinus.classList.remove("disabled");
+        }
+      }
+
+      function openModal(id) {
+        deleteTargetId = id;
+        elModalOverlay.style.display = "grid";
+        elModalOverlay.setAttribute("aria-hidden", "false");
+      }
+
+      function closeModal() {
+        deleteTargetId = null;
+        elModalOverlay.style.display = "none";
+        elModalOverlay.setAttribute("aria-hidden", "true");
+      }
+
+      function render() {
+        const todayKey = dateKeyLocal(new Date());
+        const todayRecords = records.filter((r) => r.dateKey === todayKey);
+        const total = todayRecords.reduce((sum, r) => sum + (Number(r.volume) || 0), 0);
+        elTotal.textContent = `총합: ${total} ml`;
+
+        // list body
+        elListBody.innerHTML = "";
+
+        if (todayRecords.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "row";
+          empty.style.gridTemplateColumns = "1fr";
+          empty.textContent = "아직 기록이 없습니다.";
+          elListBody.appendChild(empty);
+          return;
+        }
+
+        todayRecords.forEach((r) => {
+          const row = document.createElement("div");
+          row.className = "row";
+
+          const c1 = document.createElement("div");
+          c1.textContent = r.timeLabel;
+
+          const c2 = document.createElement("div");
+          c2.textContent = r.type;
+
+          const c3 = document.createElement("div");
+          c3.className = "right";
+          c3.textContent = `${r.volume} ml`;
+
+          const c4 = document.createElement("button");
+          c4.className = "del-btn";
+          c4.textContent = "삭제";
+          c4.addEventListener("click", () => openModal(r.id));
+
+          row.appendChild(c1);
+          row.appendChild(c2);
+          row.appendChild(c3);
+          row.appendChild(c4);
+
+          elListBody.appendChild(row);
+        });
+      }
+
+      function init() {
+        // drink options
+        DRINK_TYPES.forEach((t) => {
+          const opt = document.createElement("option");
+          opt.value = t;
+          opt.textContent = t;
+          elDrinkType.appendChild(opt);
+        });
+        elDrinkType.value = "물";
+
+        // volume
+        setVolume(100);
+
+        // data
+        records = loadRecords();
+
+        // handlers
+        elMinus.addEventListener("click", () => {
+          if (volume <= 10) return;
+          setVolume(volume - 10);
+        });
+
+        elPlus.addEventListener("click", () => setVolume(volume + 10));
+
+        elAdd.addEventListener("click", () => {
+          const now = new Date();
+          const item = {
+            id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
+            ts: now.toISOString(),
+            dateKey: dateKeyLocal(now),
+            timeLabel: formatTime12h(now),
+            type: elDrinkType.value,
+            volume: volume,
+          };
+          records = [item, ...records];
+          saveRecords(records);
+          render();
+        });
+
+        // modal
+        elModalOverlay.addEventListener("mousedown", (e) => {
+          if (e.target === elModalOverlay) closeModal();
+        });
+        elModal.addEventListener("mousedown", (e) => e.stopPropagation());
+        elCancel.addEventListener("click", closeModal);
+        elConfirm.addEventListener("click", () => {
+          if (!deleteTargetId) return;
+          records = records.filter((r) => r.id !== deleteTargetId);
+          saveRecords(records);
+          closeModal();
+          render();
+        });
+
+        // initial render
+        render();
+      }
+
+      init();
+    </script>
+  </body>
+</html>
