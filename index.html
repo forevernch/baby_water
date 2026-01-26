@@ -6,21 +6,11 @@
     <title>수분 섭취 기록 (개인용)</title>
     <style>
       :root {
-        --bg0: #05070d;
-        --bg1: rgba(255, 255, 255, 0.04);
-        --bd1: rgba(255, 255, 255, 0.10);
-        --bd2: rgba(255, 255, 255, 0.08);
         --txt0: rgba(231, 234, 243, 0.92);
         --txt1: rgba(231, 234, 243, 0.70);
         --txt2: rgba(231, 234, 243, 0.60);
-        --primary: rgba(56, 121, 255, 0.95);
-        --danger: rgba(255, 96, 96, 0.12);
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
+      * { box-sizing: border-box; }
       body {
         margin: 0;
         min-height: 100vh;
@@ -29,15 +19,8 @@
           Apple Color Emoji, Segoe UI Emoji;
         background: radial-gradient(1200px 600px at 20% 0%, #111a33 0%, #070b14 45%, #05070d 100%);
       }
-
-      .page {
-        padding: 24px;
-      }
-
-      .container {
-        max-width: 980px;
-        margin: 0 auto;
-      }
+      .page { padding: 24px; }
+      .container { max-width: 980px; margin: 0 auto; }
 
       .header {
         display: flex;
@@ -46,25 +29,10 @@
         gap: 16px;
         margin-bottom: 14px;
       }
+      .title { font-size: 22px; font-weight: 800; letter-spacing: -0.2px; }
+      .subtitle { font-size: 12px; color: rgba(231, 234, 243, 0.65); }
 
-      .title {
-        font-size: 22px;
-        font-weight: 800;
-        letter-spacing: -0.2px;
-      }
-
-      .subtitle {
-        font-size: 12px;
-        color: rgba(231, 234, 243, 0.65);
-      }
-
-      .tabs {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 18px;
-      }
-
+      .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
       .tab {
         padding: 10px 14px;
         border-radius: 999px;
@@ -77,16 +45,11 @@
         align-items: center;
         gap: 8px;
       }
-
       .tab.active {
         background: rgba(56, 121, 255, 0.22);
         box-shadow: 0 0 0 1px rgba(56, 121, 255, 0.35) inset;
       }
-
-      .tab.disabled {
-        color: rgba(231, 234, 243, 0.35);
-        cursor: not-allowed;
-      }
+      .tab.disabled { color: rgba(231, 234, 243, 0.35); cursor: not-allowed; }
 
       .card {
         border-radius: 18px;
@@ -100,14 +63,10 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 10px;
         margin-bottom: 10px;
       }
-
-      .section-title {
-        font-size: 16px;
-        font-weight: 800;
-        letter-spacing: -0.1px;
-      }
+      .section-title { font-size: 16px; font-weight: 800; letter-spacing: -0.1px; }
 
       .form-grid {
         display: grid;
@@ -115,14 +74,9 @@
         gap: 14px;
         margin-top: 12px;
       }
+      .label { font-size: 12px; color: rgba(231, 234, 243, 0.70); margin-bottom: 8px; }
 
-      .label {
-        font-size: 12px;
-        color: rgba(231, 234, 243, 0.70);
-        margin-bottom: 8px;
-      }
-
-      select {
+      select, input {
         width: 100%;
         height: 44px;
         border-radius: 12px;
@@ -131,21 +85,6 @@
         color: rgba(231, 234, 243, 0.95);
         padding: 0 12px;
         outline: none;
-      }
-
-      input {
-        width: 100%;
-        height: 44px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.10);
-        background: rgba(6, 10, 20, 0.65);
-        color: rgba(231, 234, 243, 0.95);
-        padding: 0 12px;
-        outline: none;
-      }
-
-      input::placeholder {
-        color: rgba(231, 234, 243, 0.45);
       }
 
       .volume-row {
@@ -154,7 +93,6 @@
         gap: 10px;
         align-items: center;
       }
-
       .btn-icon {
         height: 44px;
         width: 44px;
@@ -169,13 +107,11 @@
         font-weight: 800;
         user-select: none;
       }
-
       .btn-icon.disabled {
         background: rgba(255, 255, 255, 0.03);
         color: rgba(231, 234, 243, 0.30);
         cursor: not-allowed;
       }
-
       .volume-box {
         height: 44px;
         border-radius: 12px;
@@ -202,11 +138,7 @@
         box-shadow: 0 16px 30px rgba(41, 103, 241, 0.35);
       }
 
-      .divider {
-        height: 1px;
-        background: rgba(255, 255, 255, 0.08);
-        margin: 18px 0;
-      }
+      .divider { height: 1px; background: rgba(255, 255, 255, 0.08); margin: 18px 0; }
 
       .records-header {
         display: flex;
@@ -215,7 +147,6 @@
         gap: 12px;
         margin-bottom: 10px;
       }
-
       .pill {
         padding: 6px 10px;
         border-radius: 999px;
@@ -226,14 +157,12 @@
         white-space: nowrap;
       }
 
-      /* 오늘 기록: 한 줄 리스트 */
       .list-wrap {
         border-radius: 14px;
         border: 1px solid rgba(255, 255, 255, 0.10);
         overflow: hidden;
         background: rgba(6, 10, 20, 0.55);
       }
-
       .list-header {
         display: grid;
         grid-template-columns: 110px 1fr 120px 90px;
@@ -244,7 +173,6 @@
         font-size: 12px;
         color: rgba(231, 234, 243, 0.70);
       }
-
       .row {
         display: grid;
         grid-template-columns: 110px 1fr 120px 90px;
@@ -255,16 +183,8 @@
         font-size: 13px;
         color: rgba(231, 234, 243, 0.92);
       }
-
-      .row:last-child {
-        border-bottom: none;
-      }
-
-      .right {
-        text-align: right;
-        white-space: nowrap;
-      }
-
+      .row:last-child { border-bottom: none; }
+      .right { text-align: right; white-space: nowrap; }
       .del-btn {
         height: 32px;
         padding: 0 10px;
@@ -277,11 +197,22 @@
         justify-self: end;
       }
 
-      .hint {
-        margin-top: 12px;
-        font-size: 12px;
-        color: rgba(231, 234, 243, 0.60);
+      .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 10px;
       }
+      .summary-box {
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(6, 10, 20, 0.55);
+        padding: 12px;
+      }
+      .summary-label { font-size: 12px; color: rgba(231, 234, 243, 0.70); margin-bottom: 6px; }
+      .summary-value { font-size: 20px; font-weight: 900; letter-spacing: -0.2px; }
+
+      .hint { margin-top: 12px; font-size: 12px; color: rgba(231, 234, 243, 0.60); }
 
       /* modal */
       .modal-overlay {
@@ -293,7 +224,6 @@
         padding: 16px;
         z-index: 50;
       }
-
       .modal {
         width: min(520px, 100%);
         border-radius: 18px;
@@ -302,26 +232,9 @@
         box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
         padding: 18px;
       }
-
-      .modal-title {
-        font-size: 16px;
-        font-weight: 900;
-        margin-bottom: 8px;
-      }
-
-      .modal-text {
-        font-size: 13px;
-        color: rgba(231, 234, 243, 0.75);
-        line-height: 1.45;
-      }
-
-      .modal-btns {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 14px;
-      }
-
+      .modal-title { font-size: 16px; font-weight: 900; margin-bottom: 8px; }
+      .modal-text { font-size: 13px; color: rgba(231, 234, 243, 0.75); line-height: 1.45; }
+      .modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
       .modal-btn {
         height: 38px;
         padding: 0 12px;
@@ -332,20 +245,15 @@
         cursor: pointer;
         font-weight: 800;
       }
-
       .modal-btn.danger {
         border: 1px solid rgba(255, 96, 96, 0.30);
         background: rgba(255, 96, 96, 0.12);
       }
 
       @media (max-width: 720px) {
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
-        .list-header,
-        .row {
-          grid-template-columns: 92px 1fr 92px 76px;
-        }
+        .form-grid { grid-template-columns: 1fr; }
+        .list-header, .row { grid-template-columns: 92px 1fr 92px 76px; }
+        .summary-grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -354,20 +262,19 @@
     <div class="page">
       <div class="container">
         <div class="header">
-          <div>
-            <div class="title">수분 섭취 기록</div>
-          </div>
-          <div class="subtitle">개인용 · 정적 웹페이지 · 로컬 저장</div>
+          <div><div class="title">수분 섭취 기록</div></div>
+          <div class="subtitle">MVP · 오프라인(로컬 저장)</div>
         </div>
 
         <div class="tabs" id="tabs">
           <div class="tab active" data-tab="water">💧 물/음료</div>
+          <div class="tab disabled" title="준비중">✍️ 음식 수동</div>
           <div class="tab disabled" title="준비중">🤖 음식 AI</div>
-          <div class="tab" data-tab="foodManual">✍️ 음식 수동</div>
-          <div class="tab disabled" title="준비중">📌 오늘요약</div>
+          <div class="tab" data-tab="today">📌 오늘요약</div>
           <div class="tab disabled" title="준비중">🗓️ 월별요약</div>
         </div>
 
+        <!-- 물/음료 탭 -->
         <div class="card" id="waterCard" data-panel="water">
           <div class="section-title-row">
             <div class="section-title">물/음료 기록</div>
@@ -378,7 +285,6 @@
               <div class="label">음료 종류</div>
               <select id="drinkType"></select>
             </div>
-
             <div>
               <div class="label">용량(ml)</div>
               <div class="volume-row">
@@ -390,14 +296,13 @@
           </div>
 
           <button class="primary-btn" id="btnAdd">기록 추가</button>
-
           <div class="hint">MVP에서는 음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
 
           <div class="divider"></div>
 
           <div class="records-header">
             <div class="section-title">오늘 기록 — 물/음료</div>
-            <div class="pill" id="totalPill">총합: 0 ml</div>
+            <div class="pill" id="waterTotalPill">총합: 0 ml</div>
           </div>
 
           <div class="list-wrap">
@@ -407,89 +312,65 @@
               <div class="right">용량</div>
               <div class="right">삭제</div>
             </div>
-            <div id="listBody"></div>
+            <div id="waterListBody"></div>
           </div>
 
           <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
         </div>
 
-        <!-- 음식 수동 (최소 입력 UI) -->
-        <div class="card" id="foodManualCard" data-panel="foodManual" style="display: none;">
+        <!-- 오늘요약 탭 -->
+        <div class="card" id="todayCard" data-panel="today" style="display:none;">
           <div class="section-title-row">
-            <div class="section-title">음식 수동 기록</div>
+            <div class="section-title">오늘요약</div>
           </div>
 
-          <div class="form-grid">
-            <div>
-              <div class="label">음식/메뉴명</div>
-              <input id="foodName" type="text" placeholder="예: 미역국, 라면, 샐러드" />
+          <div class="summary-grid">
+            <div class="summary-box">
+              <div class="summary-label">물/음료 합계</div>
+              <div class="summary-value" id="sumWater">0 ml</div>
             </div>
-
-            <div>
-              <div class="label">수분 추정(ml)</div>
-              <div class="volume-row">
-                <div class="btn-icon" id="btnFoodMinus" aria-label="수분 감소">−</div>
-                <div class="volume-box" id="foodVolumeBox">50</div>
-                <div class="btn-icon" id="btnFoodPlus" aria-label="수분 증가">+</div>
-              </div>
+            <div class="summary-box">
+              <div class="summary-label">음식수동 합계</div>
+              <div class="summary-value" id="sumFoodManual">0 ml</div>
+            </div>
+            <div class="summary-box">
+              <div class="summary-label">음식AI 합계</div>
+              <div class="summary-value" id="sumFoodAI">0 ml</div>
+            </div>
+            <div class="summary-box">
+              <div class="summary-label">오늘 총합</div>
+              <div class="summary-value" id="sumAll">0 ml</div>
             </div>
           </div>
-
-          <button class="primary-btn" id="btnFoodAdd">기록 추가</button>
-
-          <div class="hint">현재는 “수분 추정(ml)”을 수동으로 입력합니다. (음식 AI 탭은 추후 연결)</div>
 
           <div class="divider"></div>
 
           <div class="records-header">
-            <div class="section-title">오늘 기록 — 음식 수동</div>
-            <div class="pill" id="foodTotalPill">총합: 0 ml</div>
+            <div class="section-title">오늘 기록 — 전체</div>
+            <div class="pill" id="allCountPill">0건</div>
           </div>
 
           <div class="list-wrap">
             <div class="list-header">
               <div>시간</div>
-              <div>메뉴</div>
-              <div class="right">수분</div>
-              <div class="right">삭제</div>
-            </div>
-            <div id="foodListBody"></div>
-          </div>
-
-          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
-        </div>
-      </div>
-    </div>
-          </div>
-
-          <button class="primary-btn" id="btnAdd">기록 추가</button>
-
-          <div class="hint">MVP에서는 음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
-
-          <div class="divider"></div>
-
-          <div class="records-header">
-            <div class="section-title">오늘 기록 — 물/음료</div>
-            <div class="pill" id="totalPill">총합: 0 ml</div>
-          </div>
-
-          <div class="list-wrap">
-            <div class="list-header">
-              <div>시간</div>
-              <div>종류</div>
+              <div>구분</div>
               <div class="right">용량</div>
               <div class="right">삭제</div>
             </div>
-            <div id="listBody"></div>
+            <div id="allListBody"></div>
           </div>
 
-          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
+          <div class="hint">
+            기록은 records 1개 배열에 통합 저장합니다.
+            (물/음료: kind="water" / 음식수동: kind="foodManual" / 음식AI: kind="foodAI")
+            오늘요약은 오늘 기록의 kind별 합계 + 총합을 자동 계산합니다.
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Delete confirmation modal (hidden by default) -->
-    <div class="modal-overlay" id="modalOverlay" style="display: none" aria-hidden="true">
+    <!-- Delete confirmation modal -->
+    <div class="modal-overlay" id="modalOverlay" style="display:none" aria-hidden="true">
       <div class="modal" id="modal" role="dialog" aria-modal="true">
         <div class="modal-title">기록을 삭제할까요?</div>
         <div class="modal-text">선택한 항목이 즉시 삭제됩니다. 계속 진행하시겠습니까?</div>
@@ -502,54 +383,48 @@
 
     <script>
       // ==========================================================
-      // 수분 섭취 기록 (A안) - 단일 HTML 파일
-      //  - localStorage 저장
-      //  - 오늘 날짜만 필터링해 표시
-      //  - 오늘 기록: 한 줄 리스트
-      //  - 삭제는 모달(확인/취소)
+      // 안정(원복) 버전
+      //  - HTML/JS 중복 제거(단일 init)
+      //  - records 1개 배열에 통합 저장
+      //  - 구동 탭: 물/음료 + 오늘요약
       // ==========================================================
 
-      const STORAGE_KEY = "hydration_html_water_drink_v2";
-      const FOOD_KEY = "hydration_html_food_manual_v1";
+      const STORAGE_KEY = "hydration_html_records_v1_stable";
       const DRINK_TYPES = ["물", "우유", "주스", "탄산", "유제품", "이온음료", "기타"];
 
+      // DOM
       const elTabs = document.getElementById("tabs");
+      const elWaterCard = document.getElementById("waterCard");
+      const elTodayCard = document.getElementById("todayCard");
 
       const elDrinkType = document.getElementById("drinkType");
       const elVolumeBox = document.getElementById("volumeBox");
       const elMinus = document.getElementById("btnMinus");
       const elPlus = document.getElementById("btnPlus");
       const elAdd = document.getElementById("btnAdd");
-      const elListBody = document.getElementById("listBody");
-      const elTotal = document.getElementById("totalPill");
 
-      const elWaterCard = document.getElementById("waterCard");
-      const elFoodManualCard = document.getElementById("foodManualCard");
+      const elWaterListBody = document.getElementById("waterListBody");
+      const elWaterTotal = document.getElementById("waterTotalPill");
 
-      // Food manual
-      const elFoodName = document.getElementById("foodName");
-      const elFoodVolumeBox = document.getElementById("foodVolumeBox");
-      const elFoodMinus = document.getElementById("btnFoodMinus");
-      const elFoodPlus = document.getElementById("btnFoodPlus");
-      const elFoodAdd = document.getElementById("btnFoodAdd");
-      const elFoodListBody = document.getElementById("foodListBody");
-      const elFoodTotal = document.getElementById("foodTotalPill");
+      const elSumWater = document.getElementById("sumWater");
+      const elSumFoodManual = document.getElementById("sumFoodManual");
+      const elSumFoodAI = document.getElementById("sumFoodAI");
+      const elSumAll = document.getElementById("sumAll");
+      const elAllCount = document.getElementById("allCountPill");
+      const elAllListBody = document.getElementById("allListBody");
 
       const elModalOverlay = document.getElementById("modalOverlay");
       const elModal = document.getElementById("modal");
       const elCancel = document.getElementById("btnCancel");
       const elConfirm = document.getElementById("btnConfirm");
 
+      // State
       let activeTab = "water";
       let volume = 100;
-      let foodVolume = 50;
       let records = [];
-      let foodRecords = [];
       let deleteTargetId = null;
 
-      function pad2(n) {
-        return String(n).padStart(2, "0");
-      }
+      function pad2(n) { return String(n).padStart(2, "0"); }
 
       function formatTime12h(date) {
         const h24 = date.getHours();
@@ -578,32 +453,7 @@
       }
 
       function saveRecords(next) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        } catch {}
-      }
-
-      function loadFoodRecords() {
-        try {
-          const raw = localStorage.getItem(FOOD_KEY);
-          if (!raw) return [];
-          const parsed = JSON.parse(raw);
-          return Array.isArray(parsed) ? parsed : [];
-        } catch {
-          return [];
-        }
-      }
-
-      function saveFoodRecords() {
-        try {
-          localStorage.setItem(FOOD_KEY, JSON.stringify(foodRecords));
-        } catch {}
-      }(next) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        } catch {
-          // ignore (storage full/blocked)
-        }
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
       }
 
       function setVolume(next) {
@@ -613,31 +463,15 @@
         else elMinus.classList.remove("disabled");
       }
 
-      function setFoodVolume(next) {
-        foodVolume = Math.max(0, Number(next) || 0);
-        elFoodVolumeBox.textContent = String(foodVolume);
-        if (foodVolume <= 0) elFoodMinus.classList.add("disabled");
-        else elFoodMinus.classList.remove("disabled");
-      }
-
       function setActiveTab(next) {
         activeTab = next;
-
-        // tab class
         Array.from(elTabs.querySelectorAll(".tab")).forEach((t) => {
           if (t.classList.contains("disabled")) return;
-          const isActive = t.dataset.tab === next;
-          t.classList.toggle("active", isActive);
+          t.classList.toggle("active", t.dataset.tab === next);
         });
-
-        // panels
         elWaterCard.style.display = next === "water" ? "block" : "none";
-        elFoodManualCard.style.display = next === "foodManual" ? "block" : "none";
-
+        elTodayCard.style.display = next === "today" ? "block" : "none";
         render();
-      } else {
-          elMinus.classList.remove("disabled");
-        }
       }
 
       function openModal(id) {
@@ -652,166 +486,76 @@
         elModalOverlay.setAttribute("aria-hidden", "true");
       }
 
-      function render() {
-        const todayKey = dateKeyLocal(new Date());
-
-        // Water tab
-        const todayWater = records.filter((r) => r.dateKey === todayKey && r.kind === "water");
-        const waterTotal = todayWater.reduce((sum, r) => sum + (Number(r.volume) || 0), 0);
-        elTotal.textContent = `총합: ${waterTotal} ml`;
-
-        elListBody.innerHTML = "";
-        if (todayWater.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "row";
-          empty.style.gridTemplateColumns = "1fr";
-          empty.textContent = "아직 기록이 없습니다.";
-          elListBody.appendChild(empty);
-        } else {
-          todayWater.forEach((r) => {
-            const row = document.createElement("div");
-            row.className = "row";
-
-            const c1 = document.createElement("div");
-            c1.textContent = r.timeLabel;
-
-            const c2 = document.createElement("div");
-            c2.textContent = r.type;
-
-            const c3 = document.createElement("div");
-            c3.className = "right";
-            c3.textContent = `${r.volume} ml`;
-
-            const c4 = document.createElement("button");
-            c4.className = "del-btn";
-            c4.textContent = "삭제";
-            c4.addEventListener("click", () => openModal(r.id));
-
-            row.appendChild(c1);
-            row.appendChild(c2);
-            row.appendChild(c3);
-            row.appendChild(c4);
-
-            elListBody.appendChild(row);
-          });
-        }
-
-        // Food manual tab
-        const todayFood = records.filter((r) => r.dateKey === todayKey && r.kind === "foodManual");
-        const foodTotal = todayFood.reduce((sum, r) => sum + (Number(r.volume) || 0), 0);
-        elFoodTotal.textContent = `총합: ${foodTotal} ml`;
-
-        elFoodListBody.innerHTML = "";
-        if (todayFood.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "row";
-          empty.style.gridTemplateColumns = "1fr";
-          empty.textContent = "아직 기록이 없습니다.";
-          elFoodListBody.appendChild(empty);
-        } else {
-          todayFood.forEach((r) => {
-            const row = document.createElement("div");
-            row.className = "row";
-
-            const c1 = document.createElement("div");
-            c1.textContent = r.timeLabel;
-
-            const c2 = document.createElement("div");
-            c2.textContent = r.name;
-
-            const c3 = document.createElement("div");
-            c3.className = "right";
-            c3.textContent = `${r.volume} ml`;
-
-            const c4 = document.createElement("button");
-            c4.className = "del-btn";
-            c4.textContent = "삭제";
-            c4.addEventListener("click", () => openModal(r.id));
-
-            row.appendChild(c1);
-            row.appendChild(c2);
-            row.appendChild(c3);
-            row.appendChild(c4);
-
-            elFoodListBody.appendChild(row);
-          });
-        }
+      function kindLabel(r) {
+        if (r.kind === "water") return `물/음료 · ${r.type}`;
+        if (r.kind === "foodManual") return `음식수동 · ${r.name || "-"}`;
+        if (r.kind === "foodAI") return `음식AI · ${r.name || "-"}`;
+        return r.kind || "-";
       }
 
-        todayRecords.forEach((r) => {
+      function renderList(targetEl, items, options) {
+        targetEl.innerHTML = "";
+        if (items.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "row";
+          empty.style.gridTemplateColumns = "1fr";
+          empty.textContent = "아직 기록이 없습니다.";
+          targetEl.appendChild(empty);
+          return;
+        }
+
+        items.forEach((r) => {
           const row = document.createElement("div");
           row.className = "row";
 
           const c1 = document.createElement("div");
           c1.textContent = r.timeLabel;
+
           const c2 = document.createElement("div");
-          c2.textContent = r.type;
+          c2.textContent = options.kindText ? kindLabel(r) : (r.type || r.name || "-");
+
           const c3 = document.createElement("div");
           c3.className = "right";
-          c3.textContent = `${r.volume} ml`;
+          c3.textContent = `${Number(r.volume) || 0} ml`;
+
           const c4 = document.createElement("button");
           c4.className = "del-btn";
           c4.textContent = "삭제";
           c4.addEventListener("click", () => openModal(r.id));
 
           row.append(c1, c2, c3, c4);
-          elListBody.appendChild(row);
+          targetEl.appendChild(row);
         });
       }
 
-      function switchTab(tab) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-        document.getElementById('waterCard').style.display = tab === 'water' ? 'block' : 'none';
-        document.getElementById('foodManualCard').style.display = tab === 'foodManual' ? 'block' : 'none';
-      }
+      function render() {
         const todayKey = dateKeyLocal(new Date());
-        const todayRecords = records.filter((r) => r.dateKey === todayKey);
-        const total = todayRecords.reduce((sum, r) => sum + (Number(r.volume) || 0), 0);
-        elTotal.textContent = `총합: ${total} ml`;
+        const today = records.filter((r) => r.dateKey === todayKey);
 
-        // list body
-        elListBody.innerHTML = "";
+        const todayWater = today.filter((r) => r.kind === "water");
+        const todayFoodManual = today.filter((r) => r.kind === "foodManual");
+        const todayFoodAI = today.filter((r) => r.kind === "foodAI");
 
-        if (todayRecords.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "row";
-          empty.style.gridTemplateColumns = "1fr";
-          empty.textContent = "아직 기록이 없습니다.";
-          elListBody.appendChild(empty);
-          return;
-        }
+        const sumWater = todayWater.reduce((s, r) => s + (Number(r.volume) || 0), 0);
+        const sumFoodManual = todayFoodManual.reduce((s, r) => s + (Number(r.volume) || 0), 0);
+        const sumFoodAI = todayFoodAI.reduce((s, r) => s + (Number(r.volume) || 0), 0);
+        const sumAll = sumWater + sumFoodManual + sumFoodAI;
 
-        todayRecords.forEach((r) => {
-          const row = document.createElement("div");
-          row.className = "row";
+        elWaterTotal.textContent = `총합: ${sumWater} ml`;
+        renderList(elWaterListBody, todayWater, { kindText: false });
 
-          const c1 = document.createElement("div");
-          c1.textContent = r.timeLabel;
+        elSumWater.textContent = `${sumWater} ml`;
+        elSumFoodManual.textContent = `${sumFoodManual} ml`;
+        elSumFoodAI.textContent = `${sumFoodAI} ml`;
+        elSumAll.textContent = `${sumAll} ml`;
+        elAllCount.textContent = `${today.length}건`;
 
-          const c2 = document.createElement("div");
-          c2.textContent = r.type;
-
-          const c3 = document.createElement("div");
-          c3.className = "right";
-          c3.textContent = `${r.volume} ml`;
-
-          const c4 = document.createElement("button");
-          c4.className = "del-btn";
-          c4.textContent = "삭제";
-          c4.addEventListener("click", () => openModal(r.id));
-
-          row.appendChild(c1);
-          row.appendChild(c2);
-          row.appendChild(c3);
-          row.appendChild(c4);
-
-          elListBody.appendChild(row);
-        });
+        const todaySorted = [...today].sort((a, b) => (a.ts < b.ts ? 1 : -1));
+        renderList(elAllListBody, todaySorted, { kindText: true });
       }
 
       function init() {
-        // drink options
+        // options
         DRINK_TYPES.forEach((t) => {
           const opt = document.createElement("option");
           opt.value = t;
@@ -823,35 +567,29 @@
         // volume
         setVolume(100);
 
-        // data
+        // load
         records = loadRecords().map((r) => {
-          // v0 호환: kind가 없으면 물/음료로 간주
-          if (!r.kind) {
-            return { ...r, kind: "water" };
-          }
+          // 이전 호환 (kind 없으면 water)
+          if (!r.kind) return { ...r, kind: "water" };
           return r;
         });
-        foodRecords = loadFoodRecords();
 
-        // tab switching
-        document.querySelectorAll('.tab[data-tab]').forEach(tab => {
-          tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+        // tabs
+        elTabs.addEventListener("click", (e) => {
+          const tab = e.target.closest(".tab");
+          if (!tab) return;
+          if (tab.classList.contains("disabled")) return;
+          const next = tab.dataset.tab;
+          if (!next) return;
+          setActiveTab(next);
         });
 
-        // handlers
+        // water actions
         elMinus.addEventListener("click", () => {
           if (volume <= 10) return;
           setVolume(volume - 10);
         });
-
         elPlus.addEventListener("click", () => setVolume(volume + 10));
-
-        elFoodMinus.addEventListener("click", () => {
-          if (foodVolume <= 0) return;
-          setFoodVolume(foodVolume - 10);
-        });
-
-        elFoodPlus.addEventListener("click", () => setFoodVolume(foodVolume + 10));
 
         elAdd.addEventListener("click", () => {
           const now = new Date();
@@ -869,53 +607,6 @@
           render();
         });
 
-        elFoodAdd.addEventListener("click", () => {
-          const name = (elFoodName.value || "").trim();
-          if (!name) {
-            elFoodName.focus();
-            return;
-          }
-
-          const now = new Date();
-          const item = {
-            id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
-            ts: now.toISOString(),
-            dateKey: dateKeyLocal(now),
-            timeLabel: formatTime12h(now),
-            kind: "foodManual",
-            name: name,
-            volume: foodVolume,
-          };
-          records = [item, ...records];
-          saveRecords(records);
-
-          // UX: 입력 유지 피로감 줄이기
-          elFoodName.value = "";
-          elFoodName.focus();
-
-          render();
-        });
-
-        // food manual
-        document.getElementById('btnFoodAdd').addEventListener('click', () => {
-          const name = document.getElementById('foodName').value.trim();
-          const water = Number(document.getElementById('foodWater').value);
-          if (!name || !water) return alert('음식명과 수분량을 입력하세요');
-          const now = new Date();
-          foodRecords.unshift({
-            id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
-            ts: now.toISOString(),
-            dateKey: dateKeyLocal(now),
-            timeLabel: formatTime12h(now),
-            name,
-            water,
-          });
-          saveFoodRecords();
-          document.getElementById('foodName').value = '';
-          document.getElementById('foodWater').value = '';
-          alert('음식 기록이 추가되었습니다');
-        });
-
         // modal
         elModalOverlay.addEventListener("mousedown", (e) => {
           if (e.target === elModalOverlay) closeModal();
@@ -930,38 +621,8 @@
           render();
         });
 
-        // tabs
-        elTabs.addEventListener("click", (e) => {
-          const tab = e.target.closest(".tab");
-          if (!tab) return;
-          if (tab.classList.contains("disabled")) return;
-          const next = tab.dataset.tab;
-          if (!next) return;
-          setActiveTab(next);
-        });
-
-        // food volume
-        setFoodVolume(50);
-
-        // initial
+        // start
         setActiveTab("water");
-      });
-
-        // modal
-        elModalOverlay.addEventListener("mousedown", (e) => {
-          if (e.target === elModalOverlay) closeModal();
-        });
-        elModal.addEventListener("mousedown", (e) => e.stopPropagation());
-        elCancel.addEventListener("click", closeModal);
-        elConfirm.addEventListener("click", () => {
-          if (!deleteTargetId) return;
-          records = records.filter((r) => r.id !== deleteTargetId);
-          saveRecords(records);
-          closeModal();
-          render();
-        });
-
-        // initial render
         render();
       }
 
