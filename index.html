@@ -260,6 +260,20 @@
         white-space: nowrap;
       }
 
+      .badge-warn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 193, 7, 0.25);
+        background: rgba(255, 193, 7, 0.10);
+        color: rgba(255, 225, 140, 0.95);
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
       @media (max-width: 720px) {
         .form-grid { grid-template-columns: 1fr; }
         .list-header, .row { grid-template-columns: 92px 1fr 92px 76px; }
@@ -328,7 +342,7 @@
           <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
         </div>
 
-        <!-- 음식 수동 탭 -->
+        <!-- 음식 수동 탭 (C: DB 없으면 0ml로 기록 + 경고 표시) -->
         <div class="card" id="foodManualCard" data-panel="foodManual" style="display:none;">
           <div class="section-title-row">
             <div class="section-title">음식 수동 기록</div>
@@ -358,7 +372,9 @@
           </div>
 
           <button class="primary-btn" id="btnFoodAdd">기록 추가</button>
-          <div class="hint" id="foodHint">음식이름/중량을 입력하면 DB의 수분(g/100g)으로 추정합니다.</div>
+          <div class="hint" id="foodHint">
+            DB 매칭 실패 시에도 기록은 추가되며, 수분은 0ml로 저장되고 “데이터없음” 경고가 표시됩니다.
+          </div>
 
           <div class="divider"></div>
 
@@ -377,7 +393,7 @@
             <div id="foodManualListBody"></div>
           </div>
 
-          <div class="hint">DB에 없는 음식은 추가를 막습니다(오입력 방지). 필요하면 “기타/직접입력” 예외도 추가 가능합니다.</div>
+          <div class="hint">삭제는 전체 공통 모달을 사용합니다.</div>
         </div>
 
         <!-- 오늘요약 탭 -->
@@ -423,9 +439,8 @@
           </div>
 
           <div class="hint">
-            기록은 records 1개 배열에 통합 저장합니다.
-            (물/음료: kind="water" / 음식수동: kind="foodManual" / 음식AI: kind="foodAI")
-            오늘요약은 오늘 기록의 kind별 합계 + 총합을 자동 계산합니다.
+            records 1개 배열에 통합 저장합니다.
+            (water / foodManual / foodAI)
           </div>
         </div>
       </div>
@@ -445,10 +460,9 @@
 
     <script>
       // ==========================================================
-      // 안정 버전 + 음식수동 추가(단일 init)
-      //  - 물/음료, 오늘요약 동작 유지
-      //  - 음식수동은 food_db.json을 로드해 수분(ml)을 추정
-      //  - records 1개 배열에 통합 저장 → 오늘요약 자동 합산
+      // 안정 버전 + 음식수동(C옵션)
+      //  - DB 매칭 실패해도 기록 추가 허용
+      //  - volume=0, hasData=false 저장 → 리스트/오늘요약에 반영
       // ==========================================================
 
       const STORAGE_KEY = "hydration_html_records_v1_stable";
@@ -570,7 +584,10 @@
 
       function kindLabel(r) {
         if (r.kind === "water") return `물/음료 · ${r.type}`;
-        if (r.kind === "foodManual") return `음식수동 · ${r.name || "-"}`;
+        if (r.kind === "foodManual") {
+          const suffix = r.hasData === false ? " (데이터없음)" : "";
+          return `음식수동 · ${r.name || "-"}${suffix}`;
+        }
         if (r.kind === "foodAI") return `음식AI · ${r.name || "-"}`;
         return r.kind || "-";
       }
@@ -594,7 +611,28 @@
           c1.textContent = r.timeLabel;
 
           const c2 = document.createElement("div");
-          c2.textContent = options.kindText ? kindLabel(r) : (r.type || r.name || "-");
+          if (options.kindText) {
+            c2.textContent = kindLabel(r);
+          } else {
+            if (r.kind === "foodManual" && r.hasData === false) {
+              const wrap = document.createElement("div");
+              wrap.style.display = "flex";
+              wrap.style.gap = "10px";
+              wrap.style.alignItems = "center";
+
+              const name = document.createElement("div");
+              name.textContent = r.name || "-";
+
+              const badge = document.createElement("span");
+              badge.className = "badge-warn";
+              badge.textContent = "데이터없음";
+
+              wrap.append(name, badge);
+              c2.appendChild(wrap);
+            } else {
+              c2.textContent = r.type || r.name || "-";
+            }
+          }
 
           const c3 = document.createElement("div");
           c3.className = "right";
@@ -653,26 +691,21 @@
         return text.charCodeAt(0) === 65279 ? text.slice(1) : text;
       }
 
-      function isKeepChar(ch) {
-        const code = ch.charCodeAt(0);
-        // 0-9
-        if (code >= 48 && code <= 57) return true;
-        // a-z
-        if (code >= 97 && code <= 122) return true;
-        // 가-힣
-        if (code >= 44032 && code <= 55203) return true;
-        return false;
-      }
-
       function normalizeFoodName(s) {
+        // ⚠️ 중요: 탭/개행/캐리지리턴은 반드시 "\\t" "\\n" "\\r" 처럼 이스케이프 문자열로 비교해야 함
+        // (실제 제어문자가 코드에 들어가면 "Invalid or unexpected token"로 파싱이 깨집니다.)
         const raw = (s || "").toString().trim().toLowerCase();
         let out = "";
         for (let i = 0; i < raw.length; i++) {
           const ch = raw[i];
-          // ✅ 중요: 탭/개행/캐리지리턴은 "\t" "\n" "\r" 처럼 이스케이프 문자열로 비교해야 합니다.
-          // (원래 코드에 실제 제어문자가 들어가면 "Invalid or unexpected token"이 납니다.)
           if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") continue;
-          if (isKeepChar(ch)) out += ch;
+
+          const code = ch.charCodeAt(0);
+          const isNum = code >= 48 && code <= 57; // 0-9
+          const isAZ = code >= 97 && code <= 122; // a-z
+          const isHangul = code >= 44032 && code <= 55203; // 가-힣
+
+          if (isNum || isAZ || isHangul) out += ch;
         }
         return out;
       }
@@ -684,8 +717,8 @@
         return Number.isFinite(n) ? n : null;
       }
 
-      function setFoodPreview(moisturePer100, estimatedMl) {
-        elFoodMoistureBox.textContent = moisturePer100 == null ? "데이터 없음" : String(moisturePer100);
+      function setFoodPreview(moisturePer100, estimatedMl, hasData) {
+        elFoodMoistureBox.textContent = hasData ? String(moisturePer100) : "데이터 없음";
         elFoodEstimatedBox.textContent = String(estimatedMl || 0);
       }
 
@@ -693,30 +726,32 @@
         const w = Math.max(0, Number(weightG) || 0);
         const m = Number(moisturePer100);
         if (!Number.isFinite(m)) return 0;
-        // g ≈ ml
         return Math.round((w * m) / 100);
       }
 
       function lookupMoisture(name) {
         if (!foodDbIndex) return null;
+
         const q = normalizeFoodName(name);
         if (!q) return null;
 
-        if (foodDbIndex.has(q)) return { moisture: foodDbIndex.get(q), matched: "exact" };
-
-        // 보조: 부분일치(오탐 방지용 최소 길이)
-        if (q.length >= 2) {
-          let best = null;
-          for (const [k, v] of foodDbIndex.entries()) {
-            const hit = k.indexOf(q) >= 0 || q.indexOf(k) >= 0;
-            if (!hit) continue;
-            const score = Math.abs(k.length - q.length);
-            if (!best || score < best.score) best = { moisture: v, score: score, matched: "partial" };
-          }
-          if (best) return best;
+        // 1) 완전 일치
+        if (foodDbIndex.has(q)) {
+          return { moisture: foodDbIndex.get(q), matched: "exact" };
         }
 
-        return null;
+        // 2) 포함 관계 매칭 ("양배추" → "흰색양배추")
+        let best = null;
+        for (const [k, v] of foodDbIndex.entries()) {
+          if (k.includes(q) || q.includes(k)) {
+            const score = Math.abs(k.length - q.length);
+            if (!best || score < best.score) {
+              best = { moisture: v, score, matched: "partial" };
+            }
+          }
+        }
+
+        return best;
       }
 
       function refreshFoodEstimation() {
@@ -724,17 +759,17 @@
         const weight = Number(elFoodWeight.value) || 0;
 
         if (!name || !foodDbLoaded) {
-          setFoodPreview(null, 0);
+          setFoodPreview(null, 0, false);
           return;
         }
 
         const hit = lookupMoisture(name);
         if (!hit) {
-          setFoodPreview(null, 0);
+          setFoodPreview(null, 0, false);
           return;
         }
 
-        setFoodPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture));
+        setFoodPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
       }
 
       async function loadFoodDb() {
@@ -756,7 +791,6 @@
             const key = normalizeFoodName(name);
             if (!key) continue;
 
-            // 중복은 첫 값 유지
             if (!idx.has(key)) {
               idx.set(key, moisture);
               count += 1;
@@ -771,8 +805,8 @@
           foodDbIndex = new Map();
           foodDbLoaded = false;
           setFoodDbStatus("식품DB: 로드 실패");
-          elFoodHint.textContent = "food_db.json을 찾지 못했습니다. index.html과 같은 폴더에 업로드했는지 확인하세요.";
-          setFoodPreview(null, 0);
+          elFoodHint.textContent = "food_db.json을 찾지 못했습니다. 그래도 기록은 추가되며(0ml), 데이터없음으로 표시됩니다.";
+          setFoodPreview(null, 0, false);
         }
       }
 
@@ -782,20 +816,29 @@
       }
 
       function runSelfTests() {
-        // normalizeFoodName: 공백/탭/개행 제거 + 한글/영문/숫자만 남김
-        assert(normalizeFoodName("  김치\n찌개 ") === "김치찌개", "normalizeFoodName should remove whitespace");
-        assert(normalizeFoodName("ABC-123") === "abc123", "normalizeFoodName should keep a-z0-9 only");
+        // 공백/탭/개행 제거 테스트
+        assert(normalizeFoodName("  김치\n찌개 ") === "김치찌개", "normalizeFoodName remove newline");
+        assert(normalizeFoodName("김치\t찌개") === "김치찌개", "normalizeFoodName remove tab");
+        assert(normalizeFoodName("김치\r찌개") === "김치찌개", "normalizeFoodName remove CR");
 
-        // computeEstimatedMl
+        // 특수문자 제거 + 소문자화
+        assert(normalizeFoodName("ABC-123") === "abc123", "normalizeFoodName keeps a-z0-9 only");
+
+        // 수분 계산
         assert(computeEstimatedMl(100, 90) === 90, "computeEstimatedMl basic");
         assert(computeEstimatedMl(0, 90) === 0, "computeEstimatedMl zero weight");
 
-        // toNumberMaybe
+        // 숫자 파싱
         assert(toNumberMaybe("1,234.5") === 1234.5, "toNumberMaybe comma");
+
+        // 부분매칭 스모크 테스트
+        const tmp = new Map();
+        tmp.set(normalizeFoodName("흰색 양배추"), 91.0);
+        foodDbIndex = tmp;
+        assert(lookupMoisture("양배추") != null, "lookupMoisture partial contains should match");
       }
 
       function init() {
-        // tests (개발자도구 Console에서만 확인)
         try { runSelfTests(); } catch (e) { console.error(e); }
 
         // drink options
@@ -812,7 +855,6 @@
 
         // load
         records = loadRecords().map((r) => {
-          // 이전 호환 (kind 없으면 water)
           if (!r.kind) return { ...r, kind: "water" };
           return r;
         });
@@ -857,20 +899,22 @@
         elFoodAdd.addEventListener("click", () => {
           const name = String(elFoodName.value || "").trim();
           const weight = Number(elFoodWeight.value) || 0;
-
           if (!name) { elFoodName.focus(); return; }
-          if (!foodDbLoaded) {
-            elFoodHint.textContent = "식품DB가 로드되지 않아 기록할 수 없습니다. food_db.json 업로드를 확인하세요.";
-            return;
+
+          let hasData = false;
+          let moisture = null;
+          let estimated = 0;
+
+          if (foodDbLoaded) {
+            const hit = lookupMoisture(name);
+            if (hit) {
+              hasData = true;
+              moisture = hit.moisture;
+              estimated = computeEstimatedMl(weight, moisture);
+            }
           }
 
-          const hit = lookupMoisture(name);
-          if (!hit) {
-            elFoodHint.textContent = "해당 음식의 수분함량 데이터를 찾지 못했습니다. (표기/띄어쓰기/쉼표 포함 이름 등으로 바꿔서 다시 입력해보세요)";
-            return;
-          }
-
-          const estimated = computeEstimatedMl(weight, hit.moisture);
+          // C옵션: 매칭 실패/DB 실패여도 기록은 추가
           const now = new Date();
           const item = {
             id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
@@ -880,20 +924,24 @@
             kind: "foodManual",
             name: name,
             weightG: Math.max(0, Math.round(weight)),
-            moisturePer100: hit.moisture,
+            moisturePer100: hasData ? moisture : null,
+            hasData: hasData,
             volume: estimated,
           };
 
           records = [item, ...records];
           saveRecords(records);
 
-          // UX
-          elFoodHint.textContent = "음식이름/중량을 입력하면 DB의 수분(g/100g)으로 추정합니다.";
+          if (!hasData) {
+            elFoodHint.textContent = "⚠️ DB 매칭 실패: 0ml로 저장했습니다. (데이터없음 표시)";
+          } else {
+            elFoodHint.textContent = "음식이름/중량을 입력하면 DB의 수분(g/100g)으로 추정합니다.";
+          }
+
           elFoodName.value = "";
           elFoodWeight.value = "100";
           refreshFoodEstimation();
           elFoodName.focus();
-
           render();
         });
 
