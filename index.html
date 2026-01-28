@@ -250,6 +250,16 @@
         background: rgba(255, 96, 96, 0.12);
       }
 
+      .status {
+        font-size: 12px;
+        color: rgba(231, 234, 243, 0.75);
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(255, 255, 255, 0.04);
+        white-space: nowrap;
+      }
+
       @media (max-width: 720px) {
         .form-grid { grid-template-columns: 1fr; }
         .list-header, .row { grid-template-columns: 92px 1fr 92px 76px; }
@@ -268,7 +278,7 @@
 
         <div class="tabs" id="tabs">
           <div class="tab active" data-tab="water">💧 물/음료</div>
-          <div class="tab disabled" title="준비중">✍️ 음식 수동</div>
+          <div class="tab" data-tab="foodManual">✍️ 음식 수동</div>
           <div class="tab disabled" title="준비중">🤖 음식 AI</div>
           <div class="tab" data-tab="today">📌 오늘요약</div>
           <div class="tab disabled" title="준비중">🗓️ 월별요약</div>
@@ -316,6 +326,58 @@
           </div>
 
           <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
+        </div>
+
+        <!-- 음식 수동 탭 -->
+        <div class="card" id="foodManualCard" data-panel="foodManual" style="display:none;">
+          <div class="section-title-row">
+            <div class="section-title">음식 수동 기록</div>
+            <div class="status" id="foodDbStatus">식품DB: 로딩중</div>
+          </div>
+
+          <div class="form-grid">
+            <div>
+              <div class="label">음식 이름</div>
+              <input id="foodName" type="text" placeholder="예: 바나나, 사과, 김치찌개" />
+            </div>
+            <div>
+              <div class="label">음식 중량(g)</div>
+              <input id="foodWeight" type="number" inputmode="numeric" min="0" step="1" value="100" />
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-top:10px;">
+            <div>
+              <div class="label">수분(g/100g)</div>
+              <div class="volume-box" id="foodMoistureBox">-</div>
+            </div>
+            <div>
+              <div class="label">추정 수분(ml)</div>
+              <div class="volume-box" id="foodEstimatedBox">0</div>
+            </div>
+          </div>
+
+          <button class="primary-btn" id="btnFoodAdd">기록 추가</button>
+          <div class="hint" id="foodHint">음식이름/중량을 입력하면 DB의 수분(g/100g)으로 추정합니다.</div>
+
+          <div class="divider"></div>
+
+          <div class="records-header">
+            <div class="section-title">오늘 기록 — 음식 수동</div>
+            <div class="pill" id="foodManualTotalPill">총합: 0 ml</div>
+          </div>
+
+          <div class="list-wrap">
+            <div class="list-header">
+              <div>시간</div>
+              <div>메뉴</div>
+              <div class="right">수분</div>
+              <div class="right">삭제</div>
+            </div>
+            <div id="foodManualListBody"></div>
+          </div>
+
+          <div class="hint">DB에 없는 음식은 추가를 막습니다(오입력 방지). 필요하면 “기타/직접입력” 예외도 추가 가능합니다.</div>
         </div>
 
         <!-- 오늘요약 탭 -->
@@ -383,29 +445,43 @@
 
     <script>
       // ==========================================================
-      // 안정(원복) 버전
-      //  - HTML/JS 중복 제거(단일 init)
-      //  - records 1개 배열에 통합 저장
-      //  - 구동 탭: 물/음료 + 오늘요약
+      // 안정 버전 + 음식수동 추가(단일 init)
+      //  - 물/음료, 오늘요약 동작 유지
+      //  - 음식수동은 food_db.json을 로드해 수분(ml)을 추정
+      //  - records 1개 배열에 통합 저장 → 오늘요약 자동 합산
       // ==========================================================
 
       const STORAGE_KEY = "hydration_html_records_v1_stable";
       const DRINK_TYPES = ["물", "우유", "주스", "탄산", "유제품", "이온음료", "기타"];
+      const FOOD_DB_FILE = "./food_db.json";
 
       // DOM
       const elTabs = document.getElementById("tabs");
       const elWaterCard = document.getElementById("waterCard");
+      const elFoodManualCard = document.getElementById("foodManualCard");
       const elTodayCard = document.getElementById("todayCard");
 
+      // water
       const elDrinkType = document.getElementById("drinkType");
       const elVolumeBox = document.getElementById("volumeBox");
       const elMinus = document.getElementById("btnMinus");
       const elPlus = document.getElementById("btnPlus");
       const elAdd = document.getElementById("btnAdd");
-
       const elWaterListBody = document.getElementById("waterListBody");
       const elWaterTotal = document.getElementById("waterTotalPill");
 
+      // food manual
+      const elFoodDbStatus = document.getElementById("foodDbStatus");
+      const elFoodName = document.getElementById("foodName");
+      const elFoodWeight = document.getElementById("foodWeight");
+      const elFoodMoistureBox = document.getElementById("foodMoistureBox");
+      const elFoodEstimatedBox = document.getElementById("foodEstimatedBox");
+      const elFoodAdd = document.getElementById("btnFoodAdd");
+      const elFoodHint = document.getElementById("foodHint");
+      const elFoodManualListBody = document.getElementById("foodManualListBody");
+      const elFoodManualTotal = document.getElementById("foodManualTotalPill");
+
+      // today
       const elSumWater = document.getElementById("sumWater");
       const elSumFoodManual = document.getElementById("sumFoodManual");
       const elSumFoodAI = document.getElementById("sumFoodAI");
@@ -413,6 +489,7 @@
       const elAllCount = document.getElementById("allCountPill");
       const elAllListBody = document.getElementById("allListBody");
 
+      // modal
       const elModalOverlay = document.getElementById("modalOverlay");
       const elModal = document.getElementById("modal");
       const elCancel = document.getElementById("btnCancel");
@@ -423,6 +500,10 @@
       let volume = 100;
       let records = [];
       let deleteTargetId = null;
+
+      // Food DB
+      let foodDbIndex = null; // Map(normalizedName -> moisturePer100)
+      let foodDbLoaded = false;
 
       function pad2(n) { return String(n).padStart(2, "0"); }
 
@@ -470,6 +551,7 @@
           t.classList.toggle("active", t.dataset.tab === next);
         });
         elWaterCard.style.display = next === "water" ? "block" : "none";
+        elFoodManualCard.style.display = next === "foodManual" ? "block" : "none";
         elTodayCard.style.display = next === "today" ? "block" : "none";
         render();
       }
@@ -541,9 +623,15 @@
         const sumFoodAI = todayFoodAI.reduce((s, r) => s + (Number(r.volume) || 0), 0);
         const sumAll = sumWater + sumFoodManual + sumFoodAI;
 
+        // water
         elWaterTotal.textContent = `총합: ${sumWater} ml`;
         renderList(elWaterListBody, todayWater, { kindText: false });
 
+        // food manual
+        elFoodManualTotal.textContent = `총합: ${sumFoodManual} ml`;
+        renderList(elFoodManualListBody, todayFoodManual, { kindText: false });
+
+        // today
         elSumWater.textContent = `${sumWater} ml`;
         elSumFoodManual.textContent = `${sumFoodManual} ml`;
         elSumFoodAI.textContent = `${sumFoodAI} ml`;
@@ -554,8 +642,163 @@
         renderList(elAllListBody, todaySorted, { kindText: true });
       }
 
+      // ---------- Food DB ----------
+
+      function setFoodDbStatus(text) {
+        elFoodDbStatus.textContent = text;
+      }
+
+      function stripBomIfNeeded(text) {
+        if (!text) return "";
+        return text.charCodeAt(0) === 65279 ? text.slice(1) : text;
+      }
+
+      function isKeepChar(ch) {
+        const code = ch.charCodeAt(0);
+        // 0-9
+        if (code >= 48 && code <= 57) return true;
+        // a-z
+        if (code >= 97 && code <= 122) return true;
+        // 가-힣
+        if (code >= 44032 && code <= 55203) return true;
+        return false;
+      }
+
+      function normalizeFoodName(s) {
+        const raw = (s || "").toString().trim().toLowerCase();
+        let out = "";
+        for (let i = 0; i < raw.length; i++) {
+          const ch = raw[i];
+          // ✅ 중요: 탭/개행/캐리지리턴은 "\t" "\n" "\r" 처럼 이스케이프 문자열로 비교해야 합니다.
+          // (원래 코드에 실제 제어문자가 들어가면 "Invalid or unexpected token"이 납니다.)
+          if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") continue;
+          if (isKeepChar(ch)) out += ch;
+        }
+        return out;
+      }
+
+      function toNumberMaybe(v) {
+        if (v == null) return null;
+        const s = String(v).split(",").join("").trim();
+        const n = Number(s);
+        return Number.isFinite(n) ? n : null;
+      }
+
+      function setFoodPreview(moisturePer100, estimatedMl) {
+        elFoodMoistureBox.textContent = moisturePer100 == null ? "데이터 없음" : String(moisturePer100);
+        elFoodEstimatedBox.textContent = String(estimatedMl || 0);
+      }
+
+      function computeEstimatedMl(weightG, moisturePer100) {
+        const w = Math.max(0, Number(weightG) || 0);
+        const m = Number(moisturePer100);
+        if (!Number.isFinite(m)) return 0;
+        // g ≈ ml
+        return Math.round((w * m) / 100);
+      }
+
+      function lookupMoisture(name) {
+        if (!foodDbIndex) return null;
+        const q = normalizeFoodName(name);
+        if (!q) return null;
+
+        if (foodDbIndex.has(q)) return { moisture: foodDbIndex.get(q), matched: "exact" };
+
+        // 보조: 부분일치(오탐 방지용 최소 길이)
+        if (q.length >= 2) {
+          let best = null;
+          for (const [k, v] of foodDbIndex.entries()) {
+            const hit = k.indexOf(q) >= 0 || q.indexOf(k) >= 0;
+            if (!hit) continue;
+            const score = Math.abs(k.length - q.length);
+            if (!best || score < best.score) best = { moisture: v, score: score, matched: "partial" };
+          }
+          if (best) return best;
+        }
+
+        return null;
+      }
+
+      function refreshFoodEstimation() {
+        const name = String(elFoodName.value || "").trim();
+        const weight = Number(elFoodWeight.value) || 0;
+
+        if (!name || !foodDbLoaded) {
+          setFoodPreview(null, 0);
+          return;
+        }
+
+        const hit = lookupMoisture(name);
+        if (!hit) {
+          setFoodPreview(null, 0);
+          return;
+        }
+
+        setFoodPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture));
+      }
+
+      async function loadFoodDb() {
+        try {
+          setFoodDbStatus("식품DB: 로딩중");
+          const res = await fetch(FOOD_DB_FILE, { cache: "no-store" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const text = stripBomIfNeeded(await res.text());
+          const arr = JSON.parse(text);
+          if (!Array.isArray(arr)) throw new Error("JSON is not an array");
+
+          const idx = new Map();
+          let count = 0;
+          for (const obj of arr) {
+            const name = obj && obj["식품명"] ? String(obj["식품명"]).trim() : "";
+            const moisture = toNumberMaybe(obj ? obj["수분(g)"] : null);
+            if (!name || moisture == null) continue;
+
+            const key = normalizeFoodName(name);
+            if (!key) continue;
+
+            // 중복은 첫 값 유지
+            if (!idx.has(key)) {
+              idx.set(key, moisture);
+              count += 1;
+            }
+          }
+
+          foodDbIndex = idx;
+          foodDbLoaded = true;
+          setFoodDbStatus("식품DB: " + count.toLocaleString() + "개 로드");
+          refreshFoodEstimation();
+        } catch (e) {
+          foodDbIndex = new Map();
+          foodDbLoaded = false;
+          setFoodDbStatus("식품DB: 로드 실패");
+          elFoodHint.textContent = "food_db.json을 찾지 못했습니다. index.html과 같은 폴더에 업로드했는지 확인하세요.";
+          setFoodPreview(null, 0);
+        }
+      }
+
+      // ---------- Self tests (console) ----------
+      function assert(cond, msg) {
+        if (!cond) throw new Error("[TEST FAIL] " + msg);
+      }
+
+      function runSelfTests() {
+        // normalizeFoodName: 공백/탭/개행 제거 + 한글/영문/숫자만 남김
+        assert(normalizeFoodName("  김치\n찌개 ") === "김치찌개", "normalizeFoodName should remove whitespace");
+        assert(normalizeFoodName("ABC-123") === "abc123", "normalizeFoodName should keep a-z0-9 only");
+
+        // computeEstimatedMl
+        assert(computeEstimatedMl(100, 90) === 90, "computeEstimatedMl basic");
+        assert(computeEstimatedMl(0, 90) === 0, "computeEstimatedMl zero weight");
+
+        // toNumberMaybe
+        assert(toNumberMaybe("1,234.5") === 1234.5, "toNumberMaybe comma");
+      }
+
       function init() {
-        // options
+        // tests (개발자도구 Console에서만 확인)
+        try { runSelfTests(); } catch (e) { console.error(e); }
+
+        // drink options
         DRINK_TYPES.forEach((t) => {
           const opt = document.createElement("option");
           opt.value = t;
@@ -584,7 +827,7 @@
           setActiveTab(next);
         });
 
-        // water actions
+        // water
         elMinus.addEventListener("click", () => {
           if (volume <= 10) return;
           setVolume(volume - 10);
@@ -607,6 +850,53 @@
           render();
         });
 
+        // food manual
+        elFoodName.addEventListener("input", refreshFoodEstimation);
+        elFoodWeight.addEventListener("input", refreshFoodEstimation);
+
+        elFoodAdd.addEventListener("click", () => {
+          const name = String(elFoodName.value || "").trim();
+          const weight = Number(elFoodWeight.value) || 0;
+
+          if (!name) { elFoodName.focus(); return; }
+          if (!foodDbLoaded) {
+            elFoodHint.textContent = "식품DB가 로드되지 않아 기록할 수 없습니다. food_db.json 업로드를 확인하세요.";
+            return;
+          }
+
+          const hit = lookupMoisture(name);
+          if (!hit) {
+            elFoodHint.textContent = "해당 음식의 수분함량 데이터를 찾지 못했습니다. (표기/띄어쓰기/쉼표 포함 이름 등으로 바꿔서 다시 입력해보세요)";
+            return;
+          }
+
+          const estimated = computeEstimatedMl(weight, hit.moisture);
+          const now = new Date();
+          const item = {
+            id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
+            ts: now.toISOString(),
+            dateKey: dateKeyLocal(now),
+            timeLabel: formatTime12h(now),
+            kind: "foodManual",
+            name: name,
+            weightG: Math.max(0, Math.round(weight)),
+            moisturePer100: hit.moisture,
+            volume: estimated,
+          };
+
+          records = [item, ...records];
+          saveRecords(records);
+
+          // UX
+          elFoodHint.textContent = "음식이름/중량을 입력하면 DB의 수분(g/100g)으로 추정합니다.";
+          elFoodName.value = "";
+          elFoodWeight.value = "100";
+          refreshFoodEstimation();
+          elFoodName.focus();
+
+          render();
+        });
+
         // modal
         elModalOverlay.addEventListener("mousedown", (e) => {
           if (e.target === elModalOverlay) closeModal();
@@ -624,6 +914,9 @@
         // start
         setActiveTab("water");
         render();
+
+        // load food db
+        loadFoodDb();
       }
 
       init();
