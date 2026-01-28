@@ -320,7 +320,7 @@
           </div>
 
           <button class="primary-btn" id="btnAdd">기록 추가</button>
-          <div class="hint">MVP에서는 음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
+          <div class="hint">음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
 
           <div class="divider"></div>
 
@@ -356,7 +356,12 @@
             </div>
             <div>
               <div class="label">음식 중량(g)</div>
-              <input id="foodWeight" type="number" inputmode="numeric" min="0" step="1" value="100" />
+              <div class="volume-row">
+                <div class="btn-icon" id="foodBtnMinus" aria-label="중량 감소">−</div>
+                <div class="volume-box" id="foodWeightBox">100</div>
+                <div class="btn-icon" id="foodBtnPlus" aria-label="중량 증가">+</div>
+              </div>
+              <input id="foodWeight" type="number" inputmode="numeric" min="0" step="10" value="100" style="display:none;" />
             </div>
           </div>
 
@@ -393,7 +398,7 @@
             <div id="foodManualListBody"></div>
           </div>
 
-          <div class="hint">삭제는 전체 공통 모달을 사용합니다.</div>
+          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
         </div>
 
         <!-- 오늘요약 탭 -->
@@ -438,11 +443,7 @@
             <div id="allListBody"></div>
           </div>
 
-          <div class="hint">
-            records 1개 배열에 통합 저장합니다.
-            (water / foodManual / foodAI)
-          </div>
-        </div>
+          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>        </div>
       </div>
     </div>
 
@@ -488,6 +489,9 @@
       const elFoodDbStatus = document.getElementById("foodDbStatus");
       const elFoodName = document.getElementById("foodName");
       const elFoodWeight = document.getElementById("foodWeight");
+      const elFoodWeightBox = document.getElementById("foodWeightBox");
+      const elFoodMinus = document.getElementById("foodBtnMinus");
+      const elFoodPlus = document.getElementById("foodBtnPlus");
       const elFoodMoistureBox = document.getElementById("foodMoistureBox");
       const elFoodEstimatedBox = document.getElementById("foodEstimatedBox");
       const elFoodAdd = document.getElementById("btnFoodAdd");
@@ -514,6 +518,9 @@
       let volume = 100;
       let records = [];
       let deleteTargetId = null;
+
+      // food manual weight state (g)
+      let foodWeightG = 100;
 
       // Food DB
       let foodDbIndex = null; // Map(normalizedName -> moisturePer100)
@@ -556,6 +563,18 @@
         elVolumeBox.textContent = String(volume);
         if (volume <= 10) elMinus.classList.add("disabled");
         else elMinus.classList.remove("disabled");
+      }
+
+      function setFoodWeight(next) {
+        // 음식 중량은 0g 이상, 10g 단위
+        const n = Number(next);
+        const snapped = Number.isFinite(n) ? Math.round(n / 10) * 10 : 100;
+        foodWeightG = Math.max(0, snapped);
+        elFoodWeightBox.textContent = String(foodWeightG);
+        elFoodWeight.value = String(foodWeightG); // 내부 계산용
+
+        if (foodWeightG <= 0) elFoodMinus.classList.add("disabled");
+        else elFoodMinus.classList.remove("disabled");
       }
 
       function setActiveTab(next) {
@@ -756,7 +775,7 @@
 
       function refreshFoodEstimation() {
         const name = String(elFoodName.value || "").trim();
-        const weight = Number(elFoodWeight.value) || 0;
+        const weight = Number(foodWeightG) || 0;
 
         if (!name || !foodDbLoaded) {
           setFoodPreview(null, 0, false);
@@ -818,7 +837,8 @@
       function runSelfTests() {
         // 공백/탭/개행 제거 테스트
         assert(normalizeFoodName("  김치\n찌개 ") === "김치찌개", "normalizeFoodName remove newline");
-        assert(normalizeFoodName("김치\t찌개") === "김치찌개", "normalizeFoodName remove tab");
+        assert(normalizeFoodName("김치	찌개") === "김치찌개", "normalizeFoodName remove tab");
+        assert((() => { setFoodWeight(105); return foodWeightG === 110; })(), "setFoodWeight snaps to 10g");
         assert(normalizeFoodName("김치\r찌개") === "김치찌개", "normalizeFoodName remove CR");
 
         // 특수문자 제거 + 소문자화
@@ -852,6 +872,7 @@
 
         // volume
         setVolume(100);
+        setFoodWeight(100);
 
         // load
         records = loadRecords().map((r) => {
@@ -894,11 +915,21 @@
 
         // food manual
         elFoodName.addEventListener("input", refreshFoodEstimation);
-        elFoodWeight.addEventListener("input", refreshFoodEstimation);
+
+        // 음식 중량 +/- (10g 단위)
+        elFoodMinus.addEventListener("click", () => {
+          if (foodWeightG <= 0) return;
+          setFoodWeight(foodWeightG - 10);
+          refreshFoodEstimation();
+        });
+        elFoodPlus.addEventListener("click", () => {
+          setFoodWeight(foodWeightG + 10);
+          refreshFoodEstimation();
+        });
 
         elFoodAdd.addEventListener("click", () => {
           const name = String(elFoodName.value || "").trim();
-          const weight = Number(elFoodWeight.value) || 0;
+          const weight = Number(foodWeightG) || 0;
           if (!name) { elFoodName.focus(); return; }
 
           let hasData = false;
@@ -939,7 +970,7 @@
           }
 
           elFoodName.value = "";
-          elFoodWeight.value = "100";
+          setFoodWeight(100);
           refreshFoodEstimation();
           elFoodName.focus();
           render();
