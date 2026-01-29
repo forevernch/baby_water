@@ -584,6 +584,11 @@
       const elFoodAIAnalyze = document.getElementById("btnFoodAIAnalyze");
       const elFoodAISave = document.getElementById("btnFoodAISave");
 
+// food AI result
+const elFoodAIMoisture = document.getElementById("aiMoistureBox");
+const elFoodAIEstimated = document.getElementById("aiEstimatedBox");
+
+
      // food AI list
      const elFoodAIListBody = document.getElementById("foodAIListBody");
      const elFoodAITotal = document.getElementById("foodAITotalPill");
@@ -674,9 +679,16 @@
         else elFoodAIMinus.classList.remove("disabled");
       }
 
-      function setFoodAIPreview(moisturePer100, estimatedMl, hasData) {
-        elFoodAIEstimated.textContent = String(estimatedMl || 0);
-      }
+function setFoodAIPreview(moisturePer100, estimatedMl, hasData) {
+  if (hasData) {
+    elFoodAIMoisture.textContent = String(moisturePer100);
+    elFoodAIEstimated.textContent = String(estimatedMl || 0);
+  } else {
+    elFoodAIMoisture.textContent = "데이터 없음";
+    elFoodAIEstimated.textContent = "0";
+  }
+}
+
 
       function refreshFoodAIEstimation() {
         const name = String(elFoodAIName.value || "").trim();
