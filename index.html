@@ -447,7 +447,27 @@
           </div>
 
           <button class="primary-btn" id="btnFoodAISave">기록 추가</button>
-          <div class="hint">현재는 Mock AI입니다. 분석 시 예시 결과가 표시됩니다.</div>
+  <div class="divider"></div>
+
+<div class="records-header">
+  <div class="section-title">오늘 기록 — 음식 AI</div>
+  <div class="pill" id="foodAITotalPill">총합: 0 ml</div>
+</div>
+
+<div class="list-wrap">
+  <div class="list-header">
+    <div>시간</div>
+    <div>메뉴</div>
+    <div class="right">수분</div>
+    <div class="right">삭제</div>
+  </div>
+  <div id="foodAIListBody"></div>
+</div>
+
+<div class="hint">삭제는 공통 모달을 사용합니다.</div>
+      
+
+  <div class="hint">현재는 Mock AI입니다. 분석 시 예시 결과가 표시됩니다.</div>
         </div>
 
         <!-- 오늘요약 탭 -->
@@ -563,6 +583,10 @@
       const elFoodAIEstimated = document.getElementById("foodAIEstimated");
       const elFoodAIAnalyze = document.getElementById("btnFoodAIAnalyze");
       const elFoodAISave = document.getElementById("btnFoodAISave");
+
+     // food AI list
+     const elFoodAIListBody = document.getElementById("foodAIListBody");
+     const elFoodAITotal = document.getElementById("foodAITotalPill");
 
       // today
       const elSumWater = document.getElementById("sumWater");
@@ -783,6 +807,11 @@
         // food manual
         elFoodManualTotal.textContent = `총합: ${sumFoodManual} ml`;
         renderList(elFoodManualListBody, todayFoodManual, { kindText: false });
+
+        // food AI
+        elFoodAITotal.textContent = `총합: ${sumFoodAI} ml`;
+        renderList(elFoodAIListBody, todayFoodAI, { kindText: false });
+
 
         // today
         elSumWater.textContent = `${sumWater} ml`;
