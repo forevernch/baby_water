@@ -438,13 +438,17 @@
             </div>
           </div>
 
-          <div class="form-grid" style="margin-top:10px;">
-            <div>
-              <div class="label">추정 수분(ml)</div>
-              <div class="volume-box" id="foodAIEstimated">0</div>
-            </div>
-            <div></div>
-          </div>
+<div class="form-grid" style="margin-top:10px;">
+  <div>
+    <div class="label">수분(g/100g)</div>
+    <div class="volume-box" id="foodAIMoistureBox">-</div>
+  </div>
+  <div>
+    <div class="label">추정 수분(ml)</div>
+    <div class="volume-box" id="foodAIEstimated">0</div>
+  </div>
+</div>
+
 
           <button class="primary-btn" id="btnFoodAISave">기록 추가</button>
   <div class="divider"></div>
@@ -583,10 +587,9 @@
       const elFoodAIEstimated = document.getElementById("foodAIEstimated");
       const elFoodAIAnalyze = document.getElementById("btnFoodAIAnalyze");
       const elFoodAISave = document.getElementById("btnFoodAISave");
+      const elFoodAIMoistureBox = document.getElementById("foodAIMoistureBox");
 
-// food AI result
-const elFoodAIMoisture = document.getElementById("aiMoistureBox");
-const elFoodAIEstimated = document.getElementById("aiEstimatedBox");
+
 
 
      // food AI list
@@ -681,13 +684,14 @@ const elFoodAIEstimated = document.getElementById("aiEstimatedBox");
 
 function setFoodAIPreview(moisturePer100, estimatedMl, hasData) {
   if (hasData) {
-    elFoodAIMoisture.textContent = String(moisturePer100);
+    if (elFoodAIMoistureBox) elFoodAIMoistureBox.textContent = String(moisturePer100);
     elFoodAIEstimated.textContent = String(estimatedMl || 0);
   } else {
-    elFoodAIMoisture.textContent = "데이터 없음";
+    if (elFoodAIMoistureBox) elFoodAIMoistureBox.textContent = "데이터 없음";
     elFoodAIEstimated.textContent = "0";
   }
 }
+
 
 
       function refreshFoodAIEstimation() {
