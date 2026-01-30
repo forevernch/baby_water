@@ -320,7 +320,7 @@
           </div>
 
           <button class="primary-btn" id="btnAdd">기록 추가</button>
-          <div class="hint">MVP에서는 음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
+          <div class="hint">음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
 
           <div class="divider"></div>
 
@@ -398,7 +398,7 @@
             <div id="foodManualListBody"></div>
           </div>
 
-          <div class="hint">삭제는 전체 공통 모달을 사용합니다.</div>
+          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
         </div>
 
         <!-- 음식 AI 탭 (Mock UI) -->
@@ -468,11 +468,9 @@
   <div id="foodAIListBody"></div>
 </div>
 
-<div class="hint">삭제는 공통 모달을 사용합니다.</div>
-      
-
-  <div class="hint">현재는 Mock AI입니다. 분석 시 예시 결과가 표시됩니다.</div>
+          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
         </div>
+      
 
         <!-- 오늘요약 탭 -->
         <div class="card" id="todayCard" data-panel="today" style="display:none;">
@@ -482,19 +480,19 @@
 
           <div class="summary-grid">
             <div class="summary-box">
-              <div class="summary-label">물/음료 합계</div>
+              <div class="summary-label">물/음료</div>
               <div class="summary-value" id="sumWater">0 ml</div>
             </div>
             <div class="summary-box">
-              <div class="summary-label">음식수동 합계</div>
+              <div class="summary-label">음식수동</div>
               <div class="summary-value" id="sumFoodManual">0 ml</div>
             </div>
             <div class="summary-box">
-              <div class="summary-label">음식AI 합계</div>
+              <div class="summary-label">음식AI</div>
               <div class="summary-value" id="sumFoodAI">0 ml</div>
             </div>
             <div class="summary-box">
-              <div class="summary-label">오늘 총합</div>
+              <div class="summary-label">오늘합계</div>
               <div class="summary-value" id="sumAll">0 ml</div>
             </div>
           </div>
@@ -516,10 +514,7 @@
             <div id="allListBody"></div>
           </div>
 
-          <div class="hint">
-            records 1개 배열에 통합 저장합니다.
-            (water / foodManual / foodAI)
-          </div>
+          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
         </div>
       </div>
     </div>
