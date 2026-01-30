@@ -976,27 +976,27 @@ function refreshFoodEstimation() {
         return Number.isFinite(n) ? n : null;
       }
 
-      function setFoodPreview(moisturePer100, estimatedMl, hasData) {
-        elFoodMoistureBox.textContent = hasData ? String(moisturePer100) : "데이터 없음";
-        elFoodEstimatedBox.textContent = String(estimatedMl || 0);
-      }
+   function setFoodPreview(moisturePer100, estimatedMl, hasData) {
+  elFoodMoistureBox.textContent = hasData ? String(moisturePer100) : "데이터 없음";
+  elFoodEstimatedBox.textContent = String(estimatedMl || 0);
+}
 
-      function computeEstimatedMl(weightG, moisturePer100) {
-        const w = Math.max(0, Number(weightG) || 0);
-        const m = Number(moisturePer100);
-        if (!Number.isFinite(m)) return 0;
-        return Math.round((w * m) / 100);
-      }
+function computeEstimatedMl(weightG, moisturePer100) {
+  const w = Math.max(0, Number(weightG) || 0);
+  const m = Number(moisturePer100);
+  if (!Number.isFinite(m)) return 0;
+  return Math.round((w * m) / 100);
+}
+
+// ===== Duplicate pick modal =====
 function openFoodPickModal(payload) {
   pendingFoodPick = payload;
 
-  // 안내 문구
   if (elFoodPickText) {
     elFoodPickText.textContent =
       `“${payload.nameRaw}”에 대해 DB 중복 항목이 ${payload.candidates.length}개 있습니다. 사용할 항목을 선택하세요.`;
   }
 
-  // 옵션 채우기
   elFoodPickSelect.innerHTML = "";
   payload.candidates.forEach((c, i) => {
     const opt = document.createElement("option");
@@ -1006,7 +1006,6 @@ function openFoodPickModal(payload) {
   });
   elFoodPickSelect.selectedIndex = 0;
 
-  // 표시
   elFoodPickOverlay.style.display = "grid";
   elFoodPickOverlay.setAttribute("aria-hidden", "false");
 }
@@ -1017,31 +1016,28 @@ function closeFoodPickModal() {
   elFoodPickOverlay.setAttribute("aria-hidden", "true");
 }
 
-
+// ===== Lookup (single or multi) =====
 function lookupMoisture(name) {
   if (!foodDbIndex) return null;
 
   const q = normalizeFoodName(name);
   if (!q) return null;
 
-  // 0) 캐시(사용자가 이미 선택한 값) 우선
+  // 0) user choice cache first
   if (foodChoiceCache.has(q)) {
     const cached = foodChoiceCache.get(q);
     return { kind: "single", moisture: cached.moisture, label: cached.label, matched: "cache" };
   }
 
-  // 1) 완전 일치
+  // 1) exact key
   if (foodDbIndex.has(q)) {
     const list = foodDbIndex.get(q) || [];
-    if (list.length <= 0) return null;
-    if (list.length === 1) {
-      return { kind: "single", moisture: list[0].moisture, label: list[0].label, matched: "exact" };
-    }
-    // 중복
-    return { kind: "multi", candidates: list, nameKey: q, matched: "exact" };
+    if (list.length === 1) return { kind: "single", moisture: list[0].moisture, label: list[0].label, matched: "exact" };
+    if (list.length > 1) return { kind: "multi", candidates: list, nameKey: q, matched: "exact" };
+    return null;
   }
 
-  // 2) 포함 관계 매칭 ("양배추" → "흰색양배추") : 가장 가까운 key 하나를 고르고, 그 key의 후보를 반환
+  // 2) partial by contains: pick closest key then return its list
   let bestKey = null;
   let bestScore = null;
 
@@ -1058,36 +1054,85 @@ function lookupMoisture(name) {
   if (!bestKey) return null;
 
   const list = foodDbIndex.get(bestKey) || [];
-  if (list.length <= 0) return null;
+  if (list.length === 1) return { kind: "single", moisture: list[0].moisture, label: list[0].label, matched: "partial" };
+  if (list.length > 1) return { kind: "multi", candidates: list, nameKey: bestKey, matched: "partial" };
+  return null;
+}
 
-  if (list.length === 1) {
-    return { kind: "single", moisture: list[0].moisture, label: list[0].label, matched: "partial" };
+// ===== Manual preview =====
+function refreshFoodEstimation() {
+  const name = String(elFoodName.value || "").trim();
+  const weight = Number(foodWeightG) || 0;
+
+  if (!name || !foodDbLoaded) {
+    setFoodPreview(null, 0, false);
+    return;
   }
-  return { kind: "multi", candidates: list, nameKey: bestKey, matched: "partial" };
+
+const hit = lookupMoisture(name);
+if (hit) {
+  if (hit.kind === "multi") {
+    openFoodPickModal({
+      ctx: "manual_save",
+      nameRaw: name,
+      nameKey: hit.nameKey,
+      weightG: weight,
+      candidates: hit.candidates,
+      onPicked: (entry) => {
+        foodChoiceCache.set(hit.nameKey, entry);
+        // 선택 후 다시 저장 버튼 흐름을 유도: 미리보기 갱신 + 안내문구
+        setFoodPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
+        elFoodHint.textContent = "✅ 중복 항목을 선택했습니다. 이제 [기록 추가]를 눌러 저장하세요.";
+      },
+    });
+    return; // ✅ 저장 중단
+  }
+
+  hasData = true;
+  moisture = hit.moisture;
+  estimated = computeEstimatedMl(weight, moisture);
 }
 
 
-        return best;
-      }
+  setFoodPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
+}
 
-      function refreshFoodEstimation() {
-        const name = String(elFoodName.value || "").trim();
-        const weight = Number(foodWeightG) || 0;
+// ===== AI preview =====
+function refreshFoodAIEstimation() {
+  const name = String(elFoodAIName.value || "").trim();
+  const weight = Number(foodAIWeightG) || 0;
 
-        if (!name || !foodDbLoaded) {
-          setFoodPreview(null, 0, false);
-          return;
-        }
+  if (!name || !foodDbLoaded) {
+    setFoodAIPreview(null, 0, false);
+    return;
+  }
 
-        const hit = lookupMoisture(name);
-        if (!hit) {
-          setFoodPreview(null, 0, false);
-          return;
-        }
+  const hit = lookupMoisture(name);
+  if (!hit) {
+    setFoodAIPreview(null, 0, false);
+    return;
+  }
 
-        setFoodPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
-      }
+  if (hit.kind === "multi") {
+    setFoodAIPreview(null, 0, false);
+    openFoodPickModal({
+      ctx: "ai",
+      nameRaw: name,
+      nameKey: hit.nameKey,
+      weightG: weight,
+      candidates: hit.candidates,
+      onPicked: (entry) => {
+        foodChoiceCache.set(hit.nameKey, entry);
+        setFoodAIPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
+      },
+    });
+    return;
+  }
 
+  setFoodAIPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
+}
+
+// ===== DB loader (keep duplicates) =====
 async function loadFoodDb() {
   try {
     setFoodDbStatus("식품DB: 로딩중");
@@ -1110,7 +1155,6 @@ async function loadFoodDb() {
       if (!key) continue;
 
       const entry = { label: name, moisture: moisture };
-
       if (!idx.has(key)) idx.set(key, []);
       idx.get(key).push(entry);
       rowCount += 1;
@@ -1120,7 +1164,6 @@ async function loadFoodDb() {
     foodDbLoaded = true;
     setFoodDbStatus(`식품DB: ${rowCount.toLocaleString()}행 로드 (중복 포함)`);
 
-    // 입력중이던 프리뷰 갱신
     refreshFoodEstimation();
     refreshFoodAIEstimation();
   } catch (e) {
@@ -1133,6 +1176,7 @@ async function loadFoodDb() {
     setFoodAIPreview(null, 0, false);
   }
 }
+
 
 
       // ---------- Self tests (console) ----------
@@ -1319,13 +1363,29 @@ async function loadFoodDb() {
           let estimated = 0;
 
           if (foodDbLoaded) {
-            const hit = lookupMoisture(name);
-            if (hit) {
-              hasData = true;
-              moisture = hit.moisture;
-              estimated = computeEstimatedMl(weight, moisture);
-            }
-          }
+  const hit = lookupMoisture(name);
+if (hit) {
+  if (hit.kind === "multi") {
+    openFoodPickModal({
+      ctx: "ai_save",
+      nameRaw: name,
+      nameKey: hit.nameKey,
+      weightG: weight,
+      candidates: hit.candidates,
+      onPicked: (entry) => {
+        foodChoiceCache.set(hit.nameKey, entry);
+        setFoodAIPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
+        // 저장은 사용자가 다시 누르게(UX 안정)
+      },
+    });
+    return; // ✅ 저장 중단
+  }
+
+  hasData = true;
+  moisture = hit.moisture;
+  estimated = computeEstimatedMl(weight, moisture);
+}
+
 
           // C옵션: 매칭 실패/DB 실패여도 기록은 추가
           const now = new Date();
