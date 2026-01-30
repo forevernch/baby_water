@@ -530,6 +530,30 @@
         </div>
       </div>
     </div>
+<!-- Food duplicate pick modal -->
+<div class="modal-overlay" id="foodPickOverlay" style="display:none" aria-hidden="true">
+  <div class="modal" id="foodPickModal" role="dialog" aria-modal="true">
+    <div class="modal-title">식품 DB 중복 항목 선택</div>
+    <div class="modal-text" id="foodPickText">
+      같은 이름으로 여러 DB 항목이 있습니다. 사용할 항목을 선택하세요.
+    </div>
+
+    <div style="margin-top:12px;">
+      <div class="label">후보 목록</div>
+      <select id="foodPickSelect" style="height:44px;"></select>
+      <div class="hint" id="foodPickHint" style="margin-top:8px;">
+        (표시: 식품명 · 수분(g/100g))
+      </div>
+    </div>
+
+    <div class="modal-btns">
+      <button class="modal-btn" id="foodPickCancel">취소</button>
+      <button class="modal-btn danger" id="foodPickConfirm">선택</button>
+    </div>
+  </div>
+</div>
+
+
 
     <script>
       // ==========================================================
@@ -605,6 +629,22 @@
       const elCancel = document.getElementById("btnCancel");
       const elConfirm = document.getElementById("btnConfirm");
 
+// food duplicate pick modal DOM
+const elFoodPickOverlay = document.getElementById("foodPickOverlay");
+const elFoodPickModal = document.getElementById("foodPickModal");
+const elFoodPickText = document.getElementById("foodPickText");
+const elFoodPickSelect = document.getElementById("foodPickSelect");
+const elFoodPickCancel = document.getElementById("foodPickCancel");
+const elFoodPickConfirm = document.getElementById("foodPickConfirm");
+
+// duplicate pick state
+let pendingFoodPick = null; 
+// { ctx: "manual"|"ai"|"manual_save"|"ai_save", nameRaw, nameKey, weightG, candidates:[...], onPicked:(entry)=>void }
+
+const foodChoiceCache = new Map(); 
+// Map(nameKey -> entry { label, moisture })
+
+
       // State
       let activeTab = "water";
       let volume = 100;
@@ -616,7 +656,7 @@
       let foodAIWeightG = 150;
 
       // Food DB
-      let foodDbIndex = null; // Map(normalizedName -> moisturePer100)
+      let foodDbIndex = null; // Map(normalizedName -> Array<{label, moisture}>)
       let foodDbLoaded = false;
 
       function pad2(n) { return String(n).padStart(2, "0"); }
@@ -688,24 +728,88 @@ function setFoodAIPreview(moisturePer100, estimatedMl, hasData) {
 }
 
 
+function refreshFoodAIEstimation() {
+  const name = String(elFoodAIName.value || "").trim();
+  const weight = Number(foodAIWeightG) || 0;
 
-      function refreshFoodAIEstimation() {
-        const name = String(elFoodAIName.value || "").trim();
-        const weight = Number(foodAIWeightG) || 0;
+  if (!name || !foodDbLoaded) {
+    setFoodAIPreview(null, 0, false);
+    return;
+  }
 
-        if (!name || !foodDbLoaded) {
-          setFoodAIPreview(null, 0, false);
-          return;
-        }
+  const hit = lookupMoisture(name);
+  if (!hit) {
+    setFoodAIPreview(null, 0, false);
+    return;
+  }
 
-        const hit = lookupMoisture(name);
-        if (!hit) {
-          setFoodAIPreview(null, 0, false);
-          return;
-        }
+  // ✅ B안: 중복이면 팝업으로 고르게
+  if (hit.kind === "multi") {
+    setFoodAIPreview(null, 0, false);
+    openFoodPickModal({
+      ctx: "ai",
+      nameRaw: name,
+      nameKey: hit.nameKey,
+      weightG: weight,
+      candidates: hit.candidates,
+      onPicked: (entry) => {
+        foodChoiceCache.set(hit.nameKey, entry);
+        setFoodAIPreview(
+          entry.moisture,
+          computeEstimatedMl(weight, entry.moisture),
+          true
+        );
+      },
+    });
+    return;
+  }
 
-        setFoodAIPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
-      }
+  // ✅ 단일이면 그대로
+  setFoodAIPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
+}
+
+
+
+
+
+function refreshFoodEstimation() {
+  const name = String(elFoodName.value || "").trim();
+  const weight = Number(foodWeightG) || 0;
+
+  if (!name || !foodDbLoaded) {
+    setFoodPreview(null, 0, false);
+    return;
+  }
+
+  const hit = lookupMoisture(name);
+  if (!hit) {
+    setFoodPreview(null, 0, false);
+    return;
+  }
+
+  // 중복이면 선택 모달 띄우고, 선택 전까지는 "데이터 없음"처럼 보이게 처리
+  if (hit.kind === "multi") {
+    setFoodPreview(null, 0, false);
+    openFoodPickModal({
+      ctx: "manual",
+      nameRaw: name,
+      nameKey: hit.nameKey,
+      weightG: weight,
+      candidates: hit.candidates,
+      onPicked: (entry) => {
+        // 선택값 캐시
+        foodChoiceCache.set(hit.nameKey, entry);
+        // 선택 즉시 프리뷰 반영
+        setFoodPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
+      },
+    });
+    return;
+  }
+
+  // 단일이면 그대로
+  setFoodPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
+}
+
 
       function setActiveTab(next) {
         activeTab = next;
@@ -883,28 +987,85 @@ function setFoodAIPreview(moisturePer100, estimatedMl, hasData) {
         if (!Number.isFinite(m)) return 0;
         return Math.round((w * m) / 100);
       }
+function openFoodPickModal(payload) {
+  pendingFoodPick = payload;
 
-      function lookupMoisture(name) {
-        if (!foodDbIndex) return null;
+  // 안내 문구
+  if (elFoodPickText) {
+    elFoodPickText.textContent =
+      `“${payload.nameRaw}”에 대해 DB 중복 항목이 ${payload.candidates.length}개 있습니다. 사용할 항목을 선택하세요.`;
+  }
 
-        const q = normalizeFoodName(name);
-        if (!q) return null;
+  // 옵션 채우기
+  elFoodPickSelect.innerHTML = "";
+  payload.candidates.forEach((c, i) => {
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = `${c.label} · ${c.moisture}`;
+    elFoodPickSelect.appendChild(opt);
+  });
+  elFoodPickSelect.selectedIndex = 0;
 
-        // 1) 완전 일치
-        if (foodDbIndex.has(q)) {
-          return { moisture: foodDbIndex.get(q), matched: "exact" };
-        }
+  // 표시
+  elFoodPickOverlay.style.display = "grid";
+  elFoodPickOverlay.setAttribute("aria-hidden", "false");
+}
 
-        // 2) 포함 관계 매칭 ("양배추" → "흰색양배추")
-        let best = null;
-        for (const [k, v] of foodDbIndex.entries()) {
-          if (k.includes(q) || q.includes(k)) {
-            const score = Math.abs(k.length - q.length);
-            if (!best || score < best.score) {
-              best = { moisture: v, score, matched: "partial" };
-            }
-          }
-        }
+function closeFoodPickModal() {
+  pendingFoodPick = null;
+  elFoodPickOverlay.style.display = "none";
+  elFoodPickOverlay.setAttribute("aria-hidden", "true");
+}
+
+
+function lookupMoisture(name) {
+  if (!foodDbIndex) return null;
+
+  const q = normalizeFoodName(name);
+  if (!q) return null;
+
+  // 0) 캐시(사용자가 이미 선택한 값) 우선
+  if (foodChoiceCache.has(q)) {
+    const cached = foodChoiceCache.get(q);
+    return { kind: "single", moisture: cached.moisture, label: cached.label, matched: "cache" };
+  }
+
+  // 1) 완전 일치
+  if (foodDbIndex.has(q)) {
+    const list = foodDbIndex.get(q) || [];
+    if (list.length <= 0) return null;
+    if (list.length === 1) {
+      return { kind: "single", moisture: list[0].moisture, label: list[0].label, matched: "exact" };
+    }
+    // 중복
+    return { kind: "multi", candidates: list, nameKey: q, matched: "exact" };
+  }
+
+  // 2) 포함 관계 매칭 ("양배추" → "흰색양배추") : 가장 가까운 key 하나를 고르고, 그 key의 후보를 반환
+  let bestKey = null;
+  let bestScore = null;
+
+  for (const k of foodDbIndex.keys()) {
+    if (k.includes(q) || q.includes(k)) {
+      const score = Math.abs(k.length - q.length);
+      if (bestScore == null || score < bestScore) {
+        bestScore = score;
+        bestKey = k;
+      }
+    }
+  }
+
+  if (!bestKey) return null;
+
+  const list = foodDbIndex.get(bestKey) || [];
+  if (list.length <= 0) return null;
+
+  if (list.length === 1) {
+    return { kind: "single", moisture: list[0].moisture, label: list[0].label, matched: "partial" };
+  }
+  return { kind: "multi", candidates: list, nameKey: bestKey, matched: "partial" };
+}
+
 
         return best;
       }
@@ -927,43 +1088,52 @@ function setFoodAIPreview(moisturePer100, estimatedMl, hasData) {
         setFoodPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
       }
 
-      async function loadFoodDb() {
-        try {
-          setFoodDbStatus("식품DB: 로딩중");
-          const res = await fetch(FOOD_DB_FILE, { cache: "no-store" });
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          const text = stripBomIfNeeded(await res.text());
-          const arr = JSON.parse(text);
-          if (!Array.isArray(arr)) throw new Error("JSON is not an array");
+async function loadFoodDb() {
+  try {
+    setFoodDbStatus("식품DB: 로딩중");
+    const res = await fetch(FOOD_DB_FILE, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
 
-          const idx = new Map();
-          let count = 0;
-          for (const obj of arr) {
-            const name = obj && obj["식품명"] ? String(obj["식품명"]).trim() : "";
-            const moisture = toNumberMaybe(obj ? obj["수분(g)"] : null);
-            if (!name || moisture == null) continue;
+    const text = stripBomIfNeeded(await res.text());
+    const arr = JSON.parse(text);
+    if (!Array.isArray(arr)) throw new Error("JSON is not an array");
 
-            const key = normalizeFoodName(name);
-            if (!key) continue;
+    const idx = new Map(); // Map(key -> candidates[])
+    let rowCount = 0;
 
-            if (!idx.has(key)) {
-              idx.set(key, moisture);
-              count += 1;
-            }
-          }
+    for (const obj of arr) {
+      const name = obj && obj["식품명"] ? String(obj["식품명"]).trim() : "";
+      const moisture = toNumberMaybe(obj ? obj["수분(g)"] : null);
+      if (!name || moisture == null) continue;
 
-          foodDbIndex = idx;
-          foodDbLoaded = true;
-          setFoodDbStatus("식품DB: " + count.toLocaleString() + "개 로드");
-          refreshFoodEstimation();
-        } catch (e) {
-          foodDbIndex = new Map();
-          foodDbLoaded = false;
-          setFoodDbStatus("식품DB: 로드 실패");
-          elFoodHint.textContent = "food_db.json을 찾지 못했습니다. 그래도 기록은 추가되며(0ml), 데이터없음으로 표시됩니다.";
-          setFoodPreview(null, 0, false);
-        }
-      }
+      const key = normalizeFoodName(name);
+      if (!key) continue;
+
+      const entry = { label: name, moisture: moisture };
+
+      if (!idx.has(key)) idx.set(key, []);
+      idx.get(key).push(entry);
+      rowCount += 1;
+    }
+
+    foodDbIndex = idx;
+    foodDbLoaded = true;
+    setFoodDbStatus(`식품DB: ${rowCount.toLocaleString()}행 로드 (중복 포함)`);
+
+    // 입력중이던 프리뷰 갱신
+    refreshFoodEstimation();
+    refreshFoodAIEstimation();
+  } catch (e) {
+    foodDbIndex = new Map();
+    foodDbLoaded = false;
+    setFoodDbStatus("식품DB: 로드 실패");
+    elFoodHint.textContent =
+      "food_db.json을 찾지 못했습니다. 그래도 기록은 추가되며(0ml), 데이터없음으로 표시됩니다.";
+    setFoodPreview(null, 0, false);
+    setFoodAIPreview(null, 0, false);
+  }
+}
+
 
       // ---------- Self tests (console) ----------
       function assert(cond, msg) {
@@ -1208,6 +1378,29 @@ function setFoodAIPreview(moisturePer100, estimatedMl, hasData) {
 
         // load food db
         loadFoodDb();
+
+// food duplicate pick modal events
+elFoodPickOverlay.addEventListener("mousedown", (e) => {
+  if (e.target === elFoodPickOverlay) closeFoodPickModal();
+});
+elFoodPickModal.addEventListener("mousedown", (e) => e.stopPropagation());
+elFoodPickCancel.addEventListener("click", closeFoodPickModal);
+
+elFoodPickConfirm.addEventListener("click", () => {
+  if (!pendingFoodPick) return;
+
+  const idx = Number(elFoodPickSelect.value);
+  const entry = pendingFoodPick.candidates[idx];
+  if (!entry) return;
+
+  const key = pendingFoodPick.nameKey;
+  if (key) foodChoiceCache.set(key, entry);
+
+  const cb = pendingFoodPick.onPicked;
+  closeFoodPickModal();
+  if (typeof cb === "function") cb(entry);
+});
+
       }
 
       init();
