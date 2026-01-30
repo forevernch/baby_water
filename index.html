@@ -130,7 +130,7 @@
         width: 100%;
         border-radius: 14px;
         border: 1px solid rgba(56, 121, 255, 0.55);
-        background: linear-gradient(180deg, rgba(56, 121, 255, 0.95) 0%, rgba(41, 103, 241, 0.95) 100%);
+        background: linear-gradient(180deg, rgba(56, 121, 255, 0.95) 0%, rgba(41, 103, 241, 0.95)100%);
         color: white;
         font-weight: 900;
         letter-spacing: -0.1px;
@@ -298,7 +298,6 @@
           <div class="tab disabled" title="준비중">🗓️ 월별요약</div>
         </div>
 
-        <!-- 물/음료 탭 -->
         <div class="card" id="waterCard" data-panel="water">
           <div class="section-title-row">
             <div class="section-title">물/음료 기록</div>
@@ -338,11 +337,8 @@
             </div>
             <div id="waterListBody"></div>
           </div>
-
-          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
         </div>
 
-        <!-- 음식 수동 탭 (C: DB 없으면 0ml로 기록 + 경고 표시) -->
         <div class="card" id="foodManualCard" data-panel="foodManual" style="display:none;">
           <div class="section-title-row">
             <div class="section-title">음식 수동 기록</div>
@@ -397,11 +393,8 @@
             </div>
             <div id="foodManualListBody"></div>
           </div>
-
-          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
         </div>
 
-        <!-- 음식 AI 탭 (Mock UI) -->
         <div class="card" id="foodAICard" data-panel="foodAI" style="display:none;">
           <div class="section-title-row">
             <div class="section-title">음식 AI 분석</div>
@@ -438,41 +431,36 @@
             </div>
           </div>
 
-<div class="form-grid" style="margin-top:10px;">
-  <div>
-    <div class="label">수분(g/100g)</div>
-    <div class="volume-box" id="foodAIMoistureBox">-</div>
-  </div>
-  <div>
-    <div class="label">추정 수분(ml)</div>
-    <div class="volume-box" id="foodAIEstimated">0</div>
-  </div>
-</div>
-
+          <div class="form-grid" style="margin-top:10px;">
+            <div>
+              <div class="label">수분(g/100g)</div>
+              <div class="volume-box" id="foodAIMoistureBox">-</div>
+            </div>
+            <div>
+              <div class="label">추정 수분(ml)</div>
+              <div class="volume-box" id="foodAIEstimated">0</div>
+            </div>
+          </div>
 
           <button class="primary-btn" id="btnFoodAISave">기록 추가</button>
-  <div class="divider"></div>
+          <div class="divider"></div>
 
-<div class="records-header">
-  <div class="section-title">오늘 기록 — 음식 AI</div>
-  <div class="pill" id="foodAITotalPill">총합: 0 ml</div>
-</div>
+          <div class="records-header">
+            <div class="section-title">오늘 기록 — 음식 AI</div>
+            <div class="pill" id="foodAITotalPill">총합: 0 ml</div>
+          </div>
 
-<div class="list-wrap">
-  <div class="list-header">
-    <div>시간</div>
-    <div>메뉴</div>
-    <div class="right">수분</div>
-    <div class="right">삭제</div>
-  </div>
-  <div id="foodAIListBody"></div>
-</div>
-
-          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
+          <div class="list-wrap">
+            <div class="list-header">
+              <div>시간</div>
+              <div>메뉴</div>
+              <div class="right">수분</div>
+              <div class="right">삭제</div>
+            </div>
+            <div id="foodAIListBody"></div>
+          </div>
         </div>
-      
 
-        <!-- 오늘요약 탭 -->
         <div class="card" id="todayCard" data-panel="today" style="display:none;">
           <div class="section-title-row">
             <div class="section-title">오늘요약</div>
@@ -513,13 +501,10 @@
             </div>
             <div id="allListBody"></div>
           </div>
-
-          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
         </div>
       </div>
     </div>
 
-    <!-- Delete confirmation modal -->
     <div class="modal-overlay" id="modalOverlay" style="display:none" aria-hidden="true">
       <div class="modal" id="modal" role="dialog" aria-modal="true">
         <div class="modal-title">기록을 삭제할까요?</div>
@@ -530,38 +515,24 @@
         </div>
       </div>
     </div>
-<!-- Food duplicate pick modal -->
-<div class="modal-overlay" id="foodPickOverlay" style="display:none" aria-hidden="true">
-  <div class="modal" id="foodPickModal" role="dialog" aria-modal="true">
-    <div class="modal-title">식품 DB 중복 항목 선택</div>
-    <div class="modal-text" id="foodPickText">
-      같은 이름으로 여러 DB 항목이 있습니다. 사용할 항목을 선택하세요.
-    </div>
 
-    <div style="margin-top:12px;">
-      <div class="label">후보 목록</div>
-      <select id="foodPickSelect" style="height:44px;"></select>
-      <div class="hint" id="foodPickHint" style="margin-top:8px;">
-        (표시: 식품명 · 수분(g/100g))
+    <div class="modal-overlay" id="foodPickOverlay" style="display:none" aria-hidden="true">
+      <div class="modal" id="foodPickModal" role="dialog" aria-modal="true">
+        <div class="modal-title">식품 DB 중복 항목 선택</div>
+        <div class="modal-text" id="foodPickText">같은 이름으로 여러 DB 항목이 있습니다. 사용할 항목을 선택하세요.</div>
+        <div style="margin-top:12px;">
+          <div class="label">후보 목록</div>
+          <select id="foodPickSelect" style="height:44px;"></select>
+          <div class="hint" id="foodPickHint" style="margin-top:8px;">(표시: 식품명 · 수분(g/100g))</div>
+        </div>
+        <div class="modal-btns">
+          <button class="modal-btn" id="foodPickCancel">취소</button>
+          <button class="modal-btn danger" id="foodPickConfirm">선택</button>
+        </div>
       </div>
     </div>
 
-    <div class="modal-btns">
-      <button class="modal-btn" id="foodPickCancel">취소</button>
-      <button class="modal-btn danger" id="foodPickConfirm">선택</button>
-    </div>
-  </div>
-</div>
-
-
-
     <script>
-      // ==========================================================
-      // 안정 버전 + 음식수동(C옵션)
-      //  - DB 매칭 실패해도 기록 추가 허용
-      //  - volume=0, hasData=false 저장 → 리스트/오늘요약에 반영
-      // ==========================================================
-
       const STORAGE_KEY = "hydration_html_records_v1_stable";
       const DRINK_TYPES = ["물", "우유", "주스", "탄산", "유제품", "이온음료", "기타"];
       const FOOD_DB_FILE = "./food_db.json";
@@ -573,7 +544,6 @@
       const elTodayCard = document.getElementById("todayCard");
       const elFoodAICard = document.getElementById("foodAICard");
 
-      // water
       const elDrinkType = document.getElementById("drinkType");
       const elVolumeBox = document.getElementById("volumeBox");
       const elMinus = document.getElementById("btnMinus");
@@ -582,7 +552,6 @@
       const elWaterListBody = document.getElementById("waterListBody");
       const elWaterTotal = document.getElementById("waterTotalPill");
 
-      // food manual
       const elFoodDbStatus = document.getElementById("foodDbStatus");
       const elFoodName = document.getElementById("foodName");
       const elFoodWeight = document.getElementById("foodWeight");
@@ -596,7 +565,6 @@
       const elFoodManualListBody = document.getElementById("foodManualListBody");
       const elFoodManualTotal = document.getElementById("foodManualTotalPill");
 
-      // food AI
       const elFoodAIPhoto = document.getElementById("foodAIPhoto");
       const elFoodAIPreview = document.getElementById("foodAIPreview");
       const elFoodAIName = document.getElementById("foodAIName");
@@ -607,15 +575,9 @@
       const elFoodAIAnalyze = document.getElementById("btnFoodAIAnalyze");
       const elFoodAISave = document.getElementById("btnFoodAISave");
       const elFoodAIMoistureBox = document.getElementById("foodAIMoistureBox");
+      const elFoodAIListBody = document.getElementById("foodAIListBody");
+      const elFoodAITotal = document.getElementById("foodAITotalPill");
 
-
-
-
-     // food AI list
-     const elFoodAIListBody = document.getElementById("foodAIListBody");
-     const elFoodAITotal = document.getElementById("foodAITotalPill");
-
-      // today
       const elSumWater = document.getElementById("sumWater");
       const elSumFoodManual = document.getElementById("sumFoodManual");
       const elSumFoodAI = document.getElementById("sumFoodAI");
@@ -623,44 +585,31 @@
       const elAllCount = document.getElementById("allCountPill");
       const elAllListBody = document.getElementById("allListBody");
 
-      // modal
       const elModalOverlay = document.getElementById("modalOverlay");
       const elModal = document.getElementById("modal");
       const elCancel = document.getElementById("btnCancel");
       const elConfirm = document.getElementById("btnConfirm");
 
-// food duplicate pick modal DOM
-const elFoodPickOverlay = document.getElementById("foodPickOverlay");
-const elFoodPickModal = document.getElementById("foodPickModal");
-const elFoodPickText = document.getElementById("foodPickText");
-const elFoodPickSelect = document.getElementById("foodPickSelect");
-const elFoodPickCancel = document.getElementById("foodPickCancel");
-const elFoodPickConfirm = document.getElementById("foodPickConfirm");
-
-// duplicate pick state
-let pendingFoodPick = null; 
-// { ctx: "manual"|"ai"|"manual_save"|"ai_save", nameRaw, nameKey, weightG, candidates:[...], onPicked:(entry)=>void }
-
-const foodChoiceCache = new Map(); 
-// Map(nameKey -> entry { label, moisture })
-
+      const elFoodPickOverlay = document.getElementById("foodPickOverlay");
+      const elFoodPickModal = document.getElementById("foodPickModal");
+      const elFoodPickText = document.getElementById("foodPickText");
+      const elFoodPickSelect = document.getElementById("foodPickSelect");
+      const elFoodPickCancel = document.getElementById("foodPickCancel");
+      const elFoodPickConfirm = document.getElementById("foodPickConfirm");
 
       // State
       let activeTab = "water";
       let volume = 100;
       let records = [];
       let deleteTargetId = null;
-
-      // food manual weight state (g)
       let foodWeightG = 100;
       let foodAIWeightG = 150;
-
-      // Food DB
-      let foodDbIndex = null; // Map(normalizedName -> Array<{label, moisture}>)
+      let foodDbIndex = null;
       let foodDbLoaded = false;
+      let pendingFoodPick = null;
+      const foodChoiceCache = new Map();
 
       function pad2(n) { return String(n).padStart(2, "0"); }
-
       function formatTime12h(date) {
         const h24 = date.getHours();
         const m = date.getMinutes();
@@ -668,25 +617,16 @@ const foodChoiceCache = new Map();
         const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
         return `${ampm} ${pad2(h12)}:${pad2(m)}`;
       }
-
       function dateKeyLocal(date) {
-        const y = date.getFullYear();
-        const mm = pad2(date.getMonth() + 1);
-        const dd = pad2(date.getDate());
-        return `${y}-${mm}-${dd}`;
+        return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
       }
 
       function loadRecords() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return [];
-          const parsed = JSON.parse(raw);
-          return Array.isArray(parsed) ? parsed : [];
-        } catch {
-          return [];
-        }
+          return raw ? JSON.parse(raw) : [];
+        } catch { return []; }
       }
-
       function saveRecords(next) {
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
       }
@@ -694,775 +634,218 @@ const foodChoiceCache = new Map();
       function setVolume(next) {
         volume = Math.max(10, Number(next) || 10);
         elVolumeBox.textContent = String(volume);
-        if (volume <= 10) elMinus.classList.add("disabled");
-        else elMinus.classList.remove("disabled");
+        elMinus.classList.toggle("disabled", volume <= 10);
       }
-
       function setFoodWeight(next) {
-        const n = Number(next);
-        const snapped = Number.isFinite(n) ? Math.round(n / 10) * 10 : 100;
-        foodWeightG = Math.max(0, snapped);
+        foodWeightG = Math.max(0, Math.round(next / 10) * 10);
         elFoodWeightBox.textContent = String(foodWeightG);
         elFoodWeight.value = String(foodWeightG);
-        if (foodWeightG <= 0) elFoodMinus.classList.add("disabled");
-        else elFoodMinus.classList.remove("disabled");
+        elFoodMinus.classList.toggle("disabled", foodWeightG <= 0);
       }
-
       function setFoodAIWeight(next) {
-        const n = Number(next);
-        const snapped = Number.isFinite(n) ? Math.round(n / 10) * 10 : 150;
-        foodAIWeightG = Math.max(0, snapped);
+        foodAIWeightG = Math.max(0, Math.round(next / 10) * 10);
         elFoodAIWeightBox.textContent = String(foodAIWeightG);
-        if (foodAIWeightG <= 0) elFoodAIMinus.classList.add("disabled");
-        else elFoodAIMinus.classList.remove("disabled");
+        elFoodAIMinus.classList.toggle("disabled", foodAIWeightG <= 0);
       }
 
-function setFoodAIPreview(moisturePer100, estimatedMl, hasData) {
-  if (hasData) {
-    if (elFoodAIMoistureBox) elFoodAIMoistureBox.textContent = String(moisturePer100);
-    elFoodAIEstimated.textContent = String(estimatedMl || 0);
-  } else {
-    if (elFoodAIMoistureBox) elFoodAIMoistureBox.textContent = "데이터 없음";
-    elFoodAIEstimated.textContent = "0";
-  }
-}
-
-
-function refreshFoodAIEstimation() {
-  const name = String(elFoodAIName.value || "").trim();
-  const weight = Number(foodAIWeightG) || 0;
-
-  if (!name || !foodDbLoaded) {
-    setFoodAIPreview(null, 0, false);
-    return;
-  }
-
-  const hit = lookupMoisture(name);
-  if (!hit) {
-    setFoodAIPreview(null, 0, false);
-    return;
-  }
-
-  // ✅ B안: 중복이면 팝업으로 고르게
-  if (hit.kind === "multi") {
-    setFoodAIPreview(null, 0, false);
-    openFoodPickModal({
-      ctx: "ai",
-      nameRaw: name,
-      nameKey: hit.nameKey,
-      weightG: weight,
-      candidates: hit.candidates,
-      onPicked: (entry) => {
-        foodChoiceCache.set(hit.nameKey, entry);
-        setFoodAIPreview(
-          entry.moisture,
-          computeEstimatedMl(weight, entry.moisture),
-          true
-        );
-      },
-    });
-    return;
-  }
-
-  // ✅ 단일이면 그대로
-  setFoodAIPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
-}
-
-
-
-
-
-function refreshFoodEstimation() {
-  const name = String(elFoodName.value || "").trim();
-  const weight = Number(foodWeightG) || 0;
-
-  if (!name || !foodDbLoaded) {
-    setFoodPreview(null, 0, false);
-    return;
-  }
-
-  const hit = lookupMoisture(name);
-  if (!hit) {
-    setFoodPreview(null, 0, false);
-    return;
-  }
-
-  // 중복이면 선택 모달 띄우고, 선택 전까지는 "데이터 없음"처럼 보이게 처리
-  if (hit.kind === "multi") {
-    setFoodPreview(null, 0, false);
-    openFoodPickModal({
-      ctx: "manual",
-      nameRaw: name,
-      nameKey: hit.nameKey,
-      weightG: weight,
-      candidates: hit.candidates,
-      onPicked: (entry) => {
-        // 선택값 캐시
-        foodChoiceCache.set(hit.nameKey, entry);
-        // 선택 즉시 프리뷰 반영
-        setFoodPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
-      },
-    });
-    return;
-  }
-
-  // 단일이면 그대로
-  setFoodPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
-}
-
-
-      function setActiveTab(next) {
-        activeTab = next;
-        Array.from(elTabs.querySelectorAll(".tab")).forEach((t) => {
-          if (t.classList.contains("disabled")) return;
-          t.classList.toggle("active", t.dataset.tab === next);
-        });
-        elWaterCard.style.display = next === "water" ? "block" : "none";
-        elFoodManualCard.style.display = next === "foodManual" ? "block" : "none";
-        elFoodAICard.style.display = next === "foodAI" ? "block" : "none";
-        elTodayCard.style.display = next === "today" ? "block" : "none";
-        render();
+      function normalizeFoodName(s) {
+        return (s || "").toString().replace(/[\s\t\n\r]/g, "").toLowerCase().replace(/[^a-z0-9가-힣]/g, "");
+      }
+      function toNumberMaybe(v) {
+        if (v == null) return null;
+        const n = Number(String(v).replace(/,/g, "").trim());
+        return Number.isFinite(n) ? n : null;
+      }
+      function computeEstimatedMl(weightG, moisturePer100) {
+        return Math.round((Math.max(0, weightG) * (Number(moisturePer100) || 0)) / 100);
       }
 
-      function openModal(id) {
-        deleteTargetId = id;
-        elModalOverlay.style.display = "grid";
-        elModalOverlay.setAttribute("aria-hidden", "false");
-      }
-
-      function closeModal() {
-        deleteTargetId = null;
-        elModalOverlay.style.display = "none";
-        elModalOverlay.setAttribute("aria-hidden", "true");
-      }
-
-      function kindLabel(r) {
-        if (r.kind === "water") return `물/음료 · ${r.type}`;
-        if (r.kind === "foodManual") {
-          const suffix = r.hasData === false ? " (데이터없음)" : "";
-          return `음식수동 · ${r.name || "-"}${suffix}`;
+      function lookupMoisture(name) {
+        if (!foodDbIndex) return null;
+        const q = normalizeFoodName(name);
+        if (!q) return null;
+        if (foodChoiceCache.has(q)) {
+          const c = foodChoiceCache.get(q);
+          return { kind: "single", moisture: c.moisture, label: c.label };
         }
-        if (r.kind === "foodAI") return `음식AI · ${r.name || "-"}`;
-        return r.kind || "-";
+        if (foodDbIndex.has(q)) {
+          const list = foodDbIndex.get(q);
+          return list.length === 1 ? { kind: "single", ...list[0] } : { kind: "multi", candidates: list, nameKey: q };
+        }
+        let bestKey = null, minDiff = Infinity;
+        for (const k of foodDbIndex.keys()) {
+          if (k.includes(q) || q.includes(k)) {
+            const diff = Math.abs(k.length - q.length);
+            if (diff < minDiff) { minDiff = diff; bestKey = k; }
+          }
+        }
+        if (bestKey) {
+          const list = foodDbIndex.get(bestKey);
+          return list.length === 1 ? { kind: "single", ...list[0] } : { kind: "multi", candidates: list, nameKey: bestKey };
+        }
+        return null;
       }
 
-      function renderList(targetEl, items, options) {
-        targetEl.innerHTML = "";
-        if (items.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "row";
-          empty.style.gridTemplateColumns = "1fr";
-          empty.textContent = "아직 기록이 없습니다.";
-          targetEl.appendChild(empty);
-          return;
-        }
+      function setFoodPreview(moisture, estimated, hasData) {
+        elFoodMoistureBox.textContent = hasData ? String(moisture) : "데이터 없음";
+        elFoodEstimatedBox.textContent = String(estimated || 0);
+      }
+      function setFoodAIPreview(moisture, estimated, hasData) {
+        elFoodAIMoistureBox.textContent = hasData ? String(moisture) : "데이터 없음";
+        elFoodAIEstimated.textContent = String(estimated || 0);
+      }
 
-        items.forEach((r) => {
+      function refreshFoodEstimation() {
+        const name = String(elFoodName.value || "").trim();
+        const weight = foodWeightG;
+        if (!name || !foodDbLoaded) { setFoodPreview(null, 0, false); return; }
+        const hit = lookupMoisture(name);
+        let hasData = false, moisture = null, estimated = 0;
+        if (hit) {
+          if (hit.kind === "multi") {
+            openFoodPickModal({ ctx: "manual", nameRaw: name, nameKey: hit.nameKey, weightG: weight, candidates: hit.candidates, 
+              onPicked: (entry) => {
+                foodChoiceCache.set(hit.nameKey, entry);
+                setFoodPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
+              }
+            });
+            return;
+          }
+          hasData = true; moisture = hit.moisture; estimated = computeEstimatedMl(weight, moisture);
+        }
+        setFoodPreview(moisture, estimated, hasData);
+      }
+
+      function refreshFoodAIEstimation() {
+        const name = String(elFoodAIName.value || "").trim();
+        const weight = foodAIWeightG;
+        if (!name || !foodDbLoaded) { setFoodAIPreview(null, 0, false); return; }
+        const hit = lookupMoisture(name);
+        let hasData = false, moisture = null, estimated = 0;
+        if (hit) {
+          if (hit.kind === "multi") {
+            openFoodPickModal({ ctx: "ai", nameRaw: name, nameKey: hit.nameKey, weightG: weight, candidates: hit.candidates, 
+              onPicked: (entry) => {
+                foodChoiceCache.set(hit.nameKey, entry);
+                setFoodAIPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
+              }
+            });
+            return;
+          }
+          hasData = true; moisture = hit.moisture; estimated = computeEstimatedMl(weight, moisture);
+        }
+        setFoodAIPreview(moisture, estimated, hasData);
+      }
+
+      async function loadFoodDb() {
+        try {
+          setFoodDbStatus("식품DB: 로딩중");
+          const res = await fetch(FOOD_DB_FILE, { cache: "no-store" });
+          if (!res.ok) throw new Error();
+          const arr = JSON.parse(await res.text());
+          const idx = new Map();
+          let count = 0;
+          for (const obj of arr) {
+            const name = (obj["식품명"] || "").trim(), moisture = toNumberMaybe(obj["수분(g)"]);
+            if (!name || moisture == null) continue;
+            const key = normalizeFoodName(name);
+            if (!idx.has(key)) idx.set(key, []);
+            idx.get(key).push({ label: name, moisture });
+            count++;
+          }
+          foodDbIndex = idx; foodDbLoaded = true;
+          setFoodDbStatus(`식품DB: ${count.toLocaleString()}행 로드`);
+          refreshFoodEstimation(); refreshFoodAIEstimation();
+        } catch {
+          setFoodDbStatus("식품DB: 로드 실패");
+        }
+      }
+
+      function openFoodPickModal(p) {
+        pendingFoodPick = p;
+        elFoodPickText.textContent = `"${p.nameRaw}" 중복 항목 선택`;
+        elFoodPickSelect.innerHTML = p.candidates.map((c, i) => `<option value="${i}">${c.label} · ${c.moisture}</option>`).join("");
+        elFoodPickOverlay.style.display = "grid";
+      }
+
+      function renderList(target, items, options) {
+        target.innerHTML = items.length ? "" : '<div class="row" style="grid-template-columns:1fr">기록이 없습니다.</div>';
+        items.forEach(r => {
           const row = document.createElement("div");
           row.className = "row";
-
-          const c1 = document.createElement("div");
-          c1.textContent = r.timeLabel;
-
-          const c2 = document.createElement("div");
-          if (options.kindText) {
-            c2.textContent = kindLabel(r);
-          } else {
-            if (r.kind === "foodManual" && r.hasData === false) {
-              const wrap = document.createElement("div");
-              wrap.style.display = "flex";
-              wrap.style.gap = "10px";
-              wrap.style.alignItems = "center";
-
-              const name = document.createElement("div");
-              name.textContent = r.name || "-";
-
-              const badge = document.createElement("span");
-              badge.className = "badge-warn";
-              badge.textContent = "데이터없음";
-
-              wrap.append(name, badge);
-              c2.appendChild(wrap);
-            } else {
-              c2.textContent = r.type || r.name || "-";
-            }
-          }
-
-          const c3 = document.createElement("div");
-          c3.className = "right";
-          c3.textContent = `${Number(r.volume) || 0} ml`;
-
-          const c4 = document.createElement("button");
-          c4.className = "del-btn";
-          c4.textContent = "삭제";
-          c4.addEventListener("click", () => openModal(r.id));
-
-          row.append(c1, c2, c3, c4);
-          targetEl.appendChild(row);
+          const label = options.kindText ? (r.kind === "water" ? `물 · ${r.type}` : `${r.kind === "foodAI" ? "AI" : "수동"} · ${r.name}`) : (r.type || r.name);
+          row.innerHTML = `<div>${r.timeLabel}</div><div>${label}${r.hasData === false ? ' <span class="badge-warn">데이터없음</span>' : ""}</div>
+            <div class="right">${r.volume} ml</div><div class="right"><button class="del-btn" onclick="openModal('${r.id}')">삭제</button></div>`;
+          target.appendChild(row);
         });
       }
 
       function render() {
         const todayKey = dateKeyLocal(new Date());
-        const today = records.filter((r) => r.dateKey === todayKey);
-
-        const todayWater = today.filter((r) => r.kind === "water");
-        const todayFoodManual = today.filter((r) => r.kind === "foodManual");
-        const todayFoodAI = today.filter((r) => r.kind === "foodAI");
-
-        const sumWater = todayWater.reduce((s, r) => s + (Number(r.volume) || 0), 0);
-        const sumFoodManual = todayFoodManual.reduce((s, r) => s + (Number(r.volume) || 0), 0);
-        const sumFoodAI = todayFoodAI.reduce((s, r) => s + (Number(r.volume) || 0), 0);
-        const sumAll = sumWater + sumFoodManual + sumFoodAI;
-
-        // water
-        elWaterTotal.textContent = `총합: ${sumWater} ml`;
-        renderList(elWaterListBody, todayWater, { kindText: false });
-
-        // food manual
-        elFoodManualTotal.textContent = `총합: ${sumFoodManual} ml`;
-        renderList(elFoodManualListBody, todayFoodManual, { kindText: false });
-
-        // food AI
-        elFoodAITotal.textContent = `총합: ${sumFoodAI} ml`;
-        renderList(elFoodAIListBody, todayFoodAI, { kindText: false });
-
-
-        // today
-        elSumWater.textContent = `${sumWater} ml`;
-        elSumFoodManual.textContent = `${sumFoodManual} ml`;
-        elSumFoodAI.textContent = `${sumFoodAI} ml`;
-        elSumAll.textContent = `${sumAll} ml`;
-        elAllCount.textContent = `${today.length}건`;
-
-        const todaySorted = [...today].sort((a, b) => (a.ts < b.ts ? 1 : -1));
-        renderList(elAllListBody, todaySorted, { kindText: true });
+        const today = records.filter(r => r.dateKey === todayKey);
+        const w = today.filter(r => r.kind === "water"), fm = today.filter(r => r.kind === "foodManual"), fa = today.filter(r => r.kind === "foodAI");
+        const sw = w.reduce((s, r) => s + r.volume, 0), sfm = fm.reduce((s, r) => s + r.volume, 0), sfa = fa.reduce((s, r) => s + r.volume, 0);
+        
+        elWaterTotal.textContent = `총합: ${sw} ml`; renderList(elWaterListBody, w, {kindText: false});
+        elFoodManualTotal.textContent = `총합: ${sfm} ml`; renderList(elManualListBody, fm, {kindText: false});
+        elFoodAITotal.textContent = `총합: ${sfa} ml`; renderList(elFoodAIListBody, fa, {kindText: false});
+        
+        elSumWater.textContent = `${sw} ml`; elSumFoodManual.textContent = `${sfm} ml`; elSumFoodAI.textContent = `${sfa} ml`;
+        elSumAll.textContent = `${sw + sfm + sfa} ml`; elAllCount.textContent = `${today.length}건`;
+        renderList(elAllListBody, [...today].sort((a, b) => b.ts.localeCompare(a.ts)), {kindText: true});
       }
 
-      // ---------- Food DB ----------
-
-      function setFoodDbStatus(text) {
-        elFoodDbStatus.textContent = text;
-      }
-
-      function stripBomIfNeeded(text) {
-        if (!text) return "";
-        return text.charCodeAt(0) === 65279 ? text.slice(1) : text;
-      }
-
-      function normalizeFoodName(s) {
-        // ⚠️ 중요: 탭/개행/캐리지리턴은 반드시 "\\t" "\\n" "\\r" 처럼 이스케이프 문자열로 비교해야 함
-        // (실제 제어문자가 코드에 들어가면 "Invalid or unexpected token"로 파싱이 깨집니다.)
-        const raw = (s || "").toString().trim().toLowerCase();
-        let out = "";
-        for (let i = 0; i < raw.length; i++) {
-          const ch = raw[i];
-          if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") continue;
-
-          const code = ch.charCodeAt(0);
-          const isNum = code >= 48 && code <= 57; // 0-9
-          const isAZ = code >= 97 && code <= 122; // a-z
-          const isHangul = code >= 44032 && code <= 55203; // 가-힣
-
-          if (isNum || isAZ || isHangul) out += ch;
-        }
-        return out;
-      }
-
-      function toNumberMaybe(v) {
-        if (v == null) return null;
-        const s = String(v).split(",").join("").trim();
-        const n = Number(s);
-        return Number.isFinite(n) ? n : null;
-      }
-
-   function setFoodPreview(moisturePer100, estimatedMl, hasData) {
-  elFoodMoistureBox.textContent = hasData ? String(moisturePer100) : "데이터 없음";
-  elFoodEstimatedBox.textContent = String(estimatedMl || 0);
-}
-
-function computeEstimatedMl(weightG, moisturePer100) {
-  const w = Math.max(0, Number(weightG) || 0);
-  const m = Number(moisturePer100);
-  if (!Number.isFinite(m)) return 0;
-  return Math.round((w * m) / 100);
-}
-
-// ===== Duplicate pick modal =====
-function openFoodPickModal(payload) {
-  pendingFoodPick = payload;
-
-  if (elFoodPickText) {
-    elFoodPickText.textContent =
-      `“${payload.nameRaw}”에 대해 DB 중복 항목이 ${payload.candidates.length}개 있습니다. 사용할 항목을 선택하세요.`;
-  }
-
-  elFoodPickSelect.innerHTML = "";
-  payload.candidates.forEach((c, i) => {
-    const opt = document.createElement("option");
-    opt.value = String(i);
-    opt.textContent = `${c.label} · ${c.moisture}`;
-    elFoodPickSelect.appendChild(opt);
-  });
-  elFoodPickSelect.selectedIndex = 0;
-
-  elFoodPickOverlay.style.display = "grid";
-  elFoodPickOverlay.setAttribute("aria-hidden", "false");
-}
-
-function closeFoodPickModal() {
-  pendingFoodPick = null;
-  elFoodPickOverlay.style.display = "none";
-  elFoodPickOverlay.setAttribute("aria-hidden", "true");
-}
-
-// ===== Lookup (single or multi) =====
-function lookupMoisture(name) {
-  if (!foodDbIndex) return null;
-
-  const q = normalizeFoodName(name);
-  if (!q) return null;
-
-  // 0) user choice cache first
-  if (foodChoiceCache.has(q)) {
-    const cached = foodChoiceCache.get(q);
-    return { kind: "single", moisture: cached.moisture, label: cached.label, matched: "cache" };
-  }
-
-  // 1) exact key
-  if (foodDbIndex.has(q)) {
-    const list = foodDbIndex.get(q) || [];
-    if (list.length === 1) return { kind: "single", moisture: list[0].moisture, label: list[0].label, matched: "exact" };
-    if (list.length > 1) return { kind: "multi", candidates: list, nameKey: q, matched: "exact" };
-    return null;
-  }
-
-  // 2) partial by contains: pick closest key then return its list
-  let bestKey = null;
-  let bestScore = null;
-
-  for (const k of foodDbIndex.keys()) {
-    if (k.includes(q) || q.includes(k)) {
-      const score = Math.abs(k.length - q.length);
-      if (bestScore == null || score < bestScore) {
-        bestScore = score;
-        bestKey = k;
-      }
-    }
-  }
-
-  if (!bestKey) return null;
-
-  const list = foodDbIndex.get(bestKey) || [];
-  if (list.length === 1) return { kind: "single", moisture: list[0].moisture, label: list[0].label, matched: "partial" };
-  if (list.length > 1) return { kind: "multi", candidates: list, nameKey: bestKey, matched: "partial" };
-  return null;
-}
-
-// ===== Manual preview =====
-function refreshFoodEstimation() {
-  const name = String(elFoodName.value || "").trim();
-  const weight = Number(foodWeightG) || 0;
-
-  if (!name || !foodDbLoaded) {
-    setFoodPreview(null, 0, false);
-    return;
-  }
-
-const hit = lookupMoisture(name);
-if (hit) {
-  if (hit.kind === "multi") {
-    openFoodPickModal({
-      ctx: "manual_save",
-      nameRaw: name,
-      nameKey: hit.nameKey,
-      weightG: weight,
-      candidates: hit.candidates,
-      onPicked: (entry) => {
-        foodChoiceCache.set(hit.nameKey, entry);
-        // 선택 후 다시 저장 버튼 흐름을 유도: 미리보기 갱신 + 안내문구
-        setFoodPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
-        elFoodHint.textContent = "✅ 중복 항목을 선택했습니다. 이제 [기록 추가]를 눌러 저장하세요.";
-      },
-    });
-    return; // ✅ 저장 중단
-  }
-
-  hasData = true;
-  moisture = hit.moisture;
-  estimated = computeEstimatedMl(weight, moisture);
-}
-
-
-  setFoodPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
-}
-
-// ===== AI preview =====
-function refreshFoodAIEstimation() {
-  const name = String(elFoodAIName.value || "").trim();
-  const weight = Number(foodAIWeightG) || 0;
-
-  if (!name || !foodDbLoaded) {
-    setFoodAIPreview(null, 0, false);
-    return;
-  }
-
-  const hit = lookupMoisture(name);
-  if (!hit) {
-    setFoodAIPreview(null, 0, false);
-    return;
-  }
-
-  if (hit.kind === "multi") {
-    setFoodAIPreview(null, 0, false);
-    openFoodPickModal({
-      ctx: "ai",
-      nameRaw: name,
-      nameKey: hit.nameKey,
-      weightG: weight,
-      candidates: hit.candidates,
-      onPicked: (entry) => {
-        foodChoiceCache.set(hit.nameKey, entry);
-        setFoodAIPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
-      },
-    });
-    return;
-  }
-
-  setFoodAIPreview(hit.moisture, computeEstimatedMl(weight, hit.moisture), true);
-}
-
-// ===== DB loader (keep duplicates) =====
-async function loadFoodDb() {
-  try {
-    setFoodDbStatus("식품DB: 로딩중");
-    const res = await fetch(FOOD_DB_FILE, { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-
-    const text = stripBomIfNeeded(await res.text());
-    const arr = JSON.parse(text);
-    if (!Array.isArray(arr)) throw new Error("JSON is not an array");
-
-    const idx = new Map(); // Map(key -> candidates[])
-    let rowCount = 0;
-
-    for (const obj of arr) {
-      const name = obj && obj["식품명"] ? String(obj["식품명"]).trim() : "";
-      const moisture = toNumberMaybe(obj ? obj["수분(g)"] : null);
-      if (!name || moisture == null) continue;
-
-      const key = normalizeFoodName(name);
-      if (!key) continue;
-
-      const entry = { label: name, moisture: moisture };
-      if (!idx.has(key)) idx.set(key, []);
-      idx.get(key).push(entry);
-      rowCount += 1;
-    }
-
-    foodDbIndex = idx;
-    foodDbLoaded = true;
-    setFoodDbStatus(`식품DB: ${rowCount.toLocaleString()}행 로드 (중복 포함)`);
-
-    refreshFoodEstimation();
-    refreshFoodAIEstimation();
-  } catch (e) {
-    foodDbIndex = new Map();
-    foodDbLoaded = false;
-    setFoodDbStatus("식품DB: 로드 실패");
-    elFoodHint.textContent =
-      "food_db.json을 찾지 못했습니다. 그래도 기록은 추가되며(0ml), 데이터없음으로 표시됩니다.";
-    setFoodPreview(null, 0, false);
-    setFoodAIPreview(null, 0, false);
-  }
-}
-
-
-
-      // ---------- Self tests (console) ----------
-      function assert(cond, msg) {
-        if (!cond) throw new Error("[TEST FAIL] " + msg);
-      }
-
-      function runSelfTests() {
-        // 공백/탭/개행 제거 테스트
-        assert(normalizeFoodName("  김치\n찌개 ") === "김치찌개", "normalizeFoodName remove newline");
-        assert(normalizeFoodName("김치	찌개") === "김치찌개", "normalizeFoodName remove tab");
-        assert((() => { setFoodWeight(105); return foodWeightG === 110; })(), "setFoodWeight snaps to 10g");
-        assert(normalizeFoodName("김치\r찌개") === "김치찌개", "normalizeFoodName remove CR");
-
-        // 특수문자 제거 + 소문자화
-        assert(normalizeFoodName("ABC-123") === "abc123", "normalizeFoodName keeps a-z0-9 only");
-
-        // 수분 계산
-        assert(computeEstimatedMl(100, 90) === 90, "computeEstimatedMl basic");
-        assert(computeEstimatedMl(0, 90) === 0, "computeEstimatedMl zero weight");
-
-        // 숫자 파싱
-        assert(toNumberMaybe("1,234.5") === 1234.5, "toNumberMaybe comma");
-
-        // 부분매칭 스모크 테스트
-        const tmp = new Map();
-        tmp.set(normalizeFoodName("흰색 양배추"), 91.0);
-        foodDbIndex = tmp;
-        assert(lookupMoisture("양배추") != null, "lookupMoisture partial contains should match");
+      function openModal(id) { deleteTargetId = id; elModalOverlay.style.display = "grid"; }
+      function closeModal() { elModalOverlay.style.display = "none"; }
+      function setActiveTab(t) {
+        activeTab = t;
+        document.querySelectorAll(".tab").forEach(el => el.classList.toggle("active", el.dataset.tab === t));
+        [elWaterCard, elFoodManualCard, elFoodAICard, elTodayCard].forEach(c => c.style.display = c.dataset.panel === t ? "block" : "none");
+        render();
       }
 
       function init() {
-        try { runSelfTests(); } catch (e) { console.error(e); }
-
-        // drink options
-        DRINK_TYPES.forEach((t) => {
-          const opt = document.createElement("option");
-          opt.value = t;
-          opt.textContent = t;
-          elDrinkType.appendChild(opt);
-        });
-        elDrinkType.value = "물";
-
-        // volume
-        setVolume(100);
-        setFoodWeight(100);
-        setFoodAIWeight(150);
-        refreshFoodAIEstimation();
-
-        // load
-        records = loadRecords().map((r) => {
-          if (!r.kind) return { ...r, kind: "water" };
-          return r;
-        });
-
-        // tabs
-        elTabs.addEventListener("click", (e) => {
-          const tab = e.target.closest(".tab");
-          if (!tab) return;
-          if (tab.classList.contains("disabled")) return;
-          const next = tab.dataset.tab;
-          if (!next) return;
-          setActiveTab(next);
-        });
-
-        // water
-        elMinus.addEventListener("click", () => {
-          if (volume <= 10) return;
-          setVolume(volume - 10);
-        });
+        DRINK_TYPES.forEach(t => { const o = document.createElement("option"); o.value = t; o.textContent = t; elDrinkType.appendChild(o); });
+        records = loadRecords();
+        elTabs.addEventListener("click", e => { const t = e.target.closest(".tab"); if (t && !t.classList.contains("disabled")) setActiveTab(t.dataset.tab); });
+        elMinus.addEventListener("click", () => setVolume(volume - 10));
         elPlus.addEventListener("click", () => setVolume(volume + 10));
-
         elAdd.addEventListener("click", () => {
           const now = new Date();
-          const item = {
-            id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
-            ts: now.toISOString(),
-            dateKey: dateKeyLocal(now),
-            timeLabel: formatTime12h(now),
-            kind: "water",
-            type: elDrinkType.value,
-            volume: volume,
-          };
-          records = [item, ...records];
-          saveRecords(records);
-          render();
+          records.unshift({ id: Date.now().toString(), ts: now.toISOString(), dateKey: dateKeyLocal(now), timeLabel: formatTime12h(now), kind: "water", type: elDrinkType.value, volume });
+          saveRecords(records); render();
         });
-
-        // food manual
         elFoodName.addEventListener("input", refreshFoodEstimation);
-
-        // 음식 중량 +/- (10g 단위)
-        elFoodMinus.addEventListener("click", () => {
-          if (foodWeightG <= 0) return;
-          setFoodWeight(foodWeightG - 10);
-          refreshFoodEstimation();
-        });
-        elFoodPlus.addEventListener("click", () => {
-          setFoodWeight(foodWeightG + 10);
-          refreshFoodEstimation();
-        });
-
-        // food AI (Mock UI + 저장 흐름)
-        elFoodAIPhoto.addEventListener("change", (e) => {
-          const file = e.target.files && e.target.files[0];
-          if (!file) return;
-          const img = document.createElement("img");
-          img.style.maxHeight = "100%";
-          img.style.maxWidth = "100%";
-          img.style.objectFit = "contain";
-          img.src = URL.createObjectURL(file);
-          elFoodAIPreview.innerHTML = "";
-          elFoodAIPreview.appendChild(img);
-        });
-
-        elFoodAIName.addEventListener("input", refreshFoodAIEstimation);
-
-        elFoodAIAnalyze.addEventListener("click", () => {
-          // ✅ 현재 단계: Mock AI (UI/저장 흐름 안정화)
-          elFoodAIName.value = "김치찌개";
-          setFoodAIWeight(300);
-          refreshFoodAIEstimation();
-        });
-
-        elFoodAIMinus.addEventListener("click", () => {
-          if (foodAIWeightG <= 0) return;
-          setFoodAIWeight(foodAIWeightG - 10);
-          refreshFoodAIEstimation();
-        });
-        elFoodAIPlus.addEventListener("click", () => {
-          setFoodAIWeight(foodAIWeightG + 10);
-          refreshFoodAIEstimation();
-        });
-
-        elFoodAISave.addEventListener("click", () => {
-          const name = String(elFoodAIName.value || "").trim();
-          if (!name) { elFoodAIName.focus(); return; }
-
-          const weight = Number(foodAIWeightG) || 0;
-          let hasData = false;
-          let moisture = null;
-          let estimated = 0;
-
-          if (foodDbLoaded) {
-            const hit = lookupMoisture(name);
-            if (hit) {
-              hasData = true;
-              moisture = hit.moisture;
-              estimated = computeEstimatedMl(weight, moisture);
-            }
-          }
-
-          const now = new Date();
-          const item = {
-            id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
-            ts: now.toISOString(),
-            dateKey: dateKeyLocal(now),
-            timeLabel: formatTime12h(now),
-            kind: "foodAI",
-            name,
-            weightG: Math.max(0, Math.round(weight)),
-            moisturePer100: hasData ? moisture : null,
-            hasData,
-            volume: estimated,
-            aiMeta: { mock: true },
-          };
-
-          records = [item, ...records];
-          saveRecords(records);
-
-          elFoodAIName.value = "";
-          setFoodAIWeight(150);
-          refreshFoodAIEstimation();
-          render();
-        });
-
+        elFoodMinus.addEventListener("click", () => { setFoodWeight(foodWeightG - 10); refreshFoodEstimation(); });
+        elFoodPlus.addEventListener("click", () => { setFoodWeight(foodWeightG + 10); refreshFoodEstimation(); });
         elFoodAdd.addEventListener("click", () => {
-          const name = String(elFoodName.value || "").trim();
-          const weight = Number(foodWeightG) || 0;
-          if (!name) { elFoodName.focus(); return; }
-
-          let hasData = false;
-          let moisture = null;
-          let estimated = 0;
-
-          if (foodDbLoaded) {
-  const hit = lookupMoisture(name);
-if (hit) {
-  if (hit.kind === "multi") {
-    openFoodPickModal({
-      ctx: "ai_save",
-      nameRaw: name,
-      nameKey: hit.nameKey,
-      weightG: weight,
-      candidates: hit.candidates,
-      onPicked: (entry) => {
-        foodChoiceCache.set(hit.nameKey, entry);
-        setFoodAIPreview(entry.moisture, computeEstimatedMl(weight, entry.moisture), true);
-        // 저장은 사용자가 다시 누르게(UX 안정)
-      },
-    });
-    return; // ✅ 저장 중단
-  }
-
-  hasData = true;
-  moisture = hit.moisture;
-  estimated = computeEstimatedMl(weight, moisture);
-}
-
-
-          // C옵션: 매칭 실패/DB 실패여도 기록은 추가
+          const name = elFoodName.value.trim(); if (!name) return;
+          const hit = lookupMoisture(name);
+          const moisture = hit && hit.kind === "single" ? hit.moisture : null;
           const now = new Date();
-          const item = {
-            id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
-            ts: now.toISOString(),
-            dateKey: dateKeyLocal(now),
-            timeLabel: formatTime12h(now),
-            kind: "foodManual",
-            name: name,
-            weightG: Math.max(0, Math.round(weight)),
-            moisturePer100: hasData ? moisture : null,
-            hasData: hasData,
-            volume: estimated,
-          };
-
-          records = [item, ...records];
-          saveRecords(records);
-
-          if (!hasData) {
-            elFoodHint.textContent = "⚠️ DB 매칭 실패: 0ml로 저장했습니다. (데이터없음 표시)";
-          } else {
-            elFoodHint.textContent = "음식이름/중량을 입력하면 DB의 수분(g/100g)으로 추정합니다.";
-          }
-
-          elFoodName.value = "";
-          setFoodWeight(100);
-          refreshFoodEstimation();
-          elFoodName.focus();
-          render();
+          records.unshift({ id: Date.now().toString(), ts: now.toISOString(), dateKey: dateKeyLocal(now), timeLabel: formatTime12h(now), kind: "foodManual", name, weightG: foodWeightG, volume: computeEstimatedMl(foodWeightG, moisture), hasData: !!moisture });
+          saveRecords(records); elFoodName.value = ""; setFoodWeight(100); refreshFoodEstimation(); render();
         });
-
-        // modal
-        elModalOverlay.addEventListener("mousedown", (e) => {
-          if (e.target === elModalOverlay) closeModal();
+        elFoodAIAnalyze.addEventListener("click", () => { elFoodAIName.value = "김치찌개"; setFoodAIWeight(300); refreshFoodAIEstimation(); });
+        elFoodAISave.addEventListener("click", () => {
+          const name = elFoodAIName.value.trim(); if (!name) return;
+          const hit = lookupMoisture(name);
+          const moisture = hit && hit.kind === "single" ? hit.moisture : null;
+          const now = new Date();
+          records.unshift({ id: Date.now().toString(), ts: now.toISOString(), dateKey: dateKeyLocal(now), timeLabel: formatTime12h(now), kind: "foodAI", name, weightG: foodAIWeightG, volume: computeEstimatedMl(foodAIWeightG, moisture), hasData: !!moisture });
+          saveRecords(records); elFoodAIName.value = ""; setFoodAIWeight(150); refreshFoodAIEstimation(); render();
         });
-        elModal.addEventListener("mousedown", (e) => e.stopPropagation());
+        elConfirm.addEventListener("click", () => { records = records.filter(r => r.id !== deleteTargetId); saveRecords(records); closeModal(); render(); });
         elCancel.addEventListener("click", closeModal);
-        elConfirm.addEventListener("click", () => {
-          if (!deleteTargetId) return;
-          records = records.filter((r) => r.id !== deleteTargetId);
-          saveRecords(records);
-          closeModal();
-          render();
+        elFoodPickConfirm.addEventListener("click", () => {
+          const entry = pendingFoodPick.candidates[elFoodPickSelect.value];
+          foodChoiceCache.set(pendingFoodPick.nameKey, entry);
+          pendingFoodPick.onPicked(entry);
+          elFoodPickOverlay.style.display = "none";
         });
-
-        // start
-        setActiveTab("water");
-        render();
-
-        // load food db
-        loadFoodDb();
-
-// food duplicate pick modal events
-elFoodPickOverlay.addEventListener("mousedown", (e) => {
-  if (e.target === elFoodPickOverlay) closeFoodPickModal();
-});
-elFoodPickModal.addEventListener("mousedown", (e) => e.stopPropagation());
-elFoodPickCancel.addEventListener("click", closeFoodPickModal);
-
-elFoodPickConfirm.addEventListener("click", () => {
-  if (!pendingFoodPick) return;
-
-  const idx = Number(elFoodPickSelect.value);
-  const entry = pendingFoodPick.candidates[idx];
-  if (!entry) return;
-
-  const key = pendingFoodPick.nameKey;
-  if (key) foodChoiceCache.set(key, entry);
-
-  const cb = pendingFoodPick.onPicked;
-  closeFoodPickModal();
-  if (typeof cb === "function") cb(entry);
-});
-
+        elFoodPickCancel.addEventListener("click", () => elFoodPickOverlay.style.display = "none");
+        setActiveTab("water"); loadFoodDb();
       }
-
       init();
     </script>
   </body>
