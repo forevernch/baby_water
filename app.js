@@ -1,39 +1,41 @@
-﻿import { initWaterTab } from './waterTab.js';
+﻿import { renderWaterTab } from './water.js';
 
-// 공통 데이터 로드
-export let records = JSON.parse(localStorage.getItem("hydration_records") || "[]");
+const storageKey = "hydration_records_v1";
+let records = JSON.parse(localStorage.getItem(storageKey) || "[]");
 
-const contentArea = document.getElementById('contentArea');
+const tabContent = document.getElementById('tabContent');
 const tabs = document.querySelectorAll('.tab');
 
-// 탭 전환 이벤트
-tabs.forEach(tab => {
-    tab.onclick = () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        renderTab(tab.dataset.target);
-    };
-});
+// 공통 데이터 업데이트 함수
+export function updateRecords(newRecords) {
+    records = newRecords;
+    localStorage.setItem(storageKey, JSON.stringify(records));
+    // 현재 활성화된 탭을 다시 그립니다.
+    const activeTab = document.querySelector('.tab.active').dataset.tab;
+    navigateTo(activeTab);
+}
 
-// 탭 렌더링 함수
-export function renderTab(target) {
-    contentArea.innerHTML = '';
-    
-    if (target === 'water') {
-        initWaterTab(contentArea);
-    } else if (target === 'monthly') {
-        contentArea.innerHTML = '<div class="card"><h3>🗓️ 월별요약</h3><p>준비 중입니다...</p></div>';
+function navigateTo(tabName) {
+    tabContent.innerHTML = ''; // 초기화
+
+    if (tabName === 'water') {
+        renderWaterTab(tabContent, records);
+    } else if (tabName === 'monthly') {
+        tabContent.innerHTML = '<div class="card"><h3>준비중...</h3></div>';
     } else {
-        contentArea.innerHTML = `<div class="card"><h3>${target}</h3><p>기능 구현 중...</p></div>`;
+        tabContent.innerHTML = `<div class="card"><h3>${tabName}</h3><p>작업 예정입니다.</p></div>`;
     }
 }
 
-// 데이터 저장 및 리프레시
-export function updateData(newRecords) {
-    records = newRecords;
-    localStorage.setItem("hydration_records", JSON.stringify(records));
-    renderTab('water'); // 현재는 물 탭 위주로 리프레시
-}
+// 탭 클릭 이벤트
+document.getElementById('tabMenu').addEventListener('click', (e) => {
+    const target = e.target.closest('.tab');
+    if (!target) return;
+    
+    tabs.forEach(t => t.classList.remove('active'));
+    target.classList.add('active');
+    navigateTo(target.dataset.tab);
+});
 
-// 첫 화면 실행
-renderTab('water');
+// 첫 진입 시 물 탭 로드
+navigateTo('water');

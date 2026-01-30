@@ -4,33 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>수분 섭취 기록</title>
-    <style>
-        :root { --txt0: rgba(231, 234, 243, 0.92); --txt2: rgba(231, 234, 243, 0.60); --primary: #3879ff; }
-        body { margin: 0; min-height: 100vh; color: var(--txt0); font-family: sans-serif; background: radial-gradient(1200px 600px at 20% 0%, #111a33 0%, #070b14 45%, #05070d 100%); }
-        .page { padding: 24px; } .container { max-width: 980px; margin: 0 auto; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
-        .tab { padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); cursor: pointer; white-space: nowrap; }
-        .tab.active { background: rgba(56, 121, 255, 0.22); border-color: var(--primary); }
-        .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 20px; }
-        .form-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; margin-bottom: 15px; }
-        select { width: 100%; height: 44px; border-radius: 12px; background: #060a14; border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0 12px; }
-        .volume-row { display: grid; grid-template-columns: 44px 1fr 44px; gap: 8px; }
-        .btn-icon { height: 44px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); display: grid; place-items: center; cursor: pointer; }
-        .volume-box { height: 44px; border-radius: 12px; background: #060a14; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; }
-        .primary-btn { width: 100%; height: 50px; background: var(--primary); color: white; border-radius: 14px; border: none; font-weight: 900; cursor: pointer; }
-        .list-wrap { border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; margin-top: 10px; overflow: hidden; background: rgba(6, 10, 20, 0.55); }
-        .list-header, .row { display: grid; grid-template-columns: 100px 1fr 100px 80px; padding: 12px; font-size: 13px; }
-        .list-header { background: rgba(255,255,255,0.03); color: var(--txt2); }
-        .right { text-align: right; }
-        .del-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; cursor: pointer; padding: 4px 8px; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="page">
         <div class="container">
             <div class="header">
-                <h2 style="margin:0">수분 섭취 기록</h2>
-                <p style="font-size:12px; color:gray">GitHub Pages Edition</p>
+                <div class="title">수분 섭취 기록</div>
+                <div class="subtitle">모듈화 버전</div>
             </div>
 
             <div class="tabs" id="tabMenu">
@@ -41,51 +22,9 @@
                 <div class="tab" data-tab="monthly">🗓️ 월별요약</div>
             </div>
 
-            <div id="displayArea"></div>
+            <div id="tabContent"></div>
         </div>
     </div>
-
-    <script type="module">
-        // 중요: 경로 문제 방지를 위해 상대경로 명시
-        import { renderWater } from './waterTab.js';
-
-        const displayArea = document.getElementById('displayArea');
-        const storageKey = "hydration_records_v1";
-
-        // 전역 상태 및 데이터 관리 함수
-        window.appState = {
-            records: JSON.parse(localStorage.getItem(storageKey) || "[]"),
-            save: (newRecords) => {
-                window.appState.records = newRecords;
-                localStorage.setItem(storageKey, JSON.stringify(newRecords));
-                refresh();
-            }
-        };
-
-        function refresh() {
-            const activeTab = document.querySelector('.tab.active').dataset.tab;
-            displayArea.innerHTML = '';
-            
-            if (activeTab === 'water') {
-                renderWater(displayArea, window.appState.records, window.appState.save);
-            } else if (activeTab === 'monthly') {
-                displayArea.innerHTML = '<div class="card"><h3>준비중...</h3></div>';
-            } else {
-                displayArea.innerHTML = `<div class="card"><h3>${activeTab} 탭</h3><p>구현 예정입니다.</p></div>`;
-            }
-        }
-
-        // 탭 클릭 이벤트
-        document.getElementById('tabMenu').onclick = (e) => {
-            const btn = e.target.closest('.tab');
-            if (!btn) return;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            refresh();
-        };
-
-        // 초기 실행
-        refresh();
-    </script>
+    <script type="module" src="./app.js"></script>
 </body>
 </html>
