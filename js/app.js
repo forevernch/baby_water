@@ -1,4 +1,4 @@
-import { initTabs } from "./tabs.js";
+﻿import { initTabs } from "./tabs.js";
 import { createDeleteModal } from "./modal.js";
 import { loadRecords, saveRecords } from "./storage.js";
 import { dateKeyLocal, formatTime12h } from "./utils.js";
@@ -11,16 +11,13 @@ import { initTodayTab } from "./today.js";
 import { initMonthlyTab } from "./monthly.js";
 
 function kindLabel(record) {
-  if (record.kind === "water") {
-    return `물/음료 · ${record.type}`;
-  }
+  if (record.kind === "water") return `물/음료 · ${record.type}`;
   if (record.kind === "foodManual") {
-    return `음식수동 · ${record.name}`;
+    const suffix = record.hasData === false ? " (데이터없음)" : "";
+    return `음식수동 · ${record.name}${suffix}`;
   }
-  if (record.kind === "foodAI") {
-    return `음식AI · ${record.name}`;
-  }
-  return record.kind;
+  if (record.kind === "foodAI") return `음식AI · ${record.name || "-"}`;
+  return record.kind || "-";
 }
 
 function main() {
@@ -34,6 +31,12 @@ function main() {
     today: document.getElementById("todayCard"),
     monthly: document.getElementById("monthlyCard"),
   };
+
+  // (필수 엘리먼트 누락 시 바로 알 수 있게 방어)
+  if (!tabsEl || !panelsByKey.water) {
+    console.error("필수 DOM이 누락되었습니다. index.html의 id를 확인하세요.");
+    return;
+  }
 
   /* ================= 삭제 모달 ================= */
   const modal = createDeleteModal({
@@ -50,9 +53,9 @@ function main() {
     return records;
   }
 
+  // ✅ 상태만 갱신 (저장은 호출한 곳에서 명시적으로)
   function setRecords(next) {
     records = next;
-    saveRecords(records);
   }
 
   function openDeleteModal(id) {
@@ -60,8 +63,10 @@ function main() {
   }
 
   modal.bindConfirm((id) => {
-    records = records.filter(r => r.id !== id);
-    saveRecords(records);
+    if (!id) return;
+    const next = records.filter((r) => r.id !== id);
+    setRecords(next);
+    saveRecords(next);
     modal.close();
     renderAll();
   });
@@ -70,56 +75,83 @@ function main() {
   const foodDb = new FoodDb();
 
   /* ================= 탭별 초기화 ================= */
+
   const waterTab = initWaterTab({
+    elDrinkType: document.getElementById("drinkType"),
+    elVolumeBox: document.getElementById("volumeBox"),
+    elMinus: document.getElementById("btnMinus"),
+    elPlus: document.getElementById("btnPlus"),
+    elAdd: document.getElementById("btnAdd"),
+    elWaterListBody: document.getElementById("waterListBody"),
+    elWaterTotal: document.getElementById("waterTotalPill"),
+
     getRecords,
     setRecords,
-    openDeleteModal,
+    saveRecords,
     renderAll,
+    openDeleteModal,
   });
 
   const foodManualTab = initFoodManualTab({
     foodDb,
+
+    elFoodDbStatus: document.getElementById("foodDbStatus"),
+    elFoodName: document.getElementById("foodName"),
+    elFoodWeightBox: document.getElementById("foodWeightBox"),
+    elFoodMinus: document.getElementById("foodBtnMinus"),
+    elFoodPlus: document.getElementById("foodBtnPlus"),
+    elFoodMoistureBox: document.getElementById("foodMoistureBox"),
+    elFoodEstimatedBox: document.getElementById("foodEstimatedBox"),
+    elFoodAdd: document.getElementById("btnFoodAdd"),
+    elFoodHint: document.getElementById("foodHint"),
+    elFoodManualListBody: document.getElementById("foodManualListBody"),
+    elFoodManualTotal: document.getElementById("foodManualTotalPill"),
+
     getRecords,
     setRecords,
+    saveRecords,
+    renderAll,
     openDeleteModal,
     dateKeyLocal,
     formatTime12h,
-    renderAll,
   });
 
   const foodAiTab = initFoodAiTab({
-    foodDb
+    foodDb,
+    elFoodAiStatus: document.getElementById("foodAiStatus"),
   });
 
   const todayTab = initTodayTab({
+    elSumWater: document.getElementById("sumWater"),
+    elSumFoodManual: document.getElementById("sumFoodManual"),
+    elSumFoodAI: document.getElementById("sumFoodAI"),
+    elSumAll: document.getElementById("sumAll"),
+    elAllCount: document.getElementById("allCountPill"),
+    elAllListBody: document.getElementById("allListBody"),
+
     kindLabel,
-    openDeleteModal
+    openDeleteModal,
   });
 
   const monthlyTab = initMonthlyTab({
-  elMonthlyStatus: document.getElementById("monthlyStatus"),
-});
+    elMonthlyStatus: document.getElementById("monthlyStatus"),
+  });
 
   /* ================= 렌더 ================= */
   function renderAll() {
     const todayKey = dateKeyLocal(new Date());
-    const todayRecords = records.filter(r => r.dateKey === todayKey);
+    const todayRecords = records.filter((r) => r.dateKey === todayKey);
 
-    const waterRecords = todayRecords.filter(r => r.kind === "water");
-    const foodManualRecords = todayRecords.filter(r => r.kind === "foodManual");
-    const foodAIRecords = todayRecords.filter(r => r.kind === "foodAI");
+    const waterRecords = todayRecords.filter((r) => r.kind === "water");
+    const foodManualRecords = todayRecords.filter((r) => r.kind === "foodManual");
+    const foodAIRecords = todayRecords.filter((r) => r.kind === "foodAI");
 
     const sumWater = waterTab.render(waterRecords);
     const sumFoodManual = foodManualTab.render(foodManualRecords);
-    const sumFoodAI = foodAIRecords.reduce((s, r) => s + (r.volume || 0), 0);
+    const sumFoodAI = foodAIRecords.reduce((s, r) => s + (Number(r.volume) || 0), 0);
 
     foodAiTab.render();
-    todayTab.render(todayRecords, {
-      sumWater,
-      sumFoodManual,
-      sumFoodAI
-    });
-
+    todayTab.render(todayRecords, { sumWater, sumFoodManual, sumFoodAI });
     monthlyTab.render();
   }
 
@@ -127,7 +159,7 @@ function main() {
   const tabs = initTabs({
     tabsEl,
     panelsByKey,
-    onTabChanged: renderAll
+    onTabChanged: renderAll,
   });
 
   /* ================= 시작 ================= */
