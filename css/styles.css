@@ -385,3 +385,93 @@ select, input {
   background: rgba(56,121,255,0.14);
   box-shadow: 0 0 0 1px rgba(56,121,255,0.18) inset;
 }
+
+/* =========================
+   ✅ 물/음료 탭: 한 줄 [음료][용량] 고정
+   ========================= */
+
+.water-row{
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+.water-col{
+  min-width: 0;
+}
+
+.water-drink{
+  flex: 1 1 auto;         /* 음료 select가 넓게 */
+}
+
+.water-volume{
+  flex: 0 0 170px;         /* 용량 영역 고정 폭(데스크톱/태블릿) */
+}
+
+.volume-row-compact{
+  grid-template-columns: 40px 1fr 40px;
+  gap: 8px;
+}
+
+@media (max-width: 720px){
+  .water-row{
+    gap: 10px;
+  }
+  .water-volume{
+    flex-basis: 150px;     /* 모바일에서 조금 더 컴팩트 */
+  }
+  .volume-row-compact{
+    grid-template-columns: 38px 1fr 38px;
+    gap: 8px;
+  }
+  /* label 위아래 간격 약간 축소(스크롤 감소) */
+  .water-row .label{
+    margin-bottom: 6px;
+  }
+
+
+/* =========================
+   ✅ 음식수동: 한 줄 레이아웃(가독성/스크롤 최소화)
+   ========================= */
+
+.food-row{
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+.food-col{ min-width: 0; }
+
+.food-name{ flex: 1 1 auto; }     /* 음식 이름 입력이 넓게 */
+.food-weight{ flex: 0 0 180px; }  /* 중량 스텝퍼 고정 폭 */
+
+.food-moist{ flex: 1 1 50%; }
+.food-est{ flex: 1 1 50%; }
+
+/* value 박스는 input과 비슷하지만 읽기 전용 느낌 */
+.value-box{
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(6, 10, 20, 0.65);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-weight: 900;
+  color: rgba(231, 234, 243, 0.92);
+}
+
+/* 후보 리스트가 길면 중량 칼럼과 높이가 달라져도 하단 정렬 안정 */
+.food-name .candidates{
+  margin-top: 8px;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 720px){
+  .food-row{ gap: 10px; }
+  .food-weight{ flex-basis: 150px; } /* 모바일에서 조금 더 컴팩트 */
+  .food-row .label{ margin-bottom: 6px; }
+}
+
