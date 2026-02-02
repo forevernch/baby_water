@@ -486,7 +486,7 @@ select, input {
 .food-col{ min-width: 0; }
 
 .food-name{ flex: 1 1 auto; }
-.food-weight{ flex: 0 0 140px; }
+.food-weight{ flex: 0 0 150px; }
 
 .food-moist{ flex: 1 1 50%; }
 .food-est{ flex: 1 1 50%; }
@@ -521,9 +521,33 @@ select, input {
 
   /* ✅ water: still 1-row, just a bit tighter */
   .water-row{ gap: 10px; flex-wrap: nowrap; }
-  .water-volume{ flex-basis: 140px; }
+  .water-volume{ flex-basis: 150px; }
 
   /* ✅ food: keep two food-row blocks as 2 lines; each line no wrap */
   .food-row{ gap: 10px; flex-wrap: nowrap; }
-  .food-weight{ flex-basis: 140px; }
+  .food-weight{ flex-basis: 150px; }
+}
+/* =========================
+   ✅ 음식수동: 1행(이름+중량) / 2행(검색결과) 분리
+   ========================= */
+
+.food-top-row{
+  display:flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+.food-top-name{ flex: 1 1 auto; min-width: 0; }
+.food-top-weight{ flex: 0 0 180px; }
+
+.food-cand-row{
+  margin-top: 10px;
+}
+
+/* 모바일에서 중량 폭을 더 컴팩트하게 */
+@media (max-width: 720px){
+  .food-top-row{ gap: 10px; }
+  .food-top-weight{ flex-basis: 150px; }
+  .food-top-row .label{ margin-bottom: 6px; }
 }
