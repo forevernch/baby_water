@@ -6,7 +6,6 @@ export function initFoodManualTab(ctx) {
     foodDb,
     elFoodDbStatus,
     elFoodName,
-    elFoodCandidates,        // ✅ 추가
     elFoodWeightBox,
     elFoodMinus,
     elFoodPlus,
@@ -26,9 +25,6 @@ export function initFoodManualTab(ctx) {
   } = ctx;
 
   let foodWeightG = 100;
-
-  // ✅ 사용자가 선택한 DB 항목
-  let selected = null; // { name, moisture }
 
   function setFoodDbStatus(text) {
     if (elFoodDbStatus) elFoodDbStatus.textContent = text;
@@ -52,112 +48,40 @@ export function initFoodManualTab(ctx) {
     if (elFoodEstimatedBox) elFoodEstimatedBox.textContent = String(estimated || 0);
   }
 
-  function clearSelection() {
-    selected = null;
-    setFoodPreview(null, 0, false);
-  }
-
-  function renderCandidates(list) {
-    if (!elFoodCandidates) return;
-
-    elFoodCandidates.innerHTML = "";
-
-    if (!list || list.length === 0) return;
-
-    list.forEach((item) => {
-      const row = document.createElement("div");
-      row.className = "cand-item" + (selected && selected.name === item.name ? " selected" : "");
-
-      const nameEl = document.createElement("div");
-      nameEl.className = "cand-name";
-      nameEl.textContent = item.name;
-
-      const moistEl = document.createElement("div");
-      moistEl.className = "cand-moist";
-      moistEl.textContent = `수분 ${item.moisture} g/100g`;
-
-      row.append(nameEl, moistEl);
-
-      row.addEventListener("click", () => {
-        selected = { name: item.name, moisture: item.moisture };
-
-        const est = computeEstimatedMl(foodWeightG, selected.moisture);
-        setFoodPreview(selected.moisture, est, true);
-
-        // 선택 표시 갱신
-        renderCandidates(list);
-      });
-
-      elFoodCandidates.appendChild(row);
-    });
-  }
-
-  function refreshSearchAndEstimate() {
+  function refreshEstimate() {
     if (!elFoodName) return;
 
-    const q = elFoodName.value.trim();
-
-    // 입력이 비었으면 초기화
-    if (!q) {
-      renderCandidates([]);
-      clearSelection();
-      return;
-    }
-
-    // DB가 아직 없으면 선택/후보 비움
-    if (!foodDb?.loaded) {
-      renderCandidates([]);
-      clearSelection();
-      return;
-    }
-
-    // ✅ 포함 검색 후보
-    const candidates = foodDb.search(q, 20);
-    renderCandidates(candidates);
-
-    // 자동 선택은 하지 않음(사용자 선택 원칙)
-    // 다만 exact match가 1개라면 UX상 자동선택 원하면 여기서 가능
-    if (!selected) {
+    const name = elFoodName.value.trim();
+    if (!name || !foodDb?.loaded) {
       setFoodPreview(null, 0, false);
-    } else {
-      const est = computeEstimatedMl(foodWeightG, selected.moisture);
-      setFoodPreview(selected.moisture, est, true);
+      return;
     }
+
+    const hit = foodDb.lookup(name);
+    if (!hit) {
+      setFoodPreview(null, 0, false);
+      return;
+    }
+
+    const est = computeEstimatedMl(foodWeightG, hit.moisture);
+    setFoodPreview(hit.moisture, est, true);
   }
 
   // 이벤트 바인딩
-  if (elFoodName) {
-    elFoodName.addEventListener("input", () => {
-      // 입력이 바뀌면 기존 선택은 무효 처리(새 검색 기준)
-      selected = null;
-      refreshSearchAndEstimate();
-    });
-  }
+  if (elFoodName) elFoodName.addEventListener("input", refreshEstimate);
 
   if (elFoodMinus) {
     elFoodMinus.addEventListener("click", () => {
       if (foodWeightG <= 0) return;
       setFoodWeight(foodWeightG - 10);
-
-      if (selected) {
-        const est = computeEstimatedMl(foodWeightG, selected.moisture);
-        setFoodPreview(selected.moisture, est, true);
-      } else {
-        setFoodPreview(null, 0, false);
-      }
+      refreshEstimate();
     });
   }
 
   if (elFoodPlus) {
     elFoodPlus.addEventListener("click", () => {
       setFoodWeight(foodWeightG + 10);
-
-      if (selected) {
-        const est = computeEstimatedMl(foodWeightG, selected.moisture);
-        setFoodPreview(selected.moisture, est, true);
-      } else {
-        setFoodPreview(null, 0, false);
-      }
+      refreshEstimate();
     });
   }
 
@@ -165,18 +89,24 @@ export function initFoodManualTab(ctx) {
     elFoodAdd.addEventListener("click", () => {
       if (!elFoodName) return;
 
-      const typed = elFoodName.value.trim();
-      if (!typed) {
+      const name = elFoodName.value.trim();
+      if (!name) {
         elFoodName.focus();
         return;
       }
 
-      // ✅ 사용자가 후보 중 선택했으면 그걸 저장
-      // 선택 안 했으면 “사용자 입력값”으로 저장하되 수분 0 처리
-      const finalName = selected ? selected.name : typed;
-      const hasData = !!selected;
-      const moisture = selected ? selected.moisture : null;
-      const estimated = selected ? computeEstimatedMl(foodWeightG, moisture) : 0;
+      let hasData = false;
+      let moisture = null;
+      let estimated = 0;
+
+      if (foodDb?.loaded) {
+        const hit = foodDb.lookup(name);
+        if (hit) {
+          hasData = true;
+          moisture = hit.moisture;
+          estimated = computeEstimatedMl(foodWeightG, moisture);
+        }
+      }
 
       const now = new Date();
       const item = {
@@ -185,7 +115,7 @@ export function initFoodManualTab(ctx) {
         dateKey: dateKeyLocal(now),
         timeLabel: formatTime12h(now),
         kind: "foodManual",
-        name: finalName,
+        name,
         weightG: foodWeightG,
         moisturePer100: hasData ? moisture : null,
         hasData,
@@ -196,20 +126,16 @@ export function initFoodManualTab(ctx) {
       setRecords(next);
       saveRecords(next);
 
-      // 입력/선택 초기화
+      // 입력 초기화
       elFoodName.value = "";
-      selected = null;
-      renderCandidates([]);
       setFoodWeight(100);
-      setFoodPreview(null, 0, false);
-
+      refreshEstimate();
       renderAll();
     });
   }
 
   // 초기 UI
   setFoodWeight(100);
-  setFoodPreview(null, 0, false);
 
   return {
     async loadDb() {
@@ -218,22 +144,27 @@ export function initFoodManualTab(ctx) {
       const r = await foodDb.load();
       if (r.ok) {
         setFoodDbStatus(`식품DB: ${foodDb.count}개 로드`);
+        refreshEstimate();
+
+        // 안내문이 있다면 초기화(선택)
         if (elFoodHint) elFoodHint.textContent = "";
-        refreshSearchAndEstimate();
       } else {
         setFoodDbStatus("식품DB: 로드 실패");
+
+        // ✅ elFoodHint가 없어도 앱이 죽지 않게 처리
         if (elFoodHint) {
           elFoodHint.textContent =
-            "food_db.json 로드 실패. 기록은 가능하지만 수분은 0ml로 저장됩니다.";
+            "food_db.json을 찾지 못했습니다. 기록은 가능하지만 수분은 0ml로 저장됩니다.";
         }
-        renderCandidates([]);
-        clearSelection();
+
+        // 로드 실패 시에도 추정치는 0으로 표기
+        setFoodPreview(null, 0, false);
       }
     },
 
     render(recordsToday) {
       const sum = (recordsToday || []).reduce((s, r) => s + (Number(r.volume) || 0), 0);
-      if (elFoodManualTotal) elFoodManualTotal.textContent = `${sum} ml`;
+      if (elFoodManualTotal) elFoodManualTotal.textContent = `총합: ${sum} ml`;
 
       renderList(elFoodManualListBody, recordsToday, {
         kindText: false,
