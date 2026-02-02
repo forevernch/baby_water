@@ -1,4 +1,4 @@
-﻿import { stripBomIfNeeded, normalizeFoodName, toNumberMaybe } from "./utils.js";
+﻿import { stripBomIfNeeded, normalizeFoodName, toNumberMaybe } from "./js/utils.js";
 
 export const FOOD_DB_FILE = "../food_db.json";
 
