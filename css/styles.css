@@ -1,4 +1,4 @@
-﻿:root {
+﻿﻿:root {
   --txt0: rgba(231, 234, 243, 0.92);
   --txt1: rgba(231, 234, 243, 0.70);
   --txt2: rgba(231, 234, 243, 0.60);
@@ -40,189 +40,299 @@ body {
   padding: 10px 14px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(231, 234, 243, 0.92);
+  background: rgba(6, 10, 20, 0.45);
+  color: rgba(231, 234, 243, 0.90);
+  font-weight: 800;
   cursor: pointer;
   user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
-
+.tab:hover { background: rgba(6, 10, 20, 0.65); }
 .tab.active {
-  background: rgba(56, 121, 255, 0.22);
-  box-shadow: 0 0 0 1px rgba(56, 121, 255, 0.35) inset;
+  border-color: rgba(56, 121, 255, 0.35);
+  background: rgba(56, 121, 255, 0.15);
+  box-shadow: 0 0 0 1px rgba(56, 121, 255, 0.12) inset;
 }
-
 .tab.coming {
-  color: rgba(231, 234, 243, 0.75);
+  opacity: 0.75;
   border-style: dashed;
+  cursor: default;
 }
-
-.tab.coming::after{
+.tab.coming::after {
   content: "준비중";
+  margin-left: 8px;
   font-size: 11px;
-  opacity: 0.85;
-  padding: 2px 6px;
+  font-weight: 900;
+  padding: 3px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(231, 234, 243, 0.75);
 }
 
 /* =========================
-   Card
+   Cards / Sections
    ========================= */
 .card {
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
-  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(6, 10, 20, 0.55);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+  padding: 16px;
 }
 
-.section-title-row {
-  display: flex;
+.section-title-row{
+  display:flex;
+  align-items:center;
   justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
-.section-title { font-size: 16px; font-weight: 800; letter-spacing: -0.1px; }
-
-/* =========================
-   Forms
-   ========================= */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 14px;
-  margin-top: 12px;
+.section-title{
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.2px;
 }
-
-.label {
+.status{
   font-size: 12px;
+  color: rgba(231, 234, 243, 0.70);
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.label{
+  font-size: 12px;
+  font-weight: 800;
   color: rgba(231, 234, 243, 0.70);
   margin-bottom: 8px;
 }
 
-select, input {
+input[type="text"], select {
   width: 100%;
   height: 44px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.10);
   background: rgba(6, 10, 20, 0.65);
-  color: rgba(231, 234, 243, 0.95);
+  color: rgba(231, 234, 243, 0.92);
   padding: 0 12px;
   outline: none;
-}
-
-.volume-row {
-  display: grid;
-  grid-template-columns: 44px 1fr 44px;
-  gap: 10px;
-  align-items: center;
-}
-
-.btn-icon {
-  height: 44px;
-  width: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(231, 234, 243, 0.95);
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
   font-weight: 800;
-  user-select: none;
+}
+input[type="text"]::placeholder { color: rgba(231, 234, 243, 0.40); }
+input[type="text"]:focus, select:focus {
+  border-color: rgba(56, 121, 255, 0.35);
+  box-shadow: 0 0 0 3px rgba(56, 121, 255, 0.10);
 }
 
-.btn-icon.disabled {
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(231, 234, 243, 0.30);
-  cursor: not-allowed;
-}
-
-.volume-box {
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-}
-
-/* read-only value box (food moisture/estimate) */
-.value-box{
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.65);
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  font-weight: 900;
-  color: rgba(231, 234, 243, 0.92);
-}
-
-.primary-btn {
-  margin-top: 14px;
-  height: 48px;
+.primary-btn{
   width: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(56, 121, 255, 0.55);
-  background: linear-gradient(180deg, rgba(56, 121, 255, 0.95) 0%, rgba(41, 103, 241, 0.95) 100%);
-  color: white;
+  margin-top: 14px;
+  height: 54px;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
   font-weight: 900;
-  letter-spacing: -0.1px;
+  letter-spacing: -0.2px;
+  color: rgba(240, 245, 255, 0.95);
   cursor: pointer;
-  box-shadow: 0 16px 30px rgba(41, 103, 241, 0.35);
+  background: linear-gradient(180deg, rgba(56,121,255,0.95) 0%, rgba(34,96,230,0.95) 100%);
+  box-shadow: 0 18px 40px rgba(56, 121, 255, 0.20);
 }
+.primary-btn:hover { filter: brightness(1.02); }
 
-.divider { height: 1px; background: rgba(255, 255, 255, 0.08); margin: 18px 0; }
-
-.hint { margin-top: 12px; font-size: 12px; color: rgba(231, 234, 243, 0.60); }
-
-/* =========================
-   Pills / Status
-   ========================= */
-.pill {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
+.hint{
+  margin-top: 10px;
   font-size: 12px;
-  color: rgba(231, 234, 243, 0.80);
-  white-space: nowrap;
+  color: rgba(231, 234, 243, 0.55);
 }
 
-.pill-blue{
-  border: 1px solid rgba(56, 121, 255, 0.28);
-  background: rgba(56, 121, 255, 0.16);
-  color: rgba(190, 216, 255, 0.95);
-}
-
-.status {
-  font-size: 12px;
-  color: rgba(231, 234, 243, 0.75);
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  white-space: nowrap;
+.divider{
+  margin: 16px 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .coming-box{
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1px dashed rgba(255,255,255,0.14);
   background: rgba(6, 10, 20, 0.45);
   padding: 14px;
   color: rgba(231, 234, 243, 0.75);
   line-height: 1.6;
+}
+
+/* =========================
+   Records (UI2 list)
+   ========================= */
+.records-card{
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(6, 10, 20, 0.45);
+  padding: 14px;
+}
+.records-card-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.records-card-title{
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.2px;
+}
+.pill{
+  font-size: 12px;
+  font-weight: 900;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(231, 234, 243, 0.80);
+}
+.pill-blue{
+  border-color: rgba(56, 121, 255, 0.22);
+  background: rgba(56, 121, 255, 0.12);
+  color: rgba(230, 240, 255, 0.92);
+}
+.records-list{ display: flex; flex-direction: column; gap: 10px; }
+.records-empty{
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px dashed rgba(255,255,255,0.14);
+  color: rgba(231, 234, 243, 0.60);
+  text-align: center;
+}
+
+.record-item{
+  display:flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(10, 14, 26, 0.55);
+}
+.record-time{
+  width: 64px;
+  color: rgba(231, 234, 243, 0.75);
+  font-weight: 900;
+  line-height: 1.15;
+}
+.record-title{
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 900;
+  font-size: 16px;
+  letter-spacing: -0.2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.record-ml{
+  min-width: 76px;
+  text-align: right;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: -0.2px;
+}
+.record-del{
+  width: 42px;
+  height: 42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 76, 96, 0.22);
+  background: rgba(255, 76, 96, 0.10);
+  cursor: pointer;
+}
+.record-del:hover{ filter: brightness(1.05); }
+.record-del svg{ width: 18px; height: 18px; fill: rgba(255, 122, 138, 0.9); }
+
+/* =========================
+   Stepper (volume)
+   ========================= */
+.volume-row{
+  display:grid;
+  grid-template-columns: 44px 1fr 44px;
+  gap: 10px;
+  align-items: center;
+}
+.btn-icon{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 20px;
+  font-weight: 900;
+  cursor:pointer;
+  user-select:none;
+}
+.btn-icon.disabled{
+  opacity: 0.5;
+  cursor: default;
+}
+.volume-box{
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(6, 10, 20, 0.65);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: -0.2px;
+}
+
+/* =========================
+   Candidates (food search list)
+   ========================= */
+.candidates{
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.cand-item{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.03);
+  cursor: pointer;
+}
+.cand-name{
+  min-width:0;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 900;
+  color: rgba(231,234,243,0.92);
+}
+.cand-moist{
+  flex:0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: rgba(231,234,243,0.75);
+  white-space: nowrap;
+}
+.cand-item.selected{
+  border: 1px solid rgba(56,121,255,0.35);
+  background: rgba(56,121,255,0.14);
+  box-shadow: 0 0 0 1px rgba(56,121,255,0.18) inset;
 }
 
 /* =========================
@@ -236,6 +346,7 @@ select, input {
 }
 
 .summary-box {
+  min-width: 0;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.10);
   background: rgba(6, 10, 20, 0.55);
@@ -244,6 +355,44 @@ select, input {
 
 .summary-label { font-size: 12px; color: rgba(231, 234, 243, 0.70); margin-bottom: 6px; }
 .summary-value { font-size: 20px; font-weight: 900; letter-spacing: -0.2px; }
+
+/* ✅ 총합 강조 타일(오늘 총합) */
+.summary-box.summary-total{
+  border: 1px solid rgba(0, 210, 255, 0.28);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 210, 255, 0.22) 0%,
+    rgba(0, 170, 255, 0.14) 60%,
+    rgba(6, 10, 20, 0.55) 100%
+  );
+  box-shadow:
+    0 14px 32px rgba(0, 210, 255, 0.12),
+    0 0 0 1px rgba(0, 210, 255, 0.14) inset;
+}
+
+.summary-box.summary-total .summary-label{
+  color: rgba(210, 245, 255, 0.92);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-box.summary-total .summary-value{
+  color: rgba(235, 255, 255, 0.98);
+  text-shadow: 0 1px 12px rgba(0, 210, 255, 0.18);
+}
+
+.summary-box.summary-total .drop{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  background: rgba(0, 210, 255, 0.16);
+  border: 1px solid rgba(0, 210, 255, 0.22);
+  font-size: 14px;
+}
 
 /* =========================
    Modal
@@ -268,209 +417,35 @@ select, input {
 }
 
 .modal-title { font-size: 16px; font-weight: 900; margin-bottom: 8px; }
-.modal-text { font-size: 13px; color: rgba(231, 234, 243, 0.75); line-height: 1.45; }
-
-.modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-
+.modal-text { font-size: 13px; color: rgba(231, 234, 243, 0.75); line-height: 1.6; }
+.modal-btns { display:flex; gap: 10px; margin-top: 14px; }
 .modal-btn {
-  height: 38px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(231, 234, 243, 0.92);
-  cursor: pointer;
-  font-weight: 800;
-}
-
-.modal-btn.danger {
-  border: 1px solid rgba(255, 96, 96, 0.30);
-  background: rgba(255, 96, 96, 0.12);
-}
-
-/* =========================
-   UI2: Records Card + List
-   ========================= */
-.records-card{
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(6, 10, 20, 0.55);
-  padding: 12px;
-}
-
-.records-card-head{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.records-card-title{
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: -0.1px;
-}
-
-.records-list{
-  display:flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.records-empty{
-  margin-top: 10px;
-  text-align:center;
-  color: rgba(231, 234, 243, 0.55);
-  font-size: 13px;
-  padding: 10px 0 4px;
-}
-
-.record-item{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px 12px;
+  flex:1 1 auto;
+  height: 44px;
   border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03);
-}
-
-.record-left{
-  min-width: 0;
-  display:flex;
-  align-items:center;
-  gap: 10px;
-}
-
-.record-time{
-  font-variant-numeric: tabular-nums;
-  font-size: 14px;
-  color: rgba(231, 234, 243, 0.88);
-  width: 64px;
-  flex: 0 0 auto;
-}
-
-.record-type{
-  min-width: 0;
-  font-size: 14px;
-  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
   color: rgba(231, 234, 243, 0.92);
-  overflow:hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.record-right{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  flex: 0 0 auto;
-}
-
-.record-ml{
-  font-variant-numeric: tabular-nums;
-  font-size: 16px;
   font-weight: 900;
-  color: rgba(231, 234, 243, 0.92);
-  min-width: 72px;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.record-del{
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 96, 96, 0.18);
-  background: rgba(255, 96, 96, 0.08);
-  display:grid;
-  place-items:center;
   cursor: pointer;
 }
-
-.record-del svg{
-  width: 18px;
-  height: 18px;
-  opacity: 0.9;
-  fill: rgba(255, 96, 96, 0.95);
+.modal-btn.danger{
+  border-color: rgba(255, 76, 96, 0.22);
+  background: rgba(255, 76, 96, 0.12);
 }
 
 /* =========================
-   Candidates (food db search results)
-   ========================= */
-.candidates{
-  display:flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.cand-item{
-  display:flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.03);
-  cursor: pointer;
-}
-
-.cand-name{
-  min-width:0;
-  overflow:hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-  font-weight: 800;
-  color: rgba(231,234,243,0.92);
-}
-
-.cand-moist{
-  flex:0 0 auto;
-  font-variant-numeric: tabular-nums;
-  font-size: 12px;
-  color: rgba(231,234,243,0.75);
-  white-space: nowrap;
-}
-
-.cand-item.selected{
-  border: 1px solid rgba(56,121,255,0.35);
-  background: rgba(56,121,255,0.14);
-  box-shadow: 0 0 0 1px rgba(56,121,255,0.18) inset;
-}
-
-/* =========================
-   Compact Stepper (shared)
-   ========================= */
-.volume-row-compact{
-  grid-template-columns: 40px 1fr 40px;
-  gap: 8px;
-}
-
-/* =========================
-   ✅ Water tab: ALWAYS 1-row [Drink][Volume]
+   ✅ water: one-row [drink][volume]
    ========================= */
 .water-row{
   display: flex;
   gap: 12px;
   align-items: flex-end;
   margin-top: 12px;
-  flex-wrap: nowrap;          /* 🔒 never wrap */
 }
-
 .water-col{ min-width: 0; }
-
-.water-drink{
-  flex: 1 1 auto;             /* drink takes remaining space */
-}
-
-.water-volume{
-  flex: 0 0 140px;            /* fixed width */
-}
+.water-drink{ flex: 1 1 auto; }
+.water-volume{ flex: 0 0 140px; }
 
 /* =========================
    ✅ Food manual: 2 lines layout (two food-row blocks in HTML)
@@ -480,26 +455,47 @@ select, input {
   gap: 12px;
   align-items: flex-end;
   margin-top: 12px;
-  flex-wrap: nowrap;          /* keep each row on one line */
+  flex-wrap: nowrap;
 }
-
 .food-col{ min-width: 0; }
-
 .food-name{ flex: 1 1 auto; }
 .food-weight{ flex: 0 0 150px; }
-
 .food-moist{ flex: 1 1 50%; }
 .food-est{ flex: 1 1 50%; }
 
+.value-box{
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(6, 10, 20, 0.65);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-weight: 900;
+  color: rgba(231, 234, 243, 0.92);
+}
+
 /* =========================
-   Mobile (≤720px)
+   ✅ 음식수동: 1행(이름+중량) / 2행(검색결과) 분리
+   ========================= */
+.food-top-row{
+  display:flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+.food-top-name{ flex: 1 1 auto; min-width: 0; }
+.food-top-weight{ flex: 0 0 180px; }
+.food-cand-row{ margin-top: 10px; }
+
+/* =========================
+   Mobile (≤720px) — 충돌 제거 + 2×2 확정
    ========================= */
 @media (max-width: 720px) {
   .page { padding: 14px; }
 
   /* other screens still can stack */
   .form-grid { grid-template-columns: 1fr; }
-  .summary-grid { grid-template-columns: 1fr; }
 
   /* records */
   .records-card{ padding: 12px; }
@@ -526,52 +522,15 @@ select, input {
   /* ✅ food: keep two food-row blocks as 2 lines; each line no wrap */
   .food-row{ gap: 10px; flex-wrap: nowrap; }
   .food-weight{ flex-basis: 150px; }
-}
-/* =========================
-   ✅ 음식수동: 1행(이름+중량) / 2행(검색결과) 분리
-   ========================= */
 
-.food-top-row{
-  display:flex;
-  gap: 12px;
-  align-items: flex-end;
-  margin-top: 12px;
-}
-
-.food-top-name{ flex: 1 1 auto; min-width: 0; }
-.food-top-weight{ flex: 0 0 180px; }
-
-.food-cand-row{
-  margin-top: 10px;
-}
-
-/* 모바일에서 중량 폭을 더 컴팩트하게 */
-@media (max-width: 720px){
+  /* ✅ food-top-row */
   .food-top-row{ gap: 10px; }
   .food-top-weight{ flex-basis: 150px; }
   .food-top-row .label{ margin-bottom: 6px; }
 }
 
 /* =========================
-   ✅ 오늘요약: 모바일 2x2 그리드 + 총합 강조 타일
-   ========================= */
-
-/* 기본(데스크탑/태블릿)에서도 보기 좋게 정렬 보강 */
-.summary-grid{
-  gap: 12px;
-}
-.summary-box{
-  border-radius: 16px;
-  padding: 14px;
-  min-height: 92px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-
-/* =========================
-   ✅ 오늘요약(모바일): 2x2 타일 균일화 + 오버플로우 방지
+   ✅ 오늘요약(모바일): 2x2 타일 균일화 + 오버플로우 방지 (확정)
    ========================= */
 @media (max-width: 720px){
   .summary-grid{
@@ -579,33 +538,34 @@ select, input {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     align-items: stretch;
+    grid-auto-rows: 1fr;
   }
 
   .summary-box{
     width: 100%;
     min-width: 0;
-    min-height: 96px;        /* ✅ 타일 높이 통일 */
+    min-height: 96px;
     padding: 12px;
-    overflow: hidden;        /* ✅ 내부 오버플로우 방지 */
+    overflow: hidden;
+    border-radius: 16px;
   }
 
   .summary-label{
     font-size: 12px;
     line-height: 1.25;
     margin-bottom: 8px;
-    white-space: nowrap;     /* ✅ 라벨 줄바꿈 방지 */
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* ✅ 너무 길면 ... */
+    text-overflow: ellipsis;
   }
 
   .summary-value{
     font-size: 20px;
     line-height: 1.1;
     font-weight: 900;
-    white-space: nowrap;     /* ✅ "200 ml" 한 줄 유지 */
+    white-space: nowrap;
   }
 
-  /* ✅ 총합 타일도 카드 밖으로 안 튀어나오게 */
   .summary-box.summary-total{
     width: 100%;
     min-width: 0;
@@ -613,7 +573,6 @@ select, input {
     border-radius: 16px;
   }
 
-  /* 💧 아이콘 박스도 모바일에서 살짝 축소 */
   .summary-box.summary-total .drop{
     width: 20px;
     height: 20px;
@@ -621,5 +580,3 @@ select, input {
     font-size: 13px;
   }
 }
-
-
