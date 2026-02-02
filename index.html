@@ -74,16 +74,14 @@
             <div class="status" id="foodDbStatus">식품DB: 로딩중</div>
           </div>
 
-          <!-- ✅ 음식수동: 1행 [음식이름][중량] -->
-<div class="food-row">
-  <div class="food-col food-name">
+<!-- ✅ 1행: 음식이름 + 중량(같은 줄) -->
+<div class="food-top-row">
+  <div class="food-top-name">
     <div class="label">음식 이름</div>
     <input id="foodName" type="text" placeholder="예: 귀리, 바나나, 사과" />
-    <div class="label" style="margin-top:10px;">검색 결과</div>
-    <div class="candidates" id="foodCandidates"></div>
   </div>
 
-  <div class="food-col food-weight">
+  <div class="food-top-weight">
     <div class="label">중량(g)</div>
     <div class="volume-row volume-row-compact">
       <div class="btn-icon" id="foodBtnMinus" aria-label="중량 감소">−</div>
@@ -93,7 +91,13 @@
   </div>
 </div>
 
-<!-- ✅ 음식수동: 2행 [DB수분][추정수분] -->
+<!-- ✅ 2행: 검색 결과(항상 아래, 전체폭) -->
+<div class="food-cand-row">
+  <div class="label">검색 결과</div>
+  <div class="candidates" id="foodCandidates"></div>
+</div>
+
+<!-- ✅ 3행: DB수분 + 추정수분(같은 줄) -->
 <div class="food-row" style="margin-top:12px;">
   <div class="food-col food-moist">
     <div class="label">수분(g/100g)</div>
@@ -105,6 +109,7 @@
     <div class="value-box" id="foodEstimatedBox">0</div>
   </div>
 </div>
+
 
 
           <button class="primary-btn" id="btnFoodAdd">기록 추가</button>
