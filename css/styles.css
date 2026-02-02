@@ -1,22 +1,51 @@
-﻿﻿:root {
+﻿/* =========================
+   Root / Global
+   ========================= */
+:root {
   --txt0: rgba(231, 234, 243, 0.92);
   --txt1: rgba(231, 234, 243, 0.70);
-  --txt2: rgba(231, 234, 243, 0.60);
+  --txt2: rgba(231, 234, 243, 0.55);
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-body {
+/* ✅ 전역 텍스트 컬러 강제 (검정 텍스트 방지 핵심) */
+html, body {
   margin: 0;
   min-height: 100vh;
   color: var(--txt0);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
-    Apple Color Emoji, Segoe UI Emoji;
-  background: radial-gradient(1200px 600px at 20% 0%, #111a33 0%, #070b14 45%, #05070d 100%);
+  -webkit-text-size-adjust: 100%;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
+  background: radial-gradient(
+    1200px 600px at 20% 0%,
+    #111a33 0%,
+    #070b14 45%,
+    #05070d 100%
+  );
 }
 
-.page { padding: 24px; }
-.container { max-width: 980px; margin: 0 auto; }
+a,
+button,
+input,
+select,
+textarea {
+  color: var(--txt0);
+}
+
+/* =========================
+   Layout
+   ========================= */
+.page {
+  padding: 24px;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+}
 
 /* =========================
    Header
@@ -28,35 +57,50 @@ body {
   gap: 16px;
   margin-bottom: 14px;
 }
-.title { font-size: 22px; font-weight: 800; letter-spacing: -0.2px; }
-.subtitle { font-size: 12px; color: rgba(231, 234, 243, 0.65); }
+
+.title {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.2px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--txt1);
+}
 
 /* =========================
    Tabs
    ========================= */
-.tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
 
 .tab {
   padding: 10px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(6, 10, 20, 0.45);
-  color: rgba(231, 234, 243, 0.90);
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   user-select: none;
 }
-.tab:hover { background: rgba(6, 10, 20, 0.65); }
+
 .tab.active {
   border-color: rgba(56, 121, 255, 0.35);
-  background: rgba(56, 121, 255, 0.15);
-  box-shadow: 0 0 0 1px rgba(56, 121, 255, 0.12) inset;
+  background: rgba(56, 121, 255, 0.16);
+  box-shadow: 0 0 0 1px rgba(56, 121, 255, 0.14) inset;
 }
+
 .tab.coming {
   opacity: 0.75;
   border-style: dashed;
   cursor: default;
 }
+
 .tab.coming::after {
   content: "준비중";
   margin-left: 8px;
@@ -66,148 +110,131 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.05);
-  color: rgba(231, 234, 243, 0.75);
+  color: var(--txt1);
 }
 
 /* =========================
-   Cards / Sections
+   Card / Section
    ========================= */
 .card {
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.10);
   background: rgba(6, 10, 20, 0.55);
-  box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
   padding: 16px;
 }
 
-.section-title-row{
-  display:flex;
-  align-items:center;
+.section-title-row {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
   margin-bottom: 12px;
 }
-.section-title{
+
+.section-title {
   font-size: 18px;
   font-weight: 900;
-  letter-spacing: -0.2px;
 }
-.status{
+
+.status {
   font-size: 12px;
-  color: rgba(231, 234, 243, 0.70);
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.04);
-}
-
-.label{
-  font-size: 12px;
-  font-weight: 800;
-  color: rgba(231, 234, 243, 0.70);
-  margin-bottom: 8px;
-}
-
-input[type="text"], select {
-  width: 100%;
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.65);
-  color: rgba(231, 234, 243, 0.92);
-  padding: 0 12px;
-  outline: none;
-  font-weight: 800;
-}
-input[type="text"]::placeholder { color: rgba(231, 234, 243, 0.40); }
-input[type="text"]:focus, select:focus {
-  border-color: rgba(56, 121, 255, 0.35);
-  box-shadow: 0 0 0 3px rgba(56, 121, 255, 0.10);
-}
-
-.primary-btn{
-  width: 100%;
-  margin-top: 14px;
-  height: 54px;
-  border: none;
-  border-radius: 16px;
-  font-size: 16px;
-  font-weight: 900;
-  letter-spacing: -0.2px;
-  color: rgba(240, 245, 255, 0.95);
-  cursor: pointer;
-  background: linear-gradient(180deg, rgba(56,121,255,0.95) 0%, rgba(34,96,230,0.95) 100%);
-  box-shadow: 0 18px 40px rgba(56, 121, 255, 0.20);
-}
-.primary-btn:hover { filter: brightness(1.02); }
-
-.hint{
-  margin-top: 10px;
-  font-size: 12px;
-  color: rgba(231, 234, 243, 0.55);
-}
-
-.divider{
-  margin: 16px 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.coming-box{
-  border-radius: 16px;
-  border: 1px dashed rgba(255,255,255,0.14);
-  background: rgba(6, 10, 20, 0.45);
-  padding: 14px;
-  color: rgba(231, 234, 243, 0.75);
-  line-height: 1.6;
+  color: var(--txt1);
 }
 
 /* =========================
-   Records (UI2 list)
+   Inputs
    ========================= */
-.records-card{
+.label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--txt1);
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+select {
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(6, 10, 20, 0.65);
+  padding: 0 12px;
+  font-weight: 900;
+  outline: none;
+}
+
+input::placeholder {
+  color: rgba(231, 234, 243, 0.4);
+}
+
+select {
+  appearance: none;
+}
+
+/* =========================
+   Buttons
+   ========================= */
+.primary-btn {
+  width: 100%;
+  height: 54px;
+  margin-top: 14px;
+  border-radius: 16px;
+  border: none;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  color: rgba(240, 245, 255, 0.98);
+  background: linear-gradient(
+    180deg,
+    rgba(56, 121, 255, 0.95),
+    rgba(34, 96, 230, 0.95)
+  );
+  box-shadow: 0 16px 36px rgba(56, 121, 255, 0.28);
+}
+
+/* =========================
+   Records
+   ========================= */
+.records-card {
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.10);
   background: rgba(6, 10, 20, 0.45);
   padding: 14px;
 }
-.records-card-head{
-  display:flex;
-  align-items:center;
+
+.records-card-head {
+  display: flex;
   justify-content: space-between;
-  gap: 10px;
+  align-items: center;
   margin-bottom: 12px;
 }
-.records-card-title{
+
+.records-card-title {
   font-size: 16px;
   font-weight: 900;
-  letter-spacing: -0.2px;
-}
-.pill{
-  font-size: 12px;
-  font-weight: 900;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(231, 234, 243, 0.80);
-}
-.pill-blue{
-  border-color: rgba(56, 121, 255, 0.22);
-  background: rgba(56, 121, 255, 0.12);
-  color: rgba(230, 240, 255, 0.92);
-}
-.records-list{ display: flex; flex-direction: column; gap: 10px; }
-.records-empty{
-  padding: 14px;
-  border-radius: 16px;
-  border: 1px dashed rgba(255,255,255,0.14);
-  color: rgba(231, 234, 243, 0.60);
-  text-align: center;
 }
 
-.record-item{
-  display:flex;
+.pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.record-item {
+  display: flex;
   align-items: center;
   gap: 10px;
   padding: 14px;
@@ -215,368 +242,122 @@ input[type="text"]:focus, select:focus {
   border: 1px solid rgba(255, 255, 255, 0.10);
   background: rgba(10, 14, 26, 0.55);
 }
-.record-time{
-  width: 64px;
-  color: rgba(231, 234, 243, 0.75);
-  font-weight: 900;
-  line-height: 1.15;
-}
-.record-title{
-  flex: 1 1 auto;
-  min-width: 0;
-  font-weight: 900;
-  font-size: 16px;
-  letter-spacing: -0.2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.record-ml{
-  min-width: 76px;
-  text-align: right;
-  font-weight: 900;
-  font-size: 18px;
-  letter-spacing: -0.2px;
-}
-.record-del{
-  width: 42px;
-  height: 42px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 76, 96, 0.22);
-  background: rgba(255, 76, 96, 0.10);
-  cursor: pointer;
-}
-.record-del:hover{ filter: brightness(1.05); }
-.record-del svg{ width: 18px; height: 18px; fill: rgba(255, 122, 138, 0.9); }
 
-/* =========================
-   Stepper (volume)
-   ========================= */
-.volume-row{
-  display:grid;
-  grid-template-columns: 44px 1fr 44px;
-  gap: 10px;
-  align-items: center;
-}
-.btn-icon{
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size: 20px;
-  font-weight: 900;
-  cursor:pointer;
-  user-select:none;
-}
-.btn-icon.disabled{
-  opacity: 0.5;
-  cursor: default;
-}
-.volume-box{
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.65);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight: 900;
-  font-size: 18px;
-  letter-spacing: -0.2px;
-}
-
-/* =========================
-   Candidates (food search list)
-   ========================= */
-.candidates{
-  display:flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.cand-item{
-  display:flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.03);
-  cursor: pointer;
-}
-.cand-name{
-  min-width:0;
-  overflow:hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.record-time {
+  width: 60px;
   font-size: 13px;
   font-weight: 900;
-  color: rgba(231,234,243,0.92);
+  color: var(--txt1);
+  line-height: 1.2;
 }
-.cand-moist{
-  flex:0 0 auto;
-  font-variant-numeric: tabular-nums;
-  font-size: 12px;
-  color: rgba(231,234,243,0.75);
+
+.record-title {
+  flex: 1;
+  font-weight: 900;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.cand-item.selected{
-  border: 1px solid rgba(56,121,255,0.35);
-  background: rgba(56,121,255,0.14);
-  box-shadow: 0 0 0 1px rgba(56,121,255,0.18) inset;
+
+.record-ml {
+  min-width: 70px;
+  text-align: right;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.record-del {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 76, 96, 0.25);
+  background: rgba(255, 76, 96, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* =========================
-   Summary (today tab)
+   Water / Food Layout
+   ========================= */
+.water-row,
+.food-top-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.water-drink,
+.food-top-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.water-volume,
+.food-top-weight {
+  flex: 0 0 150px;
+}
+
+.food-cand-row {
+  margin-top: 10px;
+}
+
+/* =========================
+   Summary (Today)
    ========================= */
 .summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  margin-top: 10px;
 }
 
 .summary-box {
-  min-width: 0;
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.10);
   background: rgba(6, 10, 20, 0.55);
-  padding: 12px;
+  padding: 14px;
 }
 
-.summary-label { font-size: 12px; color: rgba(231, 234, 243, 0.70); margin-bottom: 6px; }
-.summary-value { font-size: 20px; font-weight: 900; letter-spacing: -0.2px; }
+.summary-label {
+  font-size: 12px;
+  color: var(--txt1);
+  margin-bottom: 6px;
+}
 
-/* ✅ 총합 강조 타일(오늘 총합) */
-.summary-box.summary-total{
-  border: 1px solid rgba(0, 210, 255, 0.28);
+.summary-value {
+  font-size: 20px;
+  font-weight: 900;
+}
+
+/* ✅ 오늘 총합 강조 */
+.summary-box.summary-total {
+  border-color: rgba(0, 210, 255, 0.35);
   background: linear-gradient(
     180deg,
-    rgba(0, 210, 255, 0.22) 0%,
-    rgba(0, 170, 255, 0.14) 60%,
-    rgba(6, 10, 20, 0.55) 100%
+    rgba(0, 210, 255, 0.24),
+    rgba(6, 10, 20, 0.55)
   );
-  box-shadow:
-    0 14px 32px rgba(0, 210, 255, 0.12),
-    0 0 0 1px rgba(0, 210, 255, 0.14) inset;
-}
-
-.summary-box.summary-total .summary-label{
-  color: rgba(210, 245, 255, 0.92);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.summary-box.summary-total .summary-value{
-  color: rgba(235, 255, 255, 0.98);
-  text-shadow: 0 1px 12px rgba(0, 210, 255, 0.18);
-}
-
-.summary-box.summary-total .drop{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 8px;
-  background: rgba(0, 210, 255, 0.16);
-  border: 1px solid rgba(0, 210, 255, 0.22);
-  font-size: 14px;
 }
 
 /* =========================
-   Modal
-   ========================= */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  display: grid;
-  place-items: center;
-  padding: 16px;
-  z-index: 50;
-}
-
-.modal {
-  width: min(520px, 100%);
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(10, 14, 26, 0.95);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
-  padding: 18px;
-}
-
-.modal-title { font-size: 16px; font-weight: 900; margin-bottom: 8px; }
-.modal-text { font-size: 13px; color: rgba(231, 234, 243, 0.75); line-height: 1.6; }
-.modal-btns { display:flex; gap: 10px; margin-top: 14px; }
-.modal-btn {
-  flex:1 1 auto;
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(231, 234, 243, 0.92);
-  font-weight: 900;
-  cursor: pointer;
-}
-.modal-btn.danger{
-  border-color: rgba(255, 76, 96, 0.22);
-  background: rgba(255, 76, 96, 0.12);
-}
-
-/* =========================
-   ✅ water: one-row [drink][volume]
-   ========================= */
-.water-row{
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  margin-top: 12px;
-}
-.water-col{ min-width: 0; }
-.water-drink{ flex: 1 1 auto; }
-.water-volume{ flex: 0 0 140px; }
-
-/* =========================
-   ✅ Food manual: 2 lines layout (two food-row blocks in HTML)
-   ========================= */
-.food-row{
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  margin-top: 12px;
-  flex-wrap: nowrap;
-}
-.food-col{ min-width: 0; }
-.food-name{ flex: 1 1 auto; }
-.food-weight{ flex: 0 0 150px; }
-.food-moist{ flex: 1 1 50%; }
-.food-est{ flex: 1 1 50%; }
-
-.value-box{
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.65);
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  font-weight: 900;
-  color: rgba(231, 234, 243, 0.92);
-}
-
-/* =========================
-   ✅ 음식수동: 1행(이름+중량) / 2행(검색결과) 분리
-   ========================= */
-.food-top-row{
-  display:flex;
-  gap: 12px;
-  align-items: flex-end;
-  margin-top: 12px;
-}
-.food-top-name{ flex: 1 1 auto; min-width: 0; }
-.food-top-weight{ flex: 0 0 180px; }
-.food-cand-row{ margin-top: 10px; }
-
-/* =========================
-   Mobile (≤720px) — 충돌 제거 + 2×2 확정
+   Mobile (≤720px)
    ========================= */
 @media (max-width: 720px) {
-  .page { padding: 14px; }
-
-  /* other screens still can stack */
-  .form-grid { grid-template-columns: 1fr; }
-
-  /* records */
-  .records-card{ padding: 12px; }
-  .record-item{ padding: 12px; }
-  .record-time{ width: 56px; }
-  .record-ml{ min-width: 66px; font-size: 16px; }
-
-  /* compact stepper */
-  .volume-row-compact{
-    grid-template-columns: 38px 1fr 38px;
-    gap: 8px;
+  .page {
+    padding: 14px;
   }
 
-  /* tighten labels in special rows */
-  .water-row .label,
-  .food-row .label{
-    margin-bottom: 6px;
-  }
-
-  /* ✅ water: still 1-row, just a bit tighter */
-  .water-row{ gap: 10px; flex-wrap: nowrap; }
-  .water-volume{ flex-basis: 150px; }
-
-  /* ✅ food: keep two food-row blocks as 2 lines; each line no wrap */
-  .food-row{ gap: 10px; flex-wrap: nowrap; }
-  .food-weight{ flex-basis: 150px; }
-
-  /* ✅ food-top-row */
-  .food-top-row{ gap: 10px; }
-  .food-top-weight{ flex-basis: 150px; }
-  .food-top-row .label{ margin-bottom: 6px; }
-}
-
-/* =========================
-   ✅ 오늘요약(모바일): 2x2 타일 균일화 + 오버플로우 방지 (확정)
-   ========================= */
-@media (max-width: 720px){
-  .summary-grid{
-    display: grid;
+  .summary-grid {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    align-items: stretch;
-    grid-auto-rows: 1fr;
   }
 
-  .summary-box{
-    width: 100%;
-    min-width: 0;
+  .summary-box {
     min-height: 96px;
-    padding: 12px;
-    overflow: hidden;
-    border-radius: 16px;
   }
 
-  .summary-label{
-    font-size: 12px;
-    line-height: 1.25;
-    margin-bottom: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .summary-value{
-    font-size: 20px;
-    line-height: 1.1;
-    font-weight: 900;
-    white-space: nowrap;
-  }
-
-  .summary-box.summary-total{
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
-    border-radius: 16px;
-  }
-
-  .summary-box.summary-total .drop{
-    width: 20px;
-    height: 20px;
-    border-radius: 7px;
-    font-size: 13px;
+  .water-volume,
+  .food-top-weight {
+    flex-basis: 140px;
   }
 }
