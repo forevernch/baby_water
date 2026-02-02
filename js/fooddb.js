@@ -1,6 +1,6 @@
 ﻿import { stripBomIfNeeded, normalizeFoodName, toNumberMaybe } from "./utils.js";
 
-export const FOOD_DB_FILE = "./food_db.json";
+export const FOOD_DB_FILE = "../food_db.json";
 
 /**
  * 공용 Food DB 로더
