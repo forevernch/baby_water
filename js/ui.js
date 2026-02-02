@@ -1,60 +1,72 @@
-﻿export function renderList(targetEl, items, { kindText, kindLabel, onDelete }) {
+﻿function trashSvg() {
+  // 작은 휴지통 아이콘 (SVG)
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  const path = document.createElementNS(svgNS, "path");
+  path.setAttribute(
+    "d",
+    "M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v10h-2V9zm4 0h2v10h-2V9zM7 9h2v10H7V9z"
+  );
+  svg.appendChild(path);
+  return svg;
+}
+
+export function renderList(targetEl, items, { kindText, kindLabel, onDelete }) {
+  if (!targetEl) return;
+
   targetEl.innerHTML = "";
 
+  // "빈 상태" 텍스트는 index.html에 따로 div가 있으니 여기서는 렌더하지 않음
   if (!items || items.length === 0) {
-    const empty = document.createElement("div");
-    empty.className = "row";
-    empty.style.gridTemplateColumns = "1fr";
-    empty.textContent = "아직 기록이 없습니다.";
-    targetEl.appendChild(empty);
     return;
   }
 
   items.forEach((r) => {
-    const row = document.createElement("div");
-    row.className = "row";
+    const item = document.createElement("div");
+    item.className = "record-item";
 
-    // 시간
-    const c1 = document.createElement("div");
-    c1.textContent = r.timeLabel || "-";
+    const left = document.createElement("div");
+    left.className = "record-left";
 
-    // 구분/메뉴
-    const c2 = document.createElement("div");
+    const time = document.createElement("div");
+    time.className = "record-time";
+    time.textContent = r.timeLabel || "-";
+
+    const type = document.createElement("div");
+    type.className = "record-type";
+
     if (kindText) {
-      c2.textContent = kindLabel(r);
+      type.textContent = kindLabel(r);
     } else {
+      // 물/음료 탭: r.type, 음식수동 탭: r.name
+      // 데이터 없음 배지는 텍스트로만 표시(필요하면 배지 UI 추가 가능)
       if (r.kind === "foodManual" && r.hasData === false) {
-        const wrap = document.createElement("div");
-        wrap.style.display = "flex";
-        wrap.style.alignItems = "center";
-        wrap.style.gap = "8px";
-
-        const name = document.createElement("span");
-        name.textContent = r.name || "-";
-
-        const badge = document.createElement("span");
-        badge.className = "badge-warn";
-        badge.textContent = "데이터없음";
-
-        wrap.append(name, badge);
-        c2.appendChild(wrap);
+        type.textContent = `${r.name || "-"} · 데이터없음`;
       } else {
-        c2.textContent = r.type || r.name || "-";
+        type.textContent = r.type || r.name || "-";
       }
     }
 
-    // 용량
-    const c3 = document.createElement("div");
-    c3.className = "right";
-    c3.textContent = `${Number(r.volume) || 0} ml`;
+    left.append(time, type);
 
-    // 삭제
-    const c4 = document.createElement("button");
-    c4.className = "del-btn";
-    c4.textContent = "삭제";
-    c4.addEventListener("click", () => onDelete(r.id));
+    const right = document.createElement("div");
+    right.className = "record-right";
 
-    row.append(c1, c2, c3, c4);
-    targetEl.appendChild(row);
+    const ml = document.createElement("div");
+    ml.className = "record-ml";
+    ml.textContent = `${Number(r.volume) || 0} ml`;
+
+    const del = document.createElement("button");
+    del.className = "record-del";
+    del.type = "button";
+    del.setAttribute("aria-label", "삭제");
+    del.appendChild(trashSvg());
+    del.addEventListener("click", () => onDelete(r.id));
+
+    right.append(ml, del);
+
+    item.append(left, right);
+    targetEl.appendChild(item);
   });
 }
