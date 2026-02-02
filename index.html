@@ -31,20 +31,23 @@
             <div class="section-title">물/음료 기록</div>
           </div>
 
-          <div class="form-grid">
-            <div>
-              <div class="label">음료 종류</div>
-              <select id="drinkType"></select>
-            </div>
-            <div>
-              <div class="label">용량(ml)</div>
-              <div class="volume-row">
-                <div class="btn-icon" id="btnMinus" aria-label="용량 감소">−</div>
-                <div class="volume-box" id="volumeBox">100</div>
-                <div class="btn-icon" id="btnPlus" aria-label="용량 증가">+</div>
-              </div>
-            </div>
-          </div>
+          <!-- ✅ 물/음료: 한 줄 레이아웃 -->
+<div class="water-row">
+  <div class="water-col water-drink">
+    <div class="label">음료</div>
+    <select id="drinkType"></select>
+  </div>
+
+  <div class="water-col water-volume">
+    <div class="label">용량</div>
+    <div class="volume-row volume-row-compact">
+      <div class="btn-icon" id="btnMinus" aria-label="용량 감소">−</div>
+      <div class="volume-box" id="volumeBox">100</div>
+      <div class="btn-icon" id="btnPlus" aria-label="용량 증가">+</div>
+    </div>
+  </div>
+</div>
+
 
           <button class="primary-btn" id="btnAdd">기록 추가</button>
           <div class="hint">음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
@@ -71,33 +74,38 @@
             <div class="status" id="foodDbStatus">식품DB: 로딩중</div>
           </div>
 
-          <div class="form-grid">
-            <div>
-              <div class="label">음식 이름</div>
-              <input id="foodName" type="text" placeholder="예: 바나나, 사과" />
-	<div class="label" style="margin-top:10px;">검색 결과</div>
-	<div class="candidates" id="foodCandidates"></div>
-            </div>
-            <div>
-              <div class="label">중량(g)</div>
-              <div class="volume-row">
-                <div class="btn-icon" id="foodBtnMinus" aria-label="중량 감소">−</div>
-                <div class="volume-box" id="foodWeightBox">100</div>
-                <div class="btn-icon" id="foodBtnPlus" aria-label="중량 증가">+</div>
-              </div>
-            </div>
-          </div>
+          <!-- ✅ 음식수동: 1행 [음식이름][중량] -->
+<div class="food-row">
+  <div class="food-col food-name">
+    <div class="label">음식 이름</div>
+    <input id="foodName" type="text" placeholder="예: 귀리, 바나나, 사과" />
+    <div class="label" style="margin-top:10px;">검색 결과</div>
+    <div class="candidates" id="foodCandidates"></div>
+  </div>
 
-          <div class="form-grid" style="margin-top:10px;">
-            <div>
-              <div class="label">수분(g/100g)</div>
-              <div class="volume-box" id="foodMoistureBox">-</div>
-            </div>
-            <div>
-              <div class="label">추정 수분(ml)</div>
-              <div class="volume-box" id="foodEstimatedBox">0</div>
-            </div>
-          </div>
+  <div class="food-col food-weight">
+    <div class="label">중량(g)</div>
+    <div class="volume-row volume-row-compact">
+      <div class="btn-icon" id="foodBtnMinus" aria-label="중량 감소">−</div>
+      <div class="volume-box" id="foodWeightBox">100</div>
+      <div class="btn-icon" id="foodBtnPlus" aria-label="중량 증가">+</div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ 음식수동: 2행 [DB수분][추정수분] -->
+<div class="food-row" style="margin-top:12px;">
+  <div class="food-col food-moist">
+    <div class="label">수분(g/100g)</div>
+    <div class="value-box" id="foodMoistureBox">데이터 없음</div>
+  </div>
+
+  <div class="food-col food-est">
+    <div class="label">추정 수분(ml)</div>
+    <div class="value-box" id="foodEstimatedBox">0</div>
+  </div>
+</div>
+
 
           <button class="primary-btn" id="btnFoodAdd">기록 추가</button>
 
