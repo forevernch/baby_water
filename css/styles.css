@@ -569,59 +569,57 @@ select, input {
   justify-content: center;
 }
 
-/* ✅ 모바일에서는 2열 고정 */
+
+/* =========================
+   ✅ 오늘요약(모바일): 2x2 타일 균일화 + 오버플로우 방지
+   ========================= */
 @media (max-width: 720px){
   .summary-grid{
-    grid-template-columns: 1fr 1fr; /* 2열 고정 */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
+    align-items: stretch;
   }
+
   .summary-box{
-    min-height: 88px;
+    width: 100%;
+    min-width: 0;
+    min-height: 96px;        /* ✅ 타일 높이 통일 */
     padding: 12px;
+    overflow: hidden;        /* ✅ 내부 오버플로우 방지 */
   }
+
   .summary-label{
     font-size: 12px;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    white-space: nowrap;     /* ✅ 라벨 줄바꿈 방지 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* ✅ 너무 길면 ... */
   }
+
   .summary-value{
-    font-size: 22px;
+    font-size: 20px;
+    line-height: 1.1;
+    font-weight: 900;
+    white-space: nowrap;     /* ✅ "200 ml" 한 줄 유지 */
+  }
+
+  /* ✅ 총합 타일도 카드 밖으로 안 튀어나오게 */
+  .summary-box.summary-total{
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+
+  /* 💧 아이콘 박스도 모바일에서 살짝 축소 */
+  .summary-box.summary-total .drop{
+    width: 20px;
+    height: 20px;
+    border-radius: 7px;
+    font-size: 13px;
   }
 }
 
-/* ✅ '오늘 총합(💧)' 강조 색: Teal/Cyan */
-.summary-box.summary-total{
-  border: 1px solid rgba(0, 210, 255, 0.28);
-  background: linear-gradient(
-    180deg,
-    rgba(0, 210, 255, 0.22) 0%,
-    rgba(0, 170, 255, 0.14) 60%,
-    rgba(6, 10, 20, 0.55) 100%
-  );
-  box-shadow:
-    0 14px 32px rgba(0, 210, 255, 0.12),
-    0 0 0 1px rgba(0, 210, 255, 0.14) inset;
-}
-
-.summary-box.summary-total .summary-label{
-  color: rgba(210, 245, 255, 0.92);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.summary-box.summary-total .summary-value{
-  color: rgba(235, 255, 255, 0.98);
-  text-shadow: 0 1px 12px rgba(0, 210, 255, 0.18);
-}
-
-.summary-box.summary-total .drop{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 8px;
-  background: rgba(0, 210, 255, 0.16);
-  border: 1px solid rgba(0, 210, 255, 0.22);
-  font-size: 14px;
-}
 
