@@ -106,6 +106,7 @@ function main() {
     elFoodHint: document.getElementById("foodHint"),
     elFoodManualListBody: document.getElementById("foodManualListBody"),
     elFoodManualTotal: document.getElementById("foodManualTotalPill"),
+    elFoodCandidates: document.getElementById("foodCandidates"),
 
     getRecords,
     setRecords,
