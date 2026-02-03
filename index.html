@@ -1,100 +1,140 @@
-﻿<!doctype html>
+﻿﻿<!doctype html>
 <html lang="ko">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Baby Water & Food Log</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>수분 섭취 기록</title>
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
-  <body>
-    <div class="app">
-      <!-- Header -->
-      <header class="topbar">
-        <div class="topbar-title">Baby Water</div>
-        <div class="topbar-sub">수분 섭취 기록</div>
-      </header>
 
-      <!-- Tabs -->
-      <nav class="tabs" id="tabs">
-        <button class="tab active" data-tab="water">물/음료</button>
-        <button class="tab" data-tab="foodManual">음식수동</button>
-        <button class="tab" data-tab="foodAI">음식 AI</button>
-        <button class="tab" data-tab="today">오늘요약</button>
-        <button class="tab" data-tab="monthly">월별요약</button>
-      </nav>
+  <body>
+    <div class="page">
+      <div class="container">
+        <div class="header">
+          <div>
+            <div class="title">수분 섭취 기록</div>
+          </div>
+          <div class="subtitle">MVP · 오프라인(로컬 저장)</div>
+        </div>
+
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-tab="water">💧 물/음료</div>
+          <div class="tab" data-tab="foodManual">✍️ 음식 수동</div>
+          <div class="tab" data-tab="foodAI" >🤖 음식 AI</div>
+          <div class="tab" data-tab="today">📌 오늘요약</div>
+          <div class="tab coming" data-tab="monthly" title="준비중">🗓️ 월별요약</div>
+        </div>
+
 
       <!-- Content -->
-      <main class="content">
-        <!-- Water -->
-        <section class="card" id="waterCard">
-          <div class="card-title">물/음료</div>
+        <!-- 물/음료 탭 -->
+        <div class="card" id="waterCard">
+          <div class="section-title-row">
+            <div class="section-title">물/음료 기록</div>
+          </div>
 
-          <div class="grid-2">
-            <div class="field">
-              <label class="label">종류</label>
-              <select class="select" id="waterType">
-                <option value="물">물</option>
-                <option value="분유">분유</option>
-                <option value="우유">우유</option>
-                <option value="주스">주스</option>
-                <option value="기타">기타</option>
-              </select>
+          <!-- ✅ 물/음료: 한 줄 레이아웃 -->
+          <div class="water-row">
+            <div class="water-col water-drink">
+              <div class="label">음료</div>
+              <select id="drinkType"></select>
             </div>
 
-            <div class="field">
-              <label class="label">섭취량(ml)</label>
-              <div class="stepper">
-                <button class="stepper-btn" id="waterMinus">-</button>
-                <input class="input stepper-input" id="waterAmount" type="number" min="0" step="10" value="0" />
-                <button class="stepper-btn" id="waterPlus">+</button>
+            <div class="water-col water-volume">
+              <div class="label">용량</div>
+              <div class="volume-row volume-row-compact">
+                <div class="btn-icon" id="btnMinus" aria-label="용량 감소">−</div>
+                <div class="volume-box" id="volumeBox">100</div>
+                <div class="btn-icon" id="btnPlus" aria-label="용량 증가">+</div>
               </div>
-              <div class="hint">10ml 단위로 조절</div>
             </div>
           </div>
 
-          <button class="btn primary" id="btnAddWater">기록 추가</button>
-          <hr class="sep" />
+          <button class="primary-btn" id="btnAdd">기록 추가</button>
+          <div class="hint">음료 종류와 관계없이 입력한 ml를 그대로 합산합니다.</div>
 
-          <div class="list" id="waterList"></div>
-        </section>
+          <div class="divider"></div>
 
-        <!-- Food Manual -->
-        <section class="card hidden" id="foodManualCard">
-          <div class="card-title">음식수동</div>
+          <!-- ✅ UI2: records-card -->
+          <div class="records-card">
+            <div class="records-card-head">
+              <div class="records-card-title">오늘 기록 — 물/음료</div>
+              <div class="pill pill-blue" id="waterTotalPill">0 ml</div>
+            </div>
+            <div class="records-list" id="waterListBody"></div>
+            <div class="records-empty" id="waterEmpty" style="display:none;">아직 기록이 없습니다.</div>
+          </div>
 
-          <div class="grid-2">
-            <div class="field">
-              <label class="label">음식명</label>
-              <input class="input" id="foodName" placeholder="예) 바나나, 고구마, 이유식..." />
-              <div class="hint" id="foodDbStatus">DB 로딩 상태: -</div>
+          <div class="hint">개인용 기록 도구(의료기기 아님). 데이터는 기기 로컬에 저장됩니다.</div>
+        </div>
+
+        <!-- 음식 수동 탭 -->
+        <div class="card" id="foodManualCard" style="display:none;">
+          <div class="section-title-row">
+            <div class="section-title">음식 수동 기록</div>
+            <div class="status" id="foodDbStatus">식품DB: 로딩중</div>
+          </div>
+
+          <!-- ✅ 1행: 음식이름 + 중량(같은 줄) -->
+          <div class="food-top-row">
+            <div class="food-top-name">
+              <div class="label">음식 이름</div>
+              <input id="foodName" type="text" placeholder="예: 귀리, 바나나, 사과" />
             </div>
 
-            <div class="field">
-              <label class="label">섭취량(g)</label>
-              <div class="stepper">
-                <button class="stepper-btn" id="foodMinus">-</button>
-                <input class="input stepper-input" id="foodGram" type="number" min="0" step="5" value="0" />
-                <button class="stepper-btn" id="foodPlus">+</button>
+            <div class="food-top-weight">
+              <div class="label">중량(g)</div>
+              <div class="volume-row volume-row-compact">
+                <div class="btn-icon" id="foodBtnMinus" aria-label="중량 감소">−</div>
+                <div class="volume-box" id="foodWeightBox">100</div>
+                <div class="btn-icon" id="foodBtnPlus" aria-label="중량 증가">+</div>
               </div>
-              <div class="hint">5g 단위로 조절</div>
             </div>
           </div>
 
-          <div class="field">
-            <label class="label">검색 후보</label>
-            <div class="list small" id="foodCandidates"></div>
-            <div class="hint">후보를 클릭하면 선택됩니다.</div>
+          <!-- ✅ 2행: 검색 결과(항상 아래, 전체폭) -->
+          <div class="food-cand-row">
+            <div class="label">검색 결과</div>
+            <div class="candidates" id="foodCandidates"></div>
           </div>
 
-          <button class="btn primary" id="btnAddFoodManual">기록 추가</button>
-          <hr class="sep" />
+          <!-- ✅ 3행: DB수분 + 추정수분(같은 줄) -->
+          <div class="food-row" style="margin-top:12px;">
+            <div class="food-col food-moist">
+              <div class="label">수분(g/100g)</div>
+              <div class="value-box" id="foodMoistureBox">데이터 없음</div>
+            </div>
 
-          <div class="list" id="foodManualList"></div>
-        </section>
+            <div class="food-col food-est">
+              <div class="label">추정 수분(ml)</div>
+              <div class="value-box" id="foodEstimatedBox">0</div>
+            </div>
+          </div>
+
+          <button class="primary-btn" id="btnFoodAdd">기록 추가</button>
+
+          <!-- ✅ foodHint 요소 추가 (없어서 null 에러났던 부분) -->
+          <div class="hint" id="foodHint"></div>
+
+          <div class="divider"></div>
+
+          <!-- ✅ UI2: records-card -->
+          <div class="records-card">
+            <div class="records-card-head">
+              <div class="records-card-title">오늘 기록 — 음식 수동</div>
+              <div class="pill pill-blue" id="foodManualTotalPill">0 ml</div>
+            </div>
+            <div class="records-list" id="foodManualListBody"></div>
+            <div class="records-empty" id="foodManualEmpty" style="display:none;">아직 기록이 없습니다.</div>
+          </div>
+        </div>
 
         <!-- Food AI (NEW: 기존 UI 패턴 그대로) -->
-        <section class="card hidden" id="foodAiCard">
-          <div class="card-title">음식 AI</div>
+        <div class="card" id="foodAICard" style="display:none;">
+          <div class="section-title-row">
+            <div class="section-title">음식 AI 기록</div>
+            <div class="status" id="foodDbStatus">식품DB: 로딩중</div>
+          </div>
 
           <div class="grid-2">
             <div class="field">
@@ -103,73 +143,101 @@
               <div class="hint" id="foodAiDbStatus">DB 로딩 상태: -</div>
             </div>
 
-            <div class="field">
-              <label class="label">섭취량(g)</label>
-              <div class="stepper">
-                <button class="stepper-btn" id="foodAiMinus">-</button>
-                <input class="input stepper-input" id="foodAiGram" type="number" min="0" step="5" value="0" />
-                <button class="stepper-btn" id="foodAiPlus">+</button>
-              </div>
-              <div class="hint">5g 단위로 조절</div>
+          <!-- ✅ 2행: 검색 결과(항상 아래, 전체폭) -->
+          <div class="food-cand-row">
+            <div class="label">검색 결과</div>
+            <div class="candidates" id="foodCandidates"></div>
+          </div>
+
+          <!-- ✅ 3행: DB수분 + 추정수분(같은 줄) -->
+          <div class="food-row" style="margin-top:12px;">
+            <div class="food-col food-moist">
+              <div class="label">수분(g/100g)</div>
+              <div class="value-box" id="foodMoistureBox">데이터 없음</div>
+            </div>
+
+            <div class="food-col food-est">
+              <div class="label">추정 수분(ml)</div>
+              <div class="value-box" id="foodEstimatedBox">0</div>
             </div>
           </div>
 
-          <div class="field">
-            <label class="label">DB 후보(클릭해서 선택)</label>
-            <div class="list small" id="foodAiCandidates"></div>
-            <div class="hint">AI 결과와 가장 가까운 항목을 선택하세요.</div>
+          <button class="primary-btn" id="btnFoodAdd">기록 추가</button>
+
+          <!-- ✅ foodHint 요소 추가 (없어서 null 에러났던 부분) -->
+          <div class="hint" id="foodHint"></div>
+
+          <div class="divider"></div>
+
+          <!-- ✅ UI2: records-card -->
+          <div class="records-card">
+            <div class="records-card-head">
+              <div class="records-card-title">오늘 기록 — 음식 AI</div>
+              <div class="pill pill-blue" id="foodAITotalPill">0 ml</div>
+            </div>
+            <div class="records-list" id="foodAIListBody"></div>
+            <div class="records-empty" id="foodAIEmpty" style="display:none;">아직 기록이 없습니다.</div>
           </div>
+        </div>
 
-          <button class="btn primary" id="btnAddFoodAi">기록 추가</button>
-          <hr class="sep" />
+       <!-- 오늘요약 탭 -->
+<div class="card" id="todayCard" style="display:none;">
+  <div class="section-title-row">
+    <div class="section-title">오늘요약</div>
+  </div>
 
-          <div class="list" id="foodAiList"></div>
-        </section>
+  <!-- ✅ 1) 요약 타일(2×2)만 summary-grid 안에 둠 -->
+  <div class="summary-grid">
+    <div class="summary-box">
+      <div class="summary-label">물/음료 합계</div>
+      <div class="summary-value" id="sumWater">0 ml</div>
+    </div>
 
-        <!-- Today -->
-        <section class="card hidden" id="todayCard">
-          <div class="card-title">오늘요약</div>
+    <div class="summary-box">
+      <div class="summary-label">음식수동 합계</div>
+      <div class="summary-value" id="sumFoodManual">0 ml</div>
+    </div>
 
-          <div class="summary" id="todaySummary">
-            <div class="summary-row">
-              <div class="summary-label">총 수분(ml)</div>
-              <div class="summary-value" id="todayTotalMl">0</div>
-            </div>
-            <div class="summary-row">
-              <div class="summary-label">기록 수</div>
-              <div class="summary-value" id="todayCount">0</div>
-            </div>
-            <div class="summary-row">
-              <div class="summary-label">마지막 기록</div>
-              <div class="summary-value" id="todayLast">-</div>
-            </div>
+    <div class="summary-box">
+      <div class="summary-label">음식AI 합계</div>
+      <div class="summary-value" id="sumFoodAI">0 ml</div>
+    </div>
+
+    <div class="summary-box summary-total">
+      <div class="summary-label">
+        오늘<span class="drop">💧</span>
+      </div>
+      <div class="summary-value" id="sumAll">0 ml</div>
+    </div>
+  </div>
+
+  <!-- ✅ 2) divider + records-card는 grid 밖으로 분리 -->
+  <div class="divider"></div>
+
+  <div class="records-card">
+    <div class="records-card-head">
+      <div class="records-card-title">오늘 기록 — 전체</div>
+      <div class="pill" id="allCountPill">0건</div>
+    </div>
+    <div class="records-list" id="allListBody"></div>
+    <div class="records-empty" id="allEmpty" style="display:none;">아직 기록이 없습니다.</div>
+  </div>
+</div>
+
+
+        <!-- 월별요약 탭 -->
+        <div class="card" id="monthlyCard" style="display:none;">
+          <div class="section-title-row">
+            <div class="section-title">월별요약</div>
+            <div class="status" id="monthlyStatus">아직 준비중입니다.</div>
           </div>
-
-          <hr class="sep" />
-
-          <div class="list" id="todayList"></div>
-        </section>
-
-        <!-- Monthly -->
-        <section class="card hidden" id="monthlyCard">
-          <div class="card-title">월별요약</div>
-
-          <div class="grid-2">
-            <div class="field">
-              <label class="label">월 선택</label>
-              <input class="input" type="month" id="monthPicker" />
-            </div>
-            <div class="field">
-              <label class="label">총 수분(ml)</label>
-              <div class="kpi" id="monthTotalMl">0</div>
-            </div>
+          <div class="coming-box">
+            아직 준비중입니다.<br />
+            - 탭 이동은 가능<br />
+            - 추후 월 선택 → 합계/추이/리스트로 확장
           </div>
-
-          <hr class="sep" />
-
-          <div class="list" id="monthList"></div>
-        </section>
-      </main>
+        </div>
+      </div>
     </div>
 
     <!-- Delete modal -->
