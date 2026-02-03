@@ -1,529 +1,507 @@
-﻿:root {
-  --txt0: rgba(231, 234, 243, 0.92);
-  --txt1: rgba(231, 234, 243, 0.70);
-  --txt2: rgba(231, 234, 243, 0.60);
-}
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--txt0);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
-    Apple Color Emoji, Segoe UI Emoji;
-  background: radial-gradient(1200px 600px at 20% 0%, #111a33 0%, #070b14 45%, #05070d 100%);
-}
-
-.page { padding: 24px; }
-.container { max-width: 980px; margin: 0 auto; }
+﻿/* ============================================================
+   styles.css (ver1.2) — FIXED / THEME / LAYOUT split
+   목표: UI 흔들림 방지 + 모바일 2×2 확정 + 텍스트 검정화 방지
+   ============================================================ */
 
 /* =========================
-   Header
+   0) TOKENS (Theme variables)
    ========================= */
-.header {
+:root{
+  --bg0: #070b16;
+  --bg1: #0b1020;
+  --bg2: rgba(255,255,255,0.06);
+  --bg3: rgba(255,255,255,0.02);
+
+  --panel: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  --panel2: rgba(0,0,0,0.25);
+
+  --bd0: rgba(255,255,255,0.10);
+  --bd1: rgba(255,255,255,0.08);
+
+  --txt0: rgba(233,236,241,1);
+  --txt1: rgba(233,236,241,0.78);
+  --txt2: rgba(233,236,241,0.65);
+
+  --blue0: #2f6bff;
+  --blue1: #1f4fd6;
+
+  --teal0: rgba(0,180,200,0.25);
+  --teal1: rgba(0,120,160,0.15);
+
+  --danger0: rgba(255,80,80,0.80);
+  --danger1: rgba(255,80,80,0.20);
+
+  --r12: 12px;
+  --r14: 14px;
+  --r18: 18px;
+
+  --shadow0: 0 18px 60px rgba(0,0,0,0.35);
+}
+
+/* =========================
+   1) BASE (Reset + text color lock)
+   ========================= */
+*{ box-sizing: border-box; }
+
+html, body{
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 20% -10%, #1c2b5a 0%, #0b1020 40%, #070b16 100%);
+  color: var(--txt0);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+a{ color: var(--txt0); }
+button, input, select, textarea{ color: var(--txt0); font-family: inherit; }
+
+/* iOS/Safari select 글자 검정화 방지 */
+select{
+  color: var(--txt0);
+  background: rgba(0,0,0,0.25);
+}
+
+/* =========================
+   2) 🔒 FIXED UI (DO NOT TOUCH)
+   - 여기 블록은 "고정 계약(Contract)" 영역
+   - GPT에게 수정 요청할 때: 이 블록은 절대 수정 금지라고 명시하세요.
+   ========================= */
+
+/* Layout frame */
+.page{
+  min-height: 100vh;
   display: flex;
+  justify-content: center;
+}
+.container{
+  width: 100%;
+  max-width: 420px;
+  padding: 20px 14px 40px;
+}
+
+/* Header */
+.header{
+  display:flex;
   justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
+  align-items: flex-end;
   margin-bottom: 14px;
 }
-.title { font-size: 22px; font-weight: 800; letter-spacing: -0.2px; }
-.subtitle { font-size: 12px; color: rgba(231, 234, 243, 0.65); }
+.title{
+  font-size: 22px;
+  font-weight: 700;
+}
+.subtitle{
+  font-size: 12px;
+  opacity: 0.7;
+}
 
-/* =========================
-   Tabs
-   ========================= */
-.tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
-
-.tab {
+/* Tabs */
+.tabs{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.tab{
   padding: 10px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(231, 234, 243, 0.92);
+  font-size: 14px;
   cursor: pointer;
   user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+}
+.tab.active{ font-weight: 700; }
+.tab.coming{ cursor: default; }
+
+/* Card shells */
+.card{
+  border-radius: var(--r18);
+  padding: 16px;
+  margin-bottom: 18px;
 }
 
-.tab.active {
-  background: rgba(56, 121, 255, 0.22);
-  box-shadow: 0 0 0 1px rgba(56, 121, 255, 0.35) inset;
-}
-
-.tab.coming {
-  color: rgba(231, 234, 243, 0.75);
-  border-style: dashed;
-}
-
-.tab.coming::after{
-  content: "준비중";
-  font-size: 11px;
-  opacity: 0.85;
-  padding: 2px 6px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04);
-}
-
-/* =========================
-   Card
-   ========================= */
-.card {
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
-  padding: 18px;
-}
-
-.section-title-row {
-  display: flex;
+/* Section title row */
+.section-title-row{
+  display:flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
-.section-title { font-size: 16px; font-weight: 800; letter-spacing: -0.1px; }
-
-/* =========================
-   Forms
-   ========================= */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 14px;
-  margin-top: 12px;
+.section-title{
+  font-size: 16px;
+  font-weight: 600;
 }
-
-.label {
+.status{
   font-size: 12px;
-  color: rgba(231, 234, 243, 0.70);
-  margin-bottom: 8px;
+  opacity: 0.7;
 }
 
-select, input {
+/* Labels / inputs */
+.label{
+  font-size: 12px;
+  opacity: 0.75;
+  margin-bottom: 4px;
+}
+input, select{
   width: 100%;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.65);
-  color: rgba(231, 234, 243, 0.95);
-  padding: 0 12px;
+  border-radius: var(--r12);
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
   outline: none;
 }
+select{ appearance: none; }
 
-.volume-row {
-  display: grid;
-  grid-template-columns: 44px 1fr 44px;
-  gap: 10px;
-  align-items: center;
-}
-
-.btn-icon {
-  height: 44px;
-  width: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(231, 234, 243, 0.95);
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
-  font-weight: 800;
-  user-select: none;
-}
-
-.btn-icon.disabled {
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(231, 234, 243, 0.30);
-  cursor: not-allowed;
-}
-
-.volume-box {
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-}
-
-/* read-only value box (food moisture/estimate) */
-.value-box{
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.65);
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  font-weight: 900;
-  color: rgba(231, 234, 243, 0.92);
-}
-
-.primary-btn {
-  margin-top: 14px;
-  height: 48px;
+/* Primary button */
+.primary-btn{
   width: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(56, 121, 255, 0.55);
-  background: linear-gradient(180deg, rgba(56, 121, 255, 0.95) 0%, rgba(41, 103, 241, 0.95) 100%);
-  color: white;
-  font-weight: 900;
-  letter-spacing: -0.1px;
-  cursor: pointer;
-  box-shadow: 0 16px 30px rgba(41, 103, 241, 0.35);
-}
-
-.divider { height: 1px; background: rgba(255, 255, 255, 0.08); margin: 18px 0; }
-
-.hint { margin-top: 12px; font-size: 12px; color: rgba(231, 234, 243, 0.60); }
-
-/* =========================
-   Pills / Status
-   ========================= */
-.pill {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  font-size: 12px;
-  color: rgba(231, 234, 243, 0.80);
-  white-space: nowrap;
-}
-
-.pill-blue{
-  border: 1px solid rgba(56, 121, 255, 0.28);
-  background: rgba(56, 121, 255, 0.16);
-  color: rgba(190, 216, 255, 0.95);
-}
-
-.status {
-  font-size: 12px;
-  color: rgba(231, 234, 243, 0.75);
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
-  white-space: nowrap;
-}
-
-.coming-box{
-  border-radius: 14px;
-  border: 1px dashed rgba(255,255,255,0.14);
-  background: rgba(6, 10, 20, 0.45);
+  margin-top: 14px;
   padding: 14px;
-  color: rgba(231, 234, 243, 0.75);
-  line-height: 1.6;
-}
-
-/* =========================
-   Summary (today tab)
-   ========================= */
-.summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.summary-box {
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.55);
-  padding: 12px;
-}
-
-.summary-label { font-size: 12px; color: rgba(231, 234, 243, 0.70); margin-bottom: 6px; }
-.summary-value { font-size: 20px; font-weight: 900; letter-spacing: -0.2px; }
-
-/* =========================
-   Modal
-   ========================= */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  display: grid;
-  place-items: center;
-  padding: 16px;
-  z-index: 50;
-}
-
-.modal {
-  width: min(520px, 100%);
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(10, 14, 26, 0.95);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
-  padding: 18px;
-}
-
-.modal-title { font-size: 16px; font-weight: 900; margin-bottom: 8px; }
-.modal-text { font-size: 13px; color: rgba(231, 234, 243, 0.75); line-height: 1.45; }
-
-.modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-
-.modal-btn {
-  height: 38px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(231, 234, 243, 0.92);
+  border-radius: var(--r14);
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 800;
 }
 
-.modal-btn.danger {
-  border: 1px solid rgba(255, 96, 96, 0.30);
-  background: rgba(255, 96, 96, 0.12);
-}
-
-/* =========================
-   UI2: Records Card + List
-   ========================= */
-.records-card{
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(6, 10, 20, 0.55);
-  padding: 12px;
-}
-
-.records-card-head{
+/* 🔒 STEP PER ( - 100 + ) — 고정 핵심 */
+.volume-row{
   display:flex;
   align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
 }
+.volume-row.volume-row-compact{ gap: 8px; }
 
-.records-card-title{
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: -0.1px;
-}
-
-.records-list{
+.btn-icon{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   display:flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
+  font-size: 18px;
+  line-height: 1;
+  flex: 0 0 36px;         /* ✅ 폭 고정 */
 }
-
-.records-empty{
-  margin-top: 10px;
+.volume-box{
+  min-width: 64px;         /* ✅ 숫자 박스 폭 고정 */
+  height: 36px;            /* ✅ 버튼과 높이 통일 */
+  border-radius: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   text-align:center;
-  color: rgba(231, 234, 243, 0.55);
-  font-size: 13px;
-  padding: 10px 0 4px;
-}
-
-.record-item{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03);
-}
-
-.record-left{
-  min-width: 0;
-  display:flex;
-  align-items:center;
-  gap: 10px;
-}
-
-.record-time{
-  font-variant-numeric: tabular-nums;
-  font-size: 14px;
-  color: rgba(231, 234, 243, 0.88);
-  width: 64px;
-  flex: 0 0 auto;
-}
-
-.record-type{
-  min-width: 0;
-  font-size: 14px;
-  font-weight: 800;
-  color: rgba(231, 234, 243, 0.92);
-  overflow:hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.record-right{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  flex: 0 0 auto;
-}
-
-.record-ml{
-  font-variant-numeric: tabular-nums;
   font-size: 16px;
-  font-weight: 900;
-  color: rgba(231, 234, 243, 0.92);
-  min-width: 72px;
-  text-align: right;
-  white-space: nowrap;
+  font-weight: 600;
+  padding: 0 10px;
+  flex: 0 0 auto;
 }
 
-.record-del{
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 96, 96, 0.18);
-  background: rgba(255, 96, 96, 0.08);
-  display:grid;
-  place-items:center;
-  cursor: pointer;
+/* Water row fixed: one line */
+.water-row{
+  display:flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.water-col{ flex: 1; min-width: 0; }
+
+/* Food manual fixed: name+weight one line, then others */
+.food-top-row{
+  display:flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.food-top-name{ flex: 1.6; min-width: 0; }
+.food-top-weight{ flex: 1; min-width: 0; }
+
+.food-row{
+  display:flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.food-col{ flex: 1; min-width: 0; }
+
+.value-box{
+  padding: 12px;
+  border-radius: var(--r12);
+  font-size: 14px;
 }
 
-.record-del svg{
-  width: 18px;
-  height: 18px;
-  opacity: 0.9;
-  fill: rgba(255, 96, 96, 0.95);
-}
-
-/* =========================
-   Candidates (food db search results)
-   ========================= */
+/* Candidates list (food search results) */
+.food-cand-row{ margin-top: 10px; }
 .candidates{
   display:flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 8px;
+}
+.candidates > div{
+  padding: 10px 12px;
+  border-radius: var(--r12);
+  cursor: pointer;
+  font-size: 14px;
 }
 
-.cand-item{
+/* Records fixed */
+.records-card{
+  border-radius: var(--r14);
+  padding: 12px;
+}
+.records-card-head{
   display:flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  margin-bottom: 8px;
+}
+.records-card-title{
+  font-size: 14px;
+  font-weight: 600;
+}
+.records-list{
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.record-item{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  border-radius: var(--r12);
   padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.03);
+}
+
+/* ✅ 기존 JS가 record-left/right를 만들 때 */
+.record-left{ font-size: 13px; color: var(--txt1); }
+.record-right{ display:flex; align-items:center; gap: 10px; }
+
+/* ✅ 다른 버전에서 record-time/title/ml 구조를 쓰더라도 깨지지 않게 보정 */
+.record-time{ font-size: 12px; color: var(--txt2); }
+.record-title{ font-size: 14px; font-weight: 600; color: var(--txt0); max-width: 220px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+.record-ml{ font-size: 14px; font-weight: 700; color: var(--txt0); }
+
+.trash{
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex: 0 0 32px;
+}
+
+/* Pills / hint / divider */
+.pill{
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.hint{
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.65;
+}
+.divider{
+  height: 1px;
+  margin: 14px 0;
+}
+
+/* Summary fixed (2×2 base) */
+.summary-grid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.summary-box{
+  border-radius: var(--r14);
+  padding: 14px;
+  min-width: 0;
+}
+.summary-label{
+  font-size: 12px;
+  opacity: 0.7;
+}
+.summary-value{
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.drop{ margin-left: 4px; }
+
+/* ✅ index.html 구조상 divider/records-card가 summary-grid 안에 들어가도 망가지지 않게 */
+.summary-grid > .divider{
+  grid-column: 1 / -1;
+}
+.summary-grid > .records-card{
+  grid-column: 1 / -1;
+}
+
+/* Modal fixed */
+.modal-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.modal{
+  width: 280px;
+  border-radius: 16px;
+  padding: 16px;
+}
+.modal-title{ font-size: 16px; font-weight: 600; }
+.modal-text{ font-size: 13px; opacity: 0.8; margin: 10px 0 14px; }
+.modal-btns{ display:flex; gap: 8px; }
+.modal-btn{
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
   cursor: pointer;
 }
 
-.cand-name{
-  min-width:0;
-  overflow:hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-  font-weight: 800;
-  color: rgba(231,234,243,0.92);
+/* =========================
+   3) THEME (colors / backgrounds / borders)
+   - 여기서만 색/그라데이션/테두리 톤을 바꾸세요.
+   ========================= */
+
+/* Tabs */
+.tab{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.tab.active{
+  background: linear-gradient(180deg, var(--blue0), var(--blue1));
+  border-color: rgba(80,130,255,0.90);
+}
+.tab.coming{ opacity: 0.45; }
+
+/* Cards */
+.card{
+  background: var(--panel);
+  border: 1px solid var(--bd1);
+  box-shadow: none;
 }
 
-.cand-moist{
-  flex:0 0 auto;
-  font-variant-numeric: tabular-nums;
-  font-size: 12px;
-  color: rgba(231,234,243,0.75);
-  white-space: nowrap;
+/* Inputs */
+input, select{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
 }
 
-.cand-item.selected{
-  border: 1px solid rgba(56,121,255,0.35);
-  background: rgba(56,121,255,0.14);
-  box-shadow: 0 0 0 1px rgba(56,121,255,0.18) inset;
+/* Buttons */
+.primary-btn{
+  background: linear-gradient(180deg, #3b7cff, #2359e3);
+  color: #fff;
+}
+.btn-icon{
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.volume-box{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* value box */
+.value-box{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* candidates */
+.candidates > div{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* records */
+.records-card{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.record-item{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.trash{
+  background: rgba(255,80,80,0.20);
+}
+
+/* pills / divider */
+.pill{ background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); }
+.pill-blue{ background: rgba(80,130,255,0.25); border: 1px solid rgba(80,130,255,0.18); }
+.divider{ background: rgba(255,255,255,0.08); }
+
+/* summary */
+.summary-box{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.summary-box.summary-total{
+  background: linear-gradient(180deg, var(--teal0), var(--teal1));
+  border: 1px solid rgba(0,200,220,0.18);
+}
+
+/* modal */
+.modal{
+  background: #10142a;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+.modal-btn{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+.modal-btn.danger{
+  background: rgba(255,80,80,0.80);
 }
 
 /* =========================
-   Compact Stepper (shared)
+   4) LAYOUT (responsive tweaks only)
+   - 여기서만 gap/padding/폭/모바일 조정하세요.
    ========================= */
-.volume-row-compact{
-  grid-template-columns: 40px 1fr 40px;
-  gap: 8px;
-}
 
-/* =========================
-   ✅ Water tab: ALWAYS 1-row [Drink][Volume]
-   ========================= */
-.water-row{
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  margin-top: 12px;
-  flex-wrap: nowrap;          /* 🔒 never wrap */
-}
+/* 모바일에서 한 줄 유지(줄바꿈 방지) */
+@media (max-width: 420px){
+  .container{ padding: 18px 12px 36px; }
 
-.water-col{ min-width: 0; }
+  /* water/food는 한 줄 유지 + 오른쪽 폭 고정 */
+  .water-row{ flex-wrap: nowrap; }
+  .food-top-row{ flex-wrap: nowrap; }
+  .food-row{ flex-wrap: nowrap; }
 
-.water-drink{
-  flex: 1 1 auto;             /* drink takes remaining space */
-}
+  /* 오른쪽(용량/중량) 컬럼이 너무 줄어들지 않게 */
+  .water-col.water-volume{ flex: 0 0 150px; }
+  .food-top-weight{ flex: 0 0 150px; }
 
-.water-volume{
-  flex: 0 0 140px;            /* fixed width */
-}
-
-/* =========================
-   ✅ Food manual: 2 lines layout (two food-row blocks in HTML)
-   ========================= */
-.food-row{
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  margin-top: 12px;
-  flex-wrap: nowrap;          /* keep each row on one line */
-}
-
-.food-col{ min-width: 0; }
-
-.food-name{ flex: 1 1 auto; }
-.food-weight{ flex: 0 0 140px; }
-
-.food-moist{ flex: 1 1 50%; }
-.food-est{ flex: 1 1 50%; }
-
-/* =========================
-   Mobile (≤720px)
-   ========================= */
-@media (max-width: 720px) {
-  .page { padding: 14px; }
-
-  /* other screens still can stack */
-  .form-grid { grid-template-columns: 1fr; }
-  .summary-grid { grid-template-columns: 1fr; }
-
-  /* records */
-  .records-card{ padding: 12px; }
-  .record-item{ padding: 12px; }
-  .record-time{ width: 56px; }
-  .record-ml{ min-width: 66px; font-size: 16px; }
-
-  /* compact stepper */
-  .volume-row-compact{
-    grid-template-columns: 38px 1fr 38px;
-    gap: 8px;
+  /* summary: 모바일에서도 2×2 확정 + 타일 높이 균일 */
+  .summary-grid{
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items: stretch;
+    grid-auto-rows: 1fr;
   }
-
-  /* tighten labels in special rows */
-  .water-row .label,
-  .food-row .label{
-    margin-bottom: 6px;
+  .summary-box{
+    min-height: 92px;
+    overflow: hidden;
   }
+  .summary-label{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .summary-value{
+    white-space: nowrap;
+  }
+}
 
-  /* ✅ water: still 1-row, just a bit tighter */
-  .water-row{ gap: 10px; flex-wrap: nowrap; }
-  .water-volume{ flex-basis: 140px; }
+/* 아주 작은 화면(360px급)에서 스텝퍼가 깨지지 않게 */
+@media (max-width: 360px){
+  .water-col.water-volume{ flex-basis: 142px; }
+  .food-top-weight{ flex-basis: 142px; }
 
-  /* ✅ food: keep two food-row blocks as 2 lines; each line no wrap */
-  .food-row{ gap: 10px; flex-wrap: nowrap; }
-  .food-weight{ flex-basis: 140px; }
+  .btn-icon{ width: 34px; height: 34px; flex-basis: 34px; border-radius: 11px; }
+  .volume-box{ height: 34px; min-width: 58px; border-radius: 11px; }
 }
