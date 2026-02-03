@@ -38,11 +38,13 @@ function main() {
     return;
   }
 
-  const modal = createDeleteModal({
-    overlay: document.getElementById("modalOverlay"),
-    btnCancel: document.getElementById("btnCancel"),
-    btnConfirm: document.getElementById("btnConfirm"),
-  });
+const modal = createDeleteModal({
+  overlayEl: document.getElementById("modalOverlay"),
+  modalEl: document.getElementById("modal"),
+  cancelBtn: document.getElementById("btnCancel"),
+  confirmBtn: document.getElementById("btnConfirm"),
+});
+
 
   /* ================= DB (공용) ================= */
   const foodDb = new FoodDb("./food_db.json");
