@@ -137,7 +137,7 @@ export function initFoodManualTab(ctx) {
   if (elFoodMinus) {
     elFoodMinus.addEventListener("click", () => {
       if (foodWeightG <= 0) return;
-      setFoodWeight(foodWeightG - 10);
+      setFoodWeight(foodWeightG - 5);
 
       if (selected) {
         const est = computeEstimatedMl(foodWeightG, selected.moisture);
@@ -150,7 +150,7 @@ export function initFoodManualTab(ctx) {
 
   if (elFoodPlus) {
     elFoodPlus.addEventListener("click", () => {
-      setFoodWeight(foodWeightG + 10);
+      setFoodWeight(foodWeightG + 5);
 
       if (selected) {
         const est = computeEstimatedMl(foodWeightG, selected.moisture);

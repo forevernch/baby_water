@@ -30,20 +30,20 @@ export function initWaterTab(ctx) {
   let volume = 100;
 
   function setVolume(next) {
-    volume = Math.max(10, Number(next) || 10);
+    volume = Math.max(5, Number(next) || 5);
     elVolumeBox.textContent = String(volume);
 
-    if (volume <= 10) elMinus.classList.add("disabled");
+    if (volume <= 5) elMinus.classList.add("disabled");
     else elMinus.classList.remove("disabled");
   }
 
   elMinus.addEventListener("click", () => {
-    if (volume <= 10) return;
-    setVolume(volume - 10);
+    if (volume <= 5) return;
+    setVolume(volume - 5);
   });
 
   elPlus.addEventListener("click", () => {
-    setVolume(volume + 10);
+    setVolume(volume + 5);
   });
 
   elAdd.addEventListener("click", () => {
