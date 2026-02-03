@@ -3,7 +3,9 @@
   --txt1: rgba(231, 234, 243, 0.70);
   --txt2: rgba(231, 234, 243, 0.60);
 }
+
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -12,9 +14,13 @@ body {
     Apple Color Emoji, Segoe UI Emoji;
   background: radial-gradient(1200px 600px at 20% 0%, #111a33 0%, #070b14 45%, #05070d 100%);
 }
+
 .page { padding: 24px; }
 .container { max-width: 980px; margin: 0 auto; }
 
+/* =========================
+   Header
+   ========================= */
 .header {
   display: flex;
   justify-content: space-between;
@@ -25,7 +31,11 @@ body {
 .title { font-size: 22px; font-weight: 800; letter-spacing: -0.2px; }
 .subtitle { font-size: 12px; color: rgba(231, 234, 243, 0.65); }
 
+/* =========================
+   Tabs
+   ========================= */
 .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+
 .tab {
   padding: 10px 14px;
   border-radius: 999px;
@@ -38,14 +48,17 @@ body {
   align-items: center;
   gap: 8px;
 }
+
 .tab.active {
   background: rgba(56, 121, 255, 0.22);
   box-shadow: 0 0 0 1px rgba(56, 121, 255, 0.35) inset;
 }
+
 .tab.coming {
   color: rgba(231, 234, 243, 0.75);
   border-style: dashed;
 }
+
 .tab.coming::after{
   content: "준비중";
   font-size: 11px;
@@ -56,6 +69,9 @@ body {
   background: rgba(255,255,255,0.04);
 }
 
+/* =========================
+   Card
+   ========================= */
 .card {
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.04);
@@ -73,13 +89,21 @@ body {
 }
 .section-title { font-size: 16px; font-weight: 800; letter-spacing: -0.1px; }
 
+/* =========================
+   Forms
+   ========================= */
 .form-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 14px;
   margin-top: 12px;
 }
-.label { font-size: 12px; color: rgba(231, 234, 243, 0.70); margin-bottom: 8px; }
+
+.label {
+  font-size: 12px;
+  color: rgba(231, 234, 243, 0.70);
+  margin-bottom: 8px;
+}
 
 select, input {
   width: 100%;
@@ -98,6 +122,7 @@ select, input {
   gap: 10px;
   align-items: center;
 }
+
 .btn-icon {
   height: 44px;
   width: 44px;
@@ -112,11 +137,13 @@ select, input {
   font-weight: 800;
   user-select: none;
 }
+
 .btn-icon.disabled {
   background: rgba(255, 255, 255, 0.03);
   color: rgba(231, 234, 243, 0.30);
   cursor: not-allowed;
 }
+
 .volume-box {
   height: 44px;
   border-radius: 12px;
@@ -127,6 +154,19 @@ select, input {
   justify-content: center;
   font-weight: 800;
   letter-spacing: 0.2px;
+}
+
+/* read-only value box (food moisture/estimate) */
+.value-box{
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(6, 10, 20, 0.65);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-weight: 900;
+  color: rgba(231, 234, 243, 0.92);
 }
 
 .primary-btn {
@@ -145,6 +185,11 @@ select, input {
 
 .divider { height: 1px; background: rgba(255, 255, 255, 0.08); margin: 18px 0; }
 
+.hint { margin-top: 12px; font-size: 12px; color: rgba(231, 234, 243, 0.60); }
+
+/* =========================
+   Pills / Status
+   ========================= */
 .pill {
   padding: 6px 10px;
   border-radius: 999px;
@@ -154,63 +199,11 @@ select, input {
   color: rgba(231, 234, 243, 0.80);
   white-space: nowrap;
 }
+
 .pill-blue{
   border: 1px solid rgba(56, 121, 255, 0.28);
   background: rgba(56, 121, 255, 0.16);
   color: rgba(190, 216, 255, 0.95);
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 10px;
-}
-.summary-box {
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(6, 10, 20, 0.55);
-  padding: 12px;
-}
-.summary-label { font-size: 12px; color: rgba(231, 234, 243, 0.70); margin-bottom: 6px; }
-.summary-value { font-size: 20px; font-weight: 900; letter-spacing: -0.2px; }
-
-.hint { margin-top: 12px; font-size: 12px; color: rgba(231, 234, 243, 0.60); }
-
-/* modal */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  display: grid;
-  place-items: center;
-  padding: 16px;
-  z-index: 50;
-}
-.modal {
-  width: min(520px, 100%);
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(10, 14, 26, 0.95);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
-  padding: 18px;
-}
-.modal-title { font-size: 16px; font-weight: 900; margin-bottom: 8px; }
-.modal-text { font-size: 13px; color: rgba(231, 234, 243, 0.75); line-height: 1.45; }
-.modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-.modal-btn {
-  height: 38px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(231, 234, 243, 0.92);
-  cursor: pointer;
-  font-weight: 800;
-}
-.modal-btn.danger {
-  border: 1px solid rgba(255, 96, 96, 0.30);
-  background: rgba(255, 96, 96, 0.12);
 }
 
 .status {
@@ -222,6 +215,7 @@ select, input {
   background: rgba(255, 255, 255, 0.04);
   white-space: nowrap;
 }
+
 .coming-box{
   border-radius: 14px;
   border: 1px dashed rgba(255,255,255,0.14);
@@ -232,15 +226,78 @@ select, input {
 }
 
 /* =========================
-   ✅ UI2: records 카드 + 리스트
+   Summary (today tab)
    ========================= */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
 
+.summary-box {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(6, 10, 20, 0.55);
+  padding: 12px;
+}
+
+.summary-label { font-size: 12px; color: rgba(231, 234, 243, 0.70); margin-bottom: 6px; }
+.summary-value { font-size: 20px; font-weight: 900; letter-spacing: -0.2px; }
+
+/* =========================
+   Modal
+   ========================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 50;
+}
+
+.modal {
+  width: min(520px, 100%);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(10, 14, 26, 0.95);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  padding: 18px;
+}
+
+.modal-title { font-size: 16px; font-weight: 900; margin-bottom: 8px; }
+.modal-text { font-size: 13px; color: rgba(231, 234, 243, 0.75); line-height: 1.45; }
+
+.modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+
+.modal-btn {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(231, 234, 243, 0.92);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.modal-btn.danger {
+  border: 1px solid rgba(255, 96, 96, 0.30);
+  background: rgba(255, 96, 96, 0.12);
+}
+
+/* =========================
+   UI2: Records Card + List
+   ========================= */
 .records-card{
   border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.10);
   background: rgba(6, 10, 20, 0.55);
   padding: 12px;
 }
+
 .records-card-head{
   display:flex;
   align-items:center;
@@ -248,16 +305,19 @@ select, input {
   gap: 10px;
   margin-bottom: 10px;
 }
+
 .records-card-title{
   font-size: 14px;
   font-weight: 900;
   letter-spacing: -0.1px;
 }
+
 .records-list{
   display:flex;
   flex-direction: column;
   gap: 10px;
 }
+
 .records-empty{
   margin-top: 10px;
   text-align:center;
@@ -276,12 +336,14 @@ select, input {
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(255,255,255,0.03);
 }
+
 .record-left{
   min-width: 0;
   display:flex;
   align-items:center;
   gap: 10px;
 }
+
 .record-time{
   font-variant-numeric: tabular-nums;
   font-size: 14px;
@@ -289,6 +351,7 @@ select, input {
   width: 64px;
   flex: 0 0 auto;
 }
+
 .record-type{
   min-width: 0;
   font-size: 14px;
@@ -298,12 +361,14 @@ select, input {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .record-right{
   display:flex;
   align-items:center;
   gap: 10px;
   flex: 0 0 auto;
 }
+
 .record-ml{
   font-variant-numeric: tabular-nums;
   font-size: 16px;
@@ -313,6 +378,7 @@ select, input {
   text-align: right;
   white-space: nowrap;
 }
+
 .record-del{
   width: 34px;
   height: 34px;
@@ -323,6 +389,7 @@ select, input {
   place-items:center;
   cursor: pointer;
 }
+
 .record-del svg{
   width: 18px;
   height: 18px;
@@ -330,19 +397,9 @@ select, input {
   fill: rgba(255, 96, 96, 0.95);
 }
 
-/* 모바일 최적화 */
-@media (max-width: 720px) {
-  .page { padding: 14px; }
-  .form-grid { grid-template-columns: 1fr; }
-  .summary-grid { grid-template-columns: 1fr; }
-
-  .records-card{ padding: 12px; }
-  .record-item{ padding: 12px; }
-  .record-time{ width: 56px; }
-  .record-ml{ min-width: 66px; font-size: 16px; }
-}
-
-/* 후보 리스트 */
+/* =========================
+   Candidates (food db search results)
+   ========================= */
 .candidates{
   display:flex;
   flex-direction: column;
@@ -384,4 +441,89 @@ select, input {
   border: 1px solid rgba(56,121,255,0.35);
   background: rgba(56,121,255,0.14);
   box-shadow: 0 0 0 1px rgba(56,121,255,0.18) inset;
+}
+
+/* =========================
+   Compact Stepper (shared)
+   ========================= */
+.volume-row-compact{
+  grid-template-columns: 40px 1fr 40px;
+  gap: 8px;
+}
+
+/* =========================
+   ✅ Water tab: ALWAYS 1-row [Drink][Volume]
+   ========================= */
+.water-row{
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 12px;
+  flex-wrap: nowrap;          /* 🔒 never wrap */
+}
+
+.water-col{ min-width: 0; }
+
+.water-drink{
+  flex: 1 1 auto;             /* drink takes remaining space */
+}
+
+.water-volume{
+  flex: 0 0 140px;            /* fixed width */
+}
+
+/* =========================
+   ✅ Food manual: 2 lines layout (two food-row blocks in HTML)
+   ========================= */
+.food-row{
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 12px;
+  flex-wrap: nowrap;          /* keep each row on one line */
+}
+
+.food-col{ min-width: 0; }
+
+.food-name{ flex: 1 1 auto; }
+.food-weight{ flex: 0 0 140px; }
+
+.food-moist{ flex: 1 1 50%; }
+.food-est{ flex: 1 1 50%; }
+
+/* =========================
+   Mobile (≤720px)
+   ========================= */
+@media (max-width: 720px) {
+  .page { padding: 14px; }
+
+  /* other screens still can stack */
+  .form-grid { grid-template-columns: 1fr; }
+  .summary-grid { grid-template-columns: 1fr; }
+
+  /* records */
+  .records-card{ padding: 12px; }
+  .record-item{ padding: 12px; }
+  .record-time{ width: 56px; }
+  .record-ml{ min-width: 66px; font-size: 16px; }
+
+  /* compact stepper */
+  .volume-row-compact{
+    grid-template-columns: 38px 1fr 38px;
+    gap: 8px;
+  }
+
+  /* tighten labels in special rows */
+  .water-row .label,
+  .food-row .label{
+    margin-bottom: 6px;
+  }
+
+  /* ✅ water: still 1-row, just a bit tighter */
+  .water-row{ gap: 10px; flex-wrap: nowrap; }
+  .water-volume{ flex-basis: 140px; }
+
+  /* ✅ food: keep two food-row blocks as 2 lines; each line no wrap */
+  .food-row{ gap: 10px; flex-wrap: nowrap; }
+  .food-weight{ flex-basis: 140px; }
 }
