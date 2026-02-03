@@ -140,46 +140,50 @@
           </div>
         </div>
 
-        <!-- 오늘요약 탭 -->
-        <div class="card" id="todayCard" style="display:none;">
-          <div class="section-title-row">
-            <div class="section-title">오늘요약</div>
-          </div>
+      <!-- 오늘요약 탭 -->
+<div class="card" id="todayCard" style="display:none;">
+  <div class="section-title-row">
+    <div class="section-title">오늘요약</div>
+  </div>
 
-          <div class="summary-grid">
-            <div class="summary-box">
-              <div class="summary-label">물/음료 합계</div>
-              <div class="summary-value" id="sumWater">0 ml</div>
-            </div>
-            <div class="summary-box">
-              <div class="summary-label">음식수동 합계</div>
-              <div class="summary-value" id="sumFoodManual">0 ml</div>
-            </div>
-            <div class="summary-box">
-              <div class="summary-label">음식AI 합계</div>
-              <div class="summary-value" id="sumFoodAI">0 ml</div>
-            </div>
+  <!-- ✅ 1) 요약 타일(2×2)만 summary-grid 안에 둠 -->
+  <div class="summary-grid">
+    <div class="summary-box">
+      <div class="summary-label">물/음료 합계</div>
+      <div class="summary-value" id="sumWater">0 ml</div>
+    </div>
 
-            <div class="summary-box summary-total">
-              <div class="summary-label">
-                오늘<span class="drop">💧</span>
-              </div>
-              <div class="summary-value" id="sumAll">0 ml</div>
-            </div>
+    <div class="summary-box">
+      <div class="summary-label">음식수동 합계</div>
+      <div class="summary-value" id="sumFoodManual">0 ml</div>
+    </div>
 
-            <div class="divider"></div>
+    <div class="summary-box">
+      <div class="summary-label">음식AI 합계</div>
+      <div class="summary-value" id="sumFoodAI">0 ml</div>
+    </div>
 
-            <!-- ✅ UI2: records-card -->
-            <div class="records-card">
-              <div class="records-card-head">
-                <div class="records-card-title">오늘 기록 — 전체</div>
-                <div class="pill" id="allCountPill">0건</div>
-              </div>
-              <div class="records-list" id="allListBody"></div>
-              <div class="records-empty" id="allEmpty" style="display:none;">아직 기록이 없습니다.</div>
-            </div>
-          </div>
-        </div>
+    <div class="summary-box summary-total">
+      <div class="summary-label">
+        오늘<span class="drop">💧</span>
+      </div>
+      <div class="summary-value" id="sumAll">0 ml</div>
+    </div>
+  </div>
+
+  <!-- ✅ 2) divider + records-card는 grid 밖으로 분리 -->
+  <div class="divider"></div>
+
+  <div class="records-card">
+    <div class="records-card-head">
+      <div class="records-card-title">오늘 기록 — 전체</div>
+      <div class="pill" id="allCountPill">0건</div>
+    </div>
+    <div class="records-list" id="allListBody"></div>
+    <div class="records-empty" id="allEmpty" style="display:none;">아직 기록이 없습니다.</div>
+  </div>
+</div>
+
 
         <!-- 월별요약 탭 -->
         <div class="card" id="monthlyCard" style="display:none;">
