@@ -1,211 +1,231 @@
-﻿import { uid } from "./utils.js";
-import { createRecordRow } from "./ui.js";
-import { dateKeyLocal } from "./utils.js";
+﻿import { computeEstimatedMl } from "./utils.js";
+import { renderList } from "./ui.js";
 
-function toNumber(v, def = 0) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : def;
-}
-
-/**
- * 음식AI 탭
- * - UI/동작 패턴은 음식수동과 동일하게 유지
- * - 차이: kind="foodAI" 로 저장
- * - DB: FoodDb(음식수동과 동일 인스턴스) 공유
- */
-export function initFoodAiTab(opts) {
+export function initFoodAITab(ctx) {
   const {
-    nameEl,
-    gramEl,
-    btnMinus,
-    btnPlus,
-    candidatesEl,
-    statusEl,
-    btnAdd,
-    listEl,
-    modal,
     foodDb,
-  } = opts;
+    elFoodAIListBody,
+    elFoodAITotal,
+   
+  } = ctx;
 
-  let handlers = { addRecord: null, deleteRecordById: null };
-  let selected = null; // { name, waterG } 형태(검색 결과 항목)
+  let foodWeightG = 100;
 
-  function setHandlers(h) {
-    handlers = h;
+  // ✅ 사용자가 선택한 DB 항목
+  let selected = null; // { name, moisture }
+
+  function setFoodDbStatus(text) {
+    if (elFoodDbStatus) elFoodDbStatus.textContent = text;
   }
 
-  function syncDbStatus() {
-    if (!statusEl) return;
-    if (foodDb?.isLoaded()) statusEl.textContent = "DB 로딩 상태: 완료";
-    else statusEl.textContent = "DB 로딩 상태: 실패/미완료";
-  }
+  function setFoodWeight(next) {
+    const n = Number(next);
+    const snapped = Number.isFinite(n) ? Math.round(n / 10) * 10 : 100;
+    foodWeightG = Math.max(0, snapped);
 
-  function clearCandidates() {
-    if (!candidatesEl) return;
-    candidatesEl.innerHTML = "";
-  }
+    if (elFoodWeightBox) elFoodWeightBox.textContent = String(foodWeightG);
 
-  function renderCandidates(items) {
-    clearCandidates();
-    if (!candidatesEl) return;
-
-    if (!items || items.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "row muted";
-      empty.textContent = "검색 결과가 없습니다.";
-      candidatesEl.appendChild(empty);
-      return;
+    if (elFoodMinus) {
+      if (foodWeightG <= 0) elFoodMinus.classList.add("disabled");
+      else elFoodMinus.classList.remove("disabled");
     }
+  }
 
-    items.slice(0, 20).forEach((it) => {
-      const row = document.createElement("button");
-      row.type = "button";
-      row.className = "row clickable";
-      row.textContent = `${it.name} (수분 ${it.waterG}g/100g)`;
+  function setFoodPreview(moisture, estimated, hasData) {
+    if (elFoodMoistureBox) elFoodMoistureBox.textContent = hasData ? String(moisture) : "데이터 없음";
+    if (elFoodEstimatedBox) elFoodEstimatedBox.textContent = String(estimated || 0);
+  }
+
+  function clearSelection() {
+    selected = null;
+    setFoodPreview(null, 0, false);
+  }
+
+  function renderCandidates(list) {
+    if (!elFoodCandidates) return;
+
+    elFoodCandidates.innerHTML = "";
+
+    if (!list || list.length === 0) return;
+
+    list.forEach((item) => {
+      const row = document.createElement("div");
+      row.className = "cand-item" + (selected && selected.name === item.name ? " selected" : "");
+
+      const nameEl = document.createElement("div");
+      nameEl.className = "cand-name";
+      nameEl.textContent = item.name;
+
+      const moistEl = document.createElement("div");
+      moistEl.className = "cand-moist";
+      moistEl.textContent = `수분 ${item.moisture} g/100g`;
+
+      row.append(nameEl, moistEl);
+
       row.addEventListener("click", () => {
-        selected = it;
-        nameEl.value = it.name; // 선택 시 입력칸을 DB명으로 정렬
-        // 선택 강조
-        [...candidatesEl.querySelectorAll(".row")].forEach((r) => r.classList.remove("selected"));
-        row.classList.add("selected");
+        selected = { name: item.name, moisture: item.moisture };
+
+        const est = computeEstimatedMl(foodWeightG, selected.moisture);
+        setFoodPreview(selected.moisture, est, true);
+
+        // 선택 표시 갱신
+        renderCandidates(list);
       });
-      candidatesEl.appendChild(row);
+
+      elFoodCandidates.appendChild(row);
     });
   }
 
-  function search() {
-    const q = (nameEl.value || "").trim();
+  function refreshSearchAndEstimate() {
+    if (!elFoodName) return;
+
+    const q = elFoodName.value.trim();
+
+    // 입력이 비었으면 초기화
     if (!q) {
-      clearCandidates();
-      selected = null;
-      return;
-    }
-    if (!foodDb?.isLoaded()) {
-      clearCandidates();
-      selected = null;
+      renderCandidates([]);
+      clearSelection();
       return;
     }
 
-    // FoodDb의 검색 결과 형식에 맞춰 사용
-    const items = foodDb.search(q);
-    // items: [{ name, waterG }, ...]
-    renderCandidates(items);
+    // DB가 아직 없으면 선택/후보 비움
+    if (!foodDb?.loaded) {
+      renderCandidates([]);
+      clearSelection();
+      return;
+    }
+
+    // ✅ 포함 검색 후보
+    const candidates = foodDb.search(q, 20);
+    renderCandidates(candidates);
+
+    // 자동 선택은 하지 않음(사용자 선택 원칙)
+    // 다만 exact match가 1개라면 UX상 자동선택 원하면 여기서 가능
+    if (!selected) {
+      setFoodPreview(null, 0, false);
+    } else {
+      const est = computeEstimatedMl(foodWeightG, selected.moisture);
+      setFoodPreview(selected.moisture, est, true);
+    }
   }
 
-  function calcMl(gram, waterGPer100) {
-    // waterGPer100: 100g당 수분(g)
-    // 섭취량 g * (수분/100) = 수분 g ≈ ml
-    return Math.round(gram * (toNumber(waterGPer100, 0) / 100));
-  }
-
-  function makeRecord() {
-    const gram = toNumber(gramEl.value, 0);
-    if (!Number.isFinite(gram) || gram <= 0) return null;
-
-    const inputName = (nameEl.value || "").trim();
-    if (!inputName) return null;
-
-    // 선택된 DB 항목이 있으면 그 값을 사용
-    const use = selected && selected.name ? selected : null;
-
-    const name = use ? use.name : inputName;
-    const hasData = !!use;
-    const waterG = use ? toNumber(use.waterG, 0) : 0;
-    const ml = hasData ? calcMl(gram, waterG) : 0;
-
-    const now = new Date();
-    return {
-      id: uid(),
-      kind: "foodAI",
-      name,
-      gram,
-      ml,
-      hasData,
-      ts: now.getTime(),
-      dateKey: dateKeyLocal(now),
-    };
-  }
-
-  function onAdd() {
-    if (!handlers.addRecord) return;
-
-    const rec = makeRecord();
-    if (!rec) return;
-
-    handlers.addRecord(rec);
-
-    // 입력 초기화
-    gramEl.value = "0";
-    // nameEl은 유지(연속 기록 편의)
-    selected = null;
-    clearCandidates();
-  }
-
-  function onDeleteClick(id) {
-    if (!handlers.deleteRecordById) return;
-
-    modal.open({
-      onConfirm: () => {
-        handlers.deleteRecordById(id);
-        modal.close();
-      },
-      onCancel: () => {
-        modal.close();
-      },
+  // 이벤트 바인딩
+  if (elFoodName) {
+    elFoodName.addEventListener("input", () => {
+      // 입력이 바뀌면 기존 선택은 무효 처리(새 검색 기준)
+      selected = null;
+      refreshSearchAndEstimate();
     });
   }
 
-  function render(records) {
-    if (!listEl) return;
-    listEl.innerHTML = "";
+  if (elFoodMinus) {
+    elFoodMinus.addEventListener("click", () => {
+      if (foodWeightG <= 0) return;
+      setFoodWeight(foodWeightG - 10);
 
-    if (!records || records.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "row muted";
-      empty.textContent = "오늘 기록이 없습니다.";
-      listEl.appendChild(empty);
-      return;
-    }
-
-    records.forEach((r) => {
-      const row = createRecordRow({
-        title: r.name || "-",
-        subtitle: r.hasData === false ? "데이터없음 (0ml 처리)" : `${r.gram}g`,
-        rightText: `${r.ml || 0} ml`,
-        onDelete: () => onDeleteClick(r.id),
-      });
-      listEl.appendChild(row);
+      if (selected) {
+        const est = computeEstimatedMl(foodWeightG, selected.moisture);
+        setFoodPreview(selected.moisture, est, true);
+      } else {
+        setFoodPreview(null, 0, false);
+      }
     });
   }
 
-  function sumMl(records) {
-    if (!records) return 0;
-    return records.reduce((acc, r) => acc + (toNumber(r.ml, 0) || 0), 0);
+  if (elFoodPlus) {
+    elFoodPlus.addEventListener("click", () => {
+      setFoodWeight(foodWeightG + 10);
+
+      if (selected) {
+        const est = computeEstimatedMl(foodWeightG, selected.moisture);
+        setFoodPreview(selected.moisture, est, true);
+      } else {
+        setFoodPreview(null, 0, false);
+      }
+    });
   }
 
-  // 이벤트 연결
-  nameEl?.addEventListener("input", () => {
-    selected = null;
-    search();
-  });
+  if (elFoodAdd) {
+    elFoodAdd.addEventListener("click", () => {
+      if (!elFoodName) return;
 
-  btnMinus?.addEventListener("click", () => {
-    gramEl.value = String(Math.max(0, toNumber(gramEl.value, 0) - 5));
-  });
+      const typed = elFoodName.value.trim();
+      if (!typed) {
+        elFoodName.focus();
+        return;
+      }
 
-  btnPlus?.addEventListener("click", () => {
-    gramEl.value = String(toNumber(gramEl.value, 0) + 5);
-  });
+      // ✅ 사용자가 후보 중 선택했으면 그걸 저장
+      // 선택 안 했으면 “사용자 입력값”으로 저장하되 수분 0 처리
+      const finalName = selected ? selected.name : typed;
+      const hasData = !!selected;
+      const moisture = selected ? selected.moisture : null;
+      const estimated = selected ? computeEstimatedMl(foodWeightG, moisture) : 0;
 
-  btnAdd?.addEventListener("click", onAdd);
+      const now = new Date();
+      const item = {
+        id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
+        ts: now.toISOString(),
+        dateKey: dateKeyLocal(now),
+        timeLabel: formatTime12h(now),
+        kind: "foodAI",
+        name: finalName,
+        weightG: foodWeightG,
+        moisturePer100: hasData ? moisture : null,
+        hasData,
+        volume: estimated,
+      };
 
-  // 초기 상태
-  syncDbStatus();
+      const next = [item, ...getRecords()];
+      setRecords(next);
+      saveRecords(next);
+
+      // 입력/선택 초기화
+      elFoodName.value = "";
+      selected = null;
+      renderCandidates([]);
+      setFoodWeight(100);
+      setFoodPreview(null, 0, false);
+
+      renderAll();
+    });
+  }
+
+  // 초기 UI
+  setFoodWeight(100);
+  setFoodPreview(null, 0, false);
 
   return {
-    setHandlers,
-    render,
-    sumMl,
-    syncDbStatus,
+    async loadDb() {
+      setFoodDbStatus("식품DB: 로딩중");
+
+      const r = await foodDb.load();
+      if (r.ok) {
+        setFoodDbStatus(`식품DB: ${foodDb.count}개 로드`);
+        if (elFoodHint) elFoodHint.textContent = "";
+        refreshSearchAndEstimate();
+      } else {
+        setFoodDbStatus("식품DB: 로드 실패");
+        if (elFoodHint) {
+          elFoodHint.textContent =
+            "food_db.json 로드 실패. 기록은 가능하지만 수분은 0ml로 저장됩니다.";
+        }
+        renderCandidates([]);
+        clearSelection();
+      }
+    },
+
+    render(recordsToday) {
+      const sum = (recordsToday || []).reduce((s, r) => s + (Number(r.volume) || 0), 0);
+      if (elFoodManualTotal) elFoodAITotal.textContent = `${sum} ml`;
+
+      renderList(elFoodAIListBody, recordsToday, {
+        kindText: false,
+        kindLabel: () => "",
+        onDelete: openDeleteModal,
+      });
+
+      return sum;
+    },
   };
 }
