@@ -1,4 +1,4 @@
-﻿﻿import { initTabs } from "./tabs.js";
+﻿import { initTabs } from "./tabs.js";
 import { createDeleteModal } from "./modal.js";
 import { loadRecords, saveRecords } from "./storage.js";
 import { dateKeyLocal, formatTime12h } from "./utils.js";
@@ -38,157 +38,137 @@ function main() {
     return;
   }
 
-const modal = createDeleteModal({
-  overlayEl: document.getElementById("modalOverlay"),
-  modalEl: document.getElementById("modal"),
-  cancelBtn: document.getElementById("btnCancel"),
-  confirmBtn: document.getElementById("btnConfirm"),
-});
+  /* ================= 삭제 모달 ================= */
+  const modal = createDeleteModal({
+    overlayEl: document.getElementById("modalOverlay"),
+    modalEl: document.getElementById("modal"),
+    cancelBtn: document.getElementById("btnCancel"),
+    confirmBtn: document.getElementById("btnConfirm"),
+  });
 
+  /* ================= 데이터 ================= */
+  let records = loadRecords();
 
-  /* ================= DB (공용) ================= */
-  const foodDb = new FoodDb("./food_db.json");
+  function getRecords() {
+    return records;
+  }
 
-  /* ================= Tabs Init ================= */
+  // ✅ 상태만 갱신 (저장은 호출한 곳에서 명시적으로)
+  function setRecords(next) {
+    records = next;
+  }
+
+  function openDeleteModal(id) {
+    modal.open(id);
+  }
+
+  modal.bindConfirm((id) => {
+    if (!id) return;
+    const next = records.filter((r) => r.id !== id);
+    setRecords(next);
+    saveRecords(next);
+    modal.close();
+    renderAll();
+  });
+
+  /* ================= 공용 Food DB ================= */
+  const foodDb = new FoodDb();
+
+  /* ================= 탭별 초기화 ================= */
+
   const waterTab = initWaterTab({
-    typeEl: document.getElementById("waterType"),
-    amountEl: document.getElementById("waterAmount"),
-    btnMinus: document.getElementById("waterMinus"),
-    btnPlus: document.getElementById("waterPlus"),
-    btnAdd: document.getElementById("btnAddWater"),
-    listEl: document.getElementById("waterList"),
-    modal,
+    elDrinkType: document.getElementById("drinkType"),
+    elVolumeBox: document.getElementById("volumeBox"),
+    elMinus: document.getElementById("btnMinus"),
+    elPlus: document.getElementById("btnPlus"),
+    elAdd: document.getElementById("btnAdd"),
+    elWaterListBody: document.getElementById("waterListBody"),
+    elWaterTotal: document.getElementById("waterTotalPill"),
+
+    getRecords,
+    setRecords,
+    saveRecords,
+    renderAll,
+    openDeleteModal,
   });
 
   const foodManualTab = initFoodManualTab({
-    nameEl: document.getElementById("foodName"),
-    gramEl: document.getElementById("foodGram"),
-    btnMinus: document.getElementById("foodMinus"),
-    btnPlus: document.getElementById("foodPlus"),
-    candidatesEl: document.getElementById("foodCandidates"),
-    statusEl: document.getElementById("foodDbStatus"),
-    btnAdd: document.getElementById("btnAddFoodManual"),
-    listEl: document.getElementById("foodManualList"),
-    modal,
     foodDb,
+
+    elFoodDbStatus: document.getElementById("foodDbStatus"),
+    elFoodName: document.getElementById("foodName"),
+    elFoodWeightBox: document.getElementById("foodWeightBox"),
+    elFoodMinus: document.getElementById("foodBtnMinus"),
+    elFoodPlus: document.getElementById("foodBtnPlus"),
+    elFoodMoistureBox: document.getElementById("foodMoistureBox"),
+    elFoodEstimatedBox: document.getElementById("foodEstimatedBox"),
+    elFoodAdd: document.getElementById("btnFoodAdd"),
+    elFoodHint: document.getElementById("foodHint"),
+    elFoodManualListBody: document.getElementById("foodManualListBody"),
+    elFoodManualTotal: document.getElementById("foodManualTotalPill"),
+    elFoodCandidates: document.getElementById("foodCandidates"),
+
+    getRecords,
+    setRecords,
+    saveRecords,
+    renderAll,
+    openDeleteModal,
+    dateKeyLocal,
+    formatTime12h,
   });
 
   const foodAiTab = initFoodAiTab({
-    nameEl: document.getElementById("foodAiName"),
-    gramEl: document.getElementById("foodAiGram"),
-    btnMinus: document.getElementById("foodAiMinus"),
-    btnPlus: document.getElementById("foodAiPlus"),
-    candidatesEl: document.getElementById("foodAiCandidates"),
-    statusEl: document.getElementById("foodAiDbStatus"),
-    btnAdd: document.getElementById("btnAddFoodAi"),
-    listEl: document.getElementById("foodAiList"),
-    modal,
-    foodDb, // 음식수동과 동일 DB를 그대로 공유
+    foodDb,
+    elFoodAiStatus: document.getElementById("foodAiStatus"),
   });
 
   const todayTab = initTodayTab({
-    totalEl: document.getElementById("todayTotalMl"),
-    countEl: document.getElementById("todayCount"),
-    lastEl: document.getElementById("todayLast"),
-    listEl: document.getElementById("todayList"),
-    modal,
+    elSumWater: document.getElementById("sumWater"),
+    elSumFoodManual: document.getElementById("sumFoodManual"),
+    elSumFoodAI: document.getElementById("sumFoodAI"),
+    elSumAll: document.getElementById("sumAll"),
+    elAllCount: document.getElementById("allCountPill"),
+    elAllListBody: document.getElementById("allListBody"),
+
+    kindLabel,
+    openDeleteModal,
   });
 
   const monthlyTab = initMonthlyTab({
-    monthPickerEl: document.getElementById("monthPicker"),
-    totalEl: document.getElementById("monthTotalMl"),
-    listEl: document.getElementById("monthList"),
+    elMonthlyStatus: document.getElementById("monthlyStatus"),
   });
 
-  /* ================= Data ================= */
-  const all = loadRecords(); // 전체 기록 (localStorage)
-
-  function splitToday(records) {
-    const key = dateKeyLocal(new Date());
-    const today = records.filter((r) => r.dateKey === key);
-    return today;
-  }
-
+  /* ================= 렌더 ================= */
   function renderAll() {
-    // 전체 records
-    const records = loadRecords();
-    const todayRecords = splitToday(records);
+    const todayKey = dateKeyLocal(new Date());
+    const todayRecords = records.filter((r) => r.dateKey === todayKey);
 
-    // 탭별로 분리
     const waterRecords = todayRecords.filter((r) => r.kind === "water");
     const foodManualRecords = todayRecords.filter((r) => r.kind === "foodManual");
     const foodAIRecords = todayRecords.filter((r) => r.kind === "foodAI");
 
-    // 각 탭 리스트 렌더
-    waterTab.render(waterRecords);
-    foodManualTab.render(foodManualRecords);
-    foodAiTab.render(foodAIRecords);
+    const sumWater = waterTab.render(waterRecords);
+    const sumFoodManual = foodManualTab.render(foodManualRecords);
+    const sumFoodAI = foodAIRecords.reduce((s, r) => s + (Number(r.volume) || 0), 0);
 
-    // 오늘요약: 전체(todayRecords) 기준
-    const totalMl =
-      waterTab.sumMl(waterRecords) +
-      foodManualTab.sumMl(foodManualRecords) +
-      foodAiTab.sumMl(foodAIRecords);
-
-    todayTab.render({
-      totalMl,
-      count: todayRecords.length,
-      lastText: todayRecords.length
-        ? `${kindLabel(todayRecords[todayRecords.length - 1])} · ${formatTime12h(
-            todayRecords[todayRecords.length - 1].ts
-          )}`
-        : "-",
-      list: todayRecords,
-    });
-
-    // 월별요약은 storage 전체 기준으로 monthlyTab 내부에서 처리
-    monthlyTab.render(loadRecords());
+    foodAiTab.render();
+    todayTab.render(todayRecords, { sumWater, sumFoodManual, sumFoodAI });
+    monthlyTab.render();
   }
 
-  /* ================= Hook: Add / Delete ================= */
-  function addRecord(record) {
-    const records = loadRecords();
-    records.push(record);
-    saveRecords(records);
-    renderAll();
-  }
-
-  function deleteRecordById(id) {
-    const records = loadRecords();
-    const next = records.filter((r) => r.id !== id);
-    saveRecords(next);
-    renderAll();
-  }
-
-  // 각 탭에서 add / delete 콜백 연결
-  waterTab.setHandlers({ addRecord, deleteRecordById });
-  foodManualTab.setHandlers({ addRecord, deleteRecordById });
-  foodAiTab.setHandlers({ addRecord, deleteRecordById });
-  todayTab.setHandlers({ deleteRecordById });
-
-  /* ================= Load DB (1회만) ================= */
-  // 음식수동에서 DB 로딩을 한 번 수행하고,
-  // 음식AI는 같은 FoodDb 인스턴스를 공유하므로 "상태만" 동기화
-  foodManualTab
-    .loadDb()
-    .then(() => {
-      foodAiTab.syncDbStatus();
-      renderAll();
-    })
-    .catch((e) => {
-      console.error(e);
-      foodAiTab.syncDbStatus();
-      renderAll();
-    });
-
-  /* ================= Tabs ================= */
-  initTabs({
+  /* ================= 탭 ================= */
+  const tabs = initTabs({
     tabsEl,
     panelsByKey,
+    onTabChanged: renderAll,
   });
 
-  // 초기 렌더(로컬 기록은 바로 반영)
+  /* ================= 시작 ================= */
+  tabs.setActiveTab("water");
   renderAll();
+
+  // food DB 로드 (공용)
+  foodManualTab.loadDb();
 }
 
 main();
