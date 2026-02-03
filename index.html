@@ -20,13 +20,11 @@
         <div class="tabs" id="tabs">
           <div class="tab active" data-tab="water">💧 물/음료</div>
           <div class="tab" data-tab="foodManual">✍️ 음식 수동</div>
-          <div class="tab" data-tab="foodAI" >🤖 음식 AI</div>
+          <div class="tab coming" data-tab="foodAI" title="준비중">🤖 음식 AI</div>
           <div class="tab" data-tab="today">📌 오늘요약</div>
           <div class="tab coming" data-tab="monthly" title="준비중">🗓️ 월별요약</div>
         </div>
 
-
-      <!-- Content -->
         <!-- 물/음료 탭 -->
         <div class="card" id="waterCard">
           <div class="section-title-row">
@@ -129,58 +127,20 @@
           </div>
         </div>
 
-        <!-- Food AI (NEW: 기존 UI 패턴 그대로) -->
-        <div class="card" id="foodAICard" style="display:none;">
+        <!-- 음식 AI 탭 -->
+        <div class="card" id="foodAiCard" style="display:none;">
           <div class="section-title-row">
-            <div class="section-title">음식 AI 기록</div>
-            <div class="status" id="foodDbStatus">식품DB: 로딩중</div>
+            <div class="section-title">음식 AI</div>
+            <div class="status" id="foodAiStatus">아직 준비중입니다.</div>
           </div>
-
-          <div class="grid-2">
-            <div class="field">
-              <label class="label">AI 판별 음식명</label>
-              <input class="input" id="foodAiName" placeholder="예) 바나나 (AI 결과를 입력/붙여넣기)" />
-              <div class="hint" id="foodAiDbStatus">DB 로딩 상태: -</div>
-            </div>
-
-          <!-- ✅ 2행: 검색 결과(항상 아래, 전체폭) -->
-          <div class="food-cand-row">
-            <div class="label">검색 결과</div>
-            <div class="candidates" id="foodCandidates"></div>
-          </div>
-
-          <!-- ✅ 3행: DB수분 + 추정수분(같은 줄) -->
-          <div class="food-row" style="margin-top:12px;">
-            <div class="food-col food-moist">
-              <div class="label">수분(g/100g)</div>
-              <div class="value-box" id="foodMoistureBox">데이터 없음</div>
-            </div>
-
-            <div class="food-col food-est">
-              <div class="label">추정 수분(ml)</div>
-              <div class="value-box" id="foodEstimatedBox">0</div>
-            </div>
-          </div>
-
-          <button class="primary-btn" id="btnFoodAdd">기록 추가</button>
-
-          <!-- ✅ foodHint 요소 추가 (없어서 null 에러났던 부분) -->
-          <div class="hint" id="foodHint"></div>
-
-          <div class="divider"></div>
-
-          <!-- ✅ UI2: records-card -->
-          <div class="records-card">
-            <div class="records-card-head">
-              <div class="records-card-title">오늘 기록 — 음식 AI</div>
-              <div class="pill pill-blue" id="foodAITotalPill">0 ml</div>
-            </div>
-            <div class="records-list" id="foodAIListBody"></div>
-            <div class="records-empty" id="foodAIEmpty" style="display:none;">아직 기록이 없습니다.</div>
+          <div class="coming-box">
+            아직 준비중입니다.<br />
+            - 탭 이동은 가능<br />
+            - 추후 사진 업로드/촬영 → 인식 → DB 매칭 → 기록 저장
           </div>
         </div>
 
-       <!-- 오늘요약 탭 -->
+      <!-- 오늘요약 탭 -->
 <div class="card" id="todayCard" style="display:none;">
   <div class="section-title-row">
     <div class="section-title">오늘요약</div>
