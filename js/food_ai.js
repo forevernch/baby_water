@@ -1,12 +1,28 @@
 ﻿import { computeEstimatedMl } from "./utils.js";
 import { renderList } from "./ui.js";
 
-export function initFoodAITab(ctx) {
-  const {
+export function initFoodAiTab(ctx) {
+    const {
     foodDb,
-    elFoodAIListBody,
-    elFoodAITotal,
-   
+    elFoodDbStatus,
+    elFoodName,
+    elFoodCandidates,        // ✅ 추가
+    elFoodWeightBox,
+    elFoodMinus,
+    elFoodPlus,
+    elFoodMoistureBox,
+    elFoodEstimatedBox,
+    elFoodAdd,
+    elFoodHint,
+    elFoodAiListBody,
+    elFoodAiTotal,
+    getRecords,
+    setRecords,
+    saveRecords,
+    renderAll,
+    openDeleteModal,
+    dateKeyLocal,
+    formatTime12h,
   } = ctx;
 
   let foodWeightG = 100;
