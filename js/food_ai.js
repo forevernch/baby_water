@@ -3,7 +3,7 @@
 export function initFoodAiTab(ctx) {
   const { foodDb, elFoodAiStatus } = ctx;
 
-  // ===== DOM (새 UI ID들) =====
+  // ===== DOM =====
   const previewTop = document.getElementById("aiPreviewTop");
   const previewSide = document.getElementById("aiPreviewSide");
 
@@ -44,29 +44,23 @@ export function initFoodAiTab(ctx) {
     if (elHint) elHint.textContent = text;
   }
 
-function renderPreview(boxEl, file) {
-  if (!boxEl) return;
+  // ✅ 이미지가 선택되었을 때만 프레임을 이미지로 덮어쓴다.
+  // ✅ file이 없으면 HTML(텍스트+버튼 정렬)을 그대로 유지한다.
+  function renderPreview(boxEl, file) {
+    if (!boxEl) return;
+    if (!file) return;
 
-  // 이미지가 없으면 (초기 상태) → HTML 그대로 둠
-  if (!file) return;
+    boxEl.innerHTML = "";
 
-  // 이미지가 선택되면 → 프레임을 이미지로 덮어씀
-  boxEl.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.alt = "food preview";
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    img.style.borderRadius = "12px";
 
-  const img = document.createElement("img");
-  img.src = URL.createObjectURL(file);
-  img.alt = "food preview";
-  img.style.width = "100%";
-  img.style.height = "100%";
-  img.style.objectFit = "cover";
-  img.style.borderRadius = "12px";
-
-  boxEl.appendChild(img);
-}
-
-
-    // 4) 유지 대상(버튼바/inputs)을 다시 붙임
-    keep.forEach((n) => boxEl.appendChild(n));
+    boxEl.appendChild(img);
   }
 
   function setWeight(next) {
@@ -75,10 +69,12 @@ function renderPreview(boxEl, file) {
     weightG = Math.max(0, snapped);
 
     if (elWeightBox) elWeightBox.textContent = String(weightG);
+
     if (elMinus) {
       if (weightG <= 0) elMinus.classList.add("disabled");
       else elMinus.classList.remove("disabled");
     }
+
     refreshEstimate();
   }
 
@@ -154,15 +150,18 @@ function renderPreview(boxEl, file) {
   function onPickTop(inputEl) {
     const file = inputEl?.files?.[0];
     if (!file) return;
+
     topFile = file;
-    renderPreview(previewTop, topFile, "윗면 사진");
+    renderPreview(previewTop, topFile); // ✅ 2인자
     refreshEstimate();
   }
+
   function onPickSide(inputEl) {
     const file = inputEl?.files?.[0];
     if (!file) return;
+
     sideFile = file;
-    renderPreview(previewSide, sideFile, "옆면 사진");
+    renderPreview(previewSide, sideFile); // ✅ 2인자
     refreshEstimate();
   }
 
@@ -198,10 +197,9 @@ function renderPreview(boxEl, file) {
   setStatus("AI: Mock 연결");
   setWeight(100);
 
-  // 초기 플레이스홀더 렌더 (버튼 유지 포함)
-renderPreview(previewTop, topFile);
-renderPreview(previewSide, sideFile);
-
+  // 초기에는 file이 없으므로 HTML 레이아웃(중앙정렬/줄바꿈)을 그대로 둔다.
+  renderPreview(previewTop, null);
+  renderPreview(previewSide, null);
 
   refreshEstimate();
 
@@ -212,4 +210,3 @@ renderPreview(previewSide, sideFile);
     },
   };
 }
-
