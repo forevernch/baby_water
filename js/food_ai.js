@@ -3,10 +3,7 @@
 export function initFoodAiTab(ctx) {
   const { foodDb, elFoodAiStatus } = ctx;
 
-  // ===== DOM =====
-  const previewTop = document.getElementById("aiPreviewTop");
-  const previewSide = document.getElementById("aiPreviewSide");
-
+  // ===== DOM (기존) =====
   const btnTopCamera = document.getElementById("btnAiTopCamera");
   const btnTopGallery = document.getElementById("btnAiTopGallery");
   const btnSideCamera = document.getElementById("btnAiSideCamera");
@@ -31,6 +28,21 @@ export function initFoodAiTab(ctx) {
   const btnAdd = document.getElementById("btnAiAdd");
   const elHint = document.getElementById("aiHint");
 
+  // ===== DOM (오버레이/레이어) =====
+  const topImg = document.getElementById("aiTopImg");
+  const sideImg = document.getElementById("aiSideImg");
+
+  const topLayer = document.getElementById("aiTopLayer");
+  const sideLayer = document.getElementById("aiSideLayer");
+
+  const topOverlay = document.getElementById("aiTopOverlay");
+  const sideOverlay = document.getElementById("aiSideOverlay");
+
+  const btnTopReCamera = document.getElementById("btnAiTopReCamera");
+  const btnTopReGallery = document.getElementById("btnAiTopReGallery");
+  const btnSideReCamera = document.getElementById("btnAiSideReCamera");
+  const btnSideReGallery = document.getElementById("btnAiSideReGallery");
+
   // ===== state =====
   let weightG = 100;
   let selected = null; // { name, moisture }
@@ -44,23 +56,36 @@ export function initFoodAiTab(ctx) {
     if (elHint) elHint.textContent = text;
   }
 
-  // ✅ 이미지가 선택되었을 때만 프레임을 이미지로 덮어쓴다.
-  // ✅ file이 없으면 HTML(텍스트+버튼 정렬)을 그대로 유지한다.
-  function renderPreview(boxEl, file) {
-    if (!boxEl) return;
-    if (!file) return;
+  // ------------------------------------------------------------
+  // ✅ 핵심: 프레임을 innerHTML로 덮어쓰지 않는다
+  //  - file 없으면: 기본(텍스트+버튼) 레이어 보여주고 오버레이 숨김
+  //  - file 있으면: img 보여주고 기본 레이어 숨김 + 오버레이(재선택) 노출
+  // ------------------------------------------------------------
+  function renderPreview(which) {
+    const isTop = which === "top";
+    const file = isTop ? topFile : sideFile;
 
-    boxEl.innerHTML = "";
+    const img = isTop ? topImg : sideImg;
+    const baseLayer = isTop ? topLayer : sideLayer;
+    const overlay = isTop ? topOverlay : sideOverlay;
 
-    const img = document.createElement("img");
+    // DOM이 없으면 조용히 종료(페이지 구조 불일치 보호)
+    if (!img || !baseLayer || !overlay) return;
+
+    if (!file) {
+      // 초기/삭제 상태
+      img.style.display = "none";
+      img.removeAttribute("src");
+      baseLayer.style.display = "flex";
+      overlay.style.display = "none";
+      return;
+    }
+
+    // 파일이 들어온 상태
     img.src = URL.createObjectURL(file);
-    img.alt = "food preview";
-    img.style.width = "100%";
-    img.style.height = "100%";
-    img.style.objectFit = "cover";
-    img.style.borderRadius = "12px";
-
-    boxEl.appendChild(img);
+    img.style.display = "block";
+    baseLayer.style.display = "none";
+    overlay.style.display = "flex";
   }
 
   function setWeight(next) {
@@ -141,18 +166,15 @@ export function initFoodAiTab(ctx) {
     setHint("Mock 단계: DB 후보를 불러왔습니다. 음식명을 선택하면 수분 계산이 됩니다.");
   }
 
-  // ===== events =====
-  if (btnTopCamera && fileTopCamera) btnTopCamera.addEventListener("click", () => fileTopCamera.click());
-  if (btnTopGallery && fileTopGallery) btnTopGallery.addEventListener("click", () => fileTopGallery.click());
-  if (btnSideCamera && fileSideCamera) btnSideCamera.addEventListener("click", () => fileSideCamera.click());
-  if (btnSideGallery && fileSideGallery) btnSideGallery.addEventListener("click", () => fileSideGallery.click());
-
+  // ------------------------------------------------------------
+  // ✅ 파일 선택 처리: onPickTop / onPickSide
+  // ------------------------------------------------------------
   function onPickTop(inputEl) {
     const file = inputEl?.files?.[0];
     if (!file) return;
 
     topFile = file;
-    renderPreview(previewTop, topFile); // ✅ 2인자
+    renderPreview("top");
     refreshEstimate();
   }
 
@@ -161,17 +183,32 @@ export function initFoodAiTab(ctx) {
     if (!file) return;
 
     sideFile = file;
-    renderPreview(previewSide, sideFile); // ✅ 2인자
+    renderPreview("side");
     refreshEstimate();
   }
 
+  // ===== events: 기본 선택 버튼(프레임 중앙의 카메라/갤러리) =====
+  if (btnTopCamera && fileTopCamera) btnTopCamera.addEventListener("click", () => fileTopCamera.click());
+  if (btnTopGallery && fileTopGallery) btnTopGallery.addEventListener("click", () => fileTopGallery.click());
+  if (btnSideCamera && fileSideCamera) btnSideCamera.addEventListener("click", () => fileSideCamera.click());
+  if (btnSideGallery && fileSideGallery) btnSideGallery.addEventListener("click", () => fileSideGallery.click());
+
+  // ===== events: 재선택 오버레이(이미지 위 우상단) =====
+  if (btnTopReCamera && fileTopCamera) btnTopReCamera.addEventListener("click", () => fileTopCamera.click());
+  if (btnTopReGallery && fileTopGallery) btnTopReGallery.addEventListener("click", () => fileTopGallery.click());
+  if (btnSideReCamera && fileSideCamera) btnSideReCamera.addEventListener("click", () => fileSideCamera.click());
+  if (btnSideReGallery && fileSideGallery) btnSideReGallery.addEventListener("click", () => fileSideGallery.click());
+
+  // ===== events: file input change =====
   if (fileTopCamera) fileTopCamera.addEventListener("change", () => onPickTop(fileTopCamera));
   if (fileTopGallery) fileTopGallery.addEventListener("change", () => onPickTop(fileTopGallery));
   if (fileSideCamera) fileSideCamera.addEventListener("change", () => onPickSide(fileSideCamera));
   if (fileSideGallery) fileSideGallery.addEventListener("change", () => onPickSide(fileSideGallery));
 
+  // ===== events: analyze =====
   if (btnAnalyze) btnAnalyze.addEventListener("click", mockAnalyze);
 
+  // ===== events: select =====
   if (elFoodSelect) {
     elFoodSelect.addEventListener("change", () => {
       const opt = elFoodSelect.selectedOptions?.[0];
@@ -184,12 +221,14 @@ export function initFoodAiTab(ctx) {
     });
   }
 
+  // ===== events: weight +/- =====
   if (elMinus) elMinus.addEventListener("click", () => { if (weightG > 0) setWeight(weightG - 5); });
   if (elPlus) elPlus.addEventListener("click", () => setWeight(weightG + 5));
 
+  // ===== events: add (저장은 다음 단계) =====
   if (btnAdd) {
     btnAdd.addEventListener("click", () => {
-      setHint("‘기록 추가’ 저장 연결은 다음 단계에서 진행할게요. (지금은 UI/2장 입력 먼저)");
+      setHint("‘기록 추가’ 저장 연결은 다음 단계에서 진행할게요. (지금은 UI/2장 입력 + 재선택 UX 먼저)");
     });
   }
 
@@ -197,9 +236,9 @@ export function initFoodAiTab(ctx) {
   setStatus("AI: Mock 연결");
   setWeight(100);
 
-  // 초기에는 file이 없으므로 HTML 레이아웃(중앙정렬/줄바꿈)을 그대로 둔다.
-  renderPreview(previewTop, null);
-  renderPreview(previewSide, null);
+  // 초기 상태: 파일 없음 → 기본 레이어 보이게
+  renderPreview("top");
+  renderPreview("side");
 
   refreshEstimate();
 
