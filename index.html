@@ -140,75 +140,65 @@
 
   <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
     <!-- 윗면 프레임 -->
-   <div
-  id="aiPreviewTop"
-  class="value-box"
-  style="
-    height:170px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0;
-  "
->
-  <div
-    style="
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:14px;
-    "
-  >
-    <!-- 텍스트 -->
-    <div style="opacity:0.7; font-size:14px; font-weight:600;">
-      윗면 사진
-    </div>
+<div id="aiPreviewTop" class="value-box"
+     style="height:170px; position:relative; overflow:hidden; padding:0;">
 
-    <!-- 버튼 그룹 -->
+  <!-- 이미지 레이어 -->
+  <img id="aiTopImg" alt="top preview"
+       style="display:none; width:100%; height:100%; object-fit:cover;" />
+
+  <!-- 기본 안내 레이어 (가운데 정렬 + 줄바꿈) -->
+  <div id="aiTopLayer"
+       style="position:absolute; inset:0; display:flex; flex-direction:column;
+              align-items:center; justify-content:center; gap:14px;">
+    <div style="opacity:0.7; font-size:14px; font-weight:600;">윗면 사진</div>
     <div style="display:flex; gap:16px;">
-      <button id="btnAiTopCamera" class="icon-btn">📷</button>
-      <button id="btnAiTopGallery" class="icon-btn">🖼️</button>
+      <button type="button" id="btnAiTopCamera" class="icon-btn" aria-label="윗면 카메라">📷</button>
+      <button type="button" id="btnAiTopGallery" class="icon-btn" aria-label="윗면 갤러리">🖼️</button>
     </div>
   </div>
 
+  <!-- 이미지가 있을 때만 보이는 오버레이 -->
+  <div id="aiTopOverlay"
+       style="display:none; position:absolute; top:10px; right:10px; gap:10px;">
+    <button type="button" id="btnAiTopReCamera" class="icon-btn sm" aria-label="윗면 다시 촬영">📷</button>
+    <button type="button" id="btnAiTopReGallery" class="icon-btn sm" aria-label="윗면 다시 선택">🖼️</button>
+  </div>
+
+  <!-- hidden inputs -->
   <input id="aiFileTopCamera" type="file" accept="image/*" capture="environment" style="display:none;">
   <input id="aiFileTopGallery" type="file" accept="image/*" style="display:none;">
 </div>
 
 
-    <!-- 옆면 프레임 -->
-    <div
-  id="aiPreviewSide"
-  class="value-box"
-  style="
-    height:170px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0;
-  "
->
-  <div
-    style="
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:14px;
-    "
-  >
-    <div style="opacity:0.7; font-size:14px; font-weight:600;">
-      옆면 사진
-    </div>
 
+    <!-- 옆면 프레임 -->
+<div id="aiPreviewSide" class="value-box"
+     style="height:170px; position:relative; overflow:hidden; padding:0;">
+
+  <img id="aiSideImg" alt="side preview"
+       style="display:none; width:100%; height:100%; object-fit:cover;" />
+
+  <div id="aiSideLayer"
+       style="position:absolute; inset:0; display:flex; flex-direction:column;
+              align-items:center; justify-content:center; gap:14px;">
+    <div style="opacity:0.7; font-size:14px; font-weight:600;">옆면 사진</div>
     <div style="display:flex; gap:16px;">
-      <button id="btnAiSideCamera" class="icon-btn">📷</button>
-      <button id="btnAiSideGallery" class="icon-btn">🖼️</button>
+      <button type="button" id="btnAiSideCamera" class="icon-btn" aria-label="옆면 카메라">📷</button>
+      <button type="button" id="btnAiSideGallery" class="icon-btn" aria-label="옆면 갤러리">🖼️</button>
     </div>
+  </div>
+
+  <div id="aiSideOverlay"
+       style="display:none; position:absolute; top:10px; right:10px; gap:10px;">
+    <button type="button" id="btnAiSideReCamera" class="icon-btn sm" aria-label="옆면 다시 촬영">📷</button>
+    <button type="button" id="btnAiSideReGallery" class="icon-btn sm" aria-label="옆면 다시 선택">🖼️</button>
   </div>
 
   <input id="aiFileSideCamera" type="file" accept="image/*" capture="environment" style="display:none;">
   <input id="aiFileSideGallery" type="file" accept="image/*" style="display:none;">
 </div>
+
 
 
   <div class="hint" style="margin-top:10px;">
