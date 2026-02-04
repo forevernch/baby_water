@@ -44,44 +44,26 @@ export function initFoodAiTab(ctx) {
     if (elHint) elHint.textContent = text;
   }
 
-  function renderPreview(boxEl, file, placeholderText) {
-    if (!boxEl) return;
+function renderPreview(boxEl, file) {
+  if (!boxEl) return;
 
-    // 프레임 내부 버튼/인풋은 유지되어야 하므로,
-    // "이미지 영역"만 갈아끼우는 방식이 필요하지만 CSS 파일 수정이 불가하니
-    // 여기서는 boxEl의 "첫 번째 텍스트 영역"만 교체하지 않고,
-    // 전체를 갈아엎되 버튼/인풋을 다시 유지시키는 방식으로 처리합니다.
+  // 이미지가 없으면 (초기 상태) → HTML 그대로 둠
+  if (!file) return;
 
-    // 1) 버튼바+inputs를 먼저 잡아둠
-    const keep = [];
-    boxEl.querySelectorAll("div, button, input").forEach((node) => {
-      // 버튼바(absolute bottom)와 input들은 유지 대상
-      if (node.tagName === "DIV" && node.style?.position === "absolute") keep.push(node);
-      if (node.tagName === "BUTTON") keep.push(node);
-      if (node.tagName === "INPUT") keep.push(node);
-    });
+  // 이미지가 선택되면 → 프레임을 이미지로 덮어씀
+  boxEl.innerHTML = "";
 
-    // 2) 전부 비우고
-    boxEl.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = URL.createObjectURL(file);
+  img.alt = "food preview";
+  img.style.width = "100%";
+  img.style.height = "100%";
+  img.style.objectFit = "cover";
+  img.style.borderRadius = "12px";
 
-    // 3) 이미지/플레이스홀더 먼저 넣고
-    if (!file) {
-      const t = document.createElement("div");
-      t.style.opacity = "0.6";
-      t.style.fontSize = "14px";
-      t.style.fontWeight = "700";
-      t.textContent = placeholderText;
-      boxEl.appendChild(t);
-    } else {
-      const url = URL.createObjectURL(file);
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = "food preview";
-      img.style.width = "100%";
-      img.style.height = "100%";
-      img.style.objectFit = "cover";
-      boxEl.appendChild(img);
-    }
+  boxEl.appendChild(img);
+}
+
 
     // 4) 유지 대상(버튼바/inputs)을 다시 붙임
     keep.forEach((n) => boxEl.appendChild(n));
