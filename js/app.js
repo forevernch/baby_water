@@ -129,6 +129,7 @@ function main() {
     elSumAll: document.getElementById("sumAll"),
     elAllCount: document.getElementById("allCountPill"),
     elAllListBody: document.getElementById("allListBody"),
+    elAllEmpty: document.getElementById("allEmpty"),
 
     kindLabel,
     openDeleteModal,

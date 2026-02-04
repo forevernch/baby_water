@@ -8,6 +8,7 @@ export function initTodayTab(ctx) {
     elSumAll,
     elAllCount,
     elAllListBody,
+    elAllEmpty,	
     kindLabel,
     openDeleteModal,
   } = ctx;
