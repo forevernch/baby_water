@@ -69,7 +69,7 @@ export function initFoodAiTab(ctx) {
 
   function setWeight(next) {
     const n = Number(next);
-    const snapped = Number.isFinite(n) ? Math.round(n / 10) * 10 : 100;
+    const snapped = Number.isFinite(n) ? Math.round(n / 5) * 5 : 100;
     weightG = Math.max(0, snapped);
 
     if (elWeightBox) elWeightBox.textContent = String(weightG);

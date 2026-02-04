@@ -36,7 +36,7 @@ export function initFoodManualTab(ctx) {
 
   function setFoodWeight(next) {
     const n = Number(next);
-    const snapped = Number.isFinite(n) ? Math.round(n / 10) * 10 : 100;
+    const snapped = Number.isFinite(n) ? Math.round(n / 5) * 5 : 100;
     foodWeightG = Math.max(0, snapped);
 
     if (elFoodWeightBox) elFoodWeightBox.textContent = String(foodWeightG);
