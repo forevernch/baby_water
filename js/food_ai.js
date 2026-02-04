@@ -199,8 +199,9 @@ function renderPreview(boxEl, file) {
   setWeight(100);
 
   // 초기 플레이스홀더 렌더 (버튼 유지 포함)
-  renderPreview(previewTop, null, "윗면 사진");
-  renderPreview(previewSide, null, "옆면 사진");
+renderPreview(previewTop, topFile);
+renderPreview(previewSide, sideFile);
+
 
   refreshEstimate();
 
@@ -211,3 +212,4 @@ function renderPreview(boxEl, file) {
     },
   };
 }
+
