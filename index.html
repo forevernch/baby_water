@@ -127,18 +127,86 @@
           </div>
         </div>
 
-        <!-- 음식 AI 탭 -->
-        <div class="card" id="foodAiCard" style="display:none;">
-          <div class="section-title-row">
-            <div class="section-title">음식 AI</div>
-            <div class="status" id="foodAiStatus">아직 준비중입니다.</div>
-          </div>
-          <div class="coming-box">
-            아직 준비중입니다.<br />
-            - 탭 이동은 가능<br />
-            - 추후 사진 업로드/촬영 → 인식 → DB 매칭 → 기록 저장
-          </div>
-        </div>
+       <!-- 음식 AI 탭 -->
+<div class="card" id="foodAiCard" style="display:none;">
+  <div class="section-title-row">
+    <div class="section-title">음식 AI 분석</div>
+    <div class="pill pill-blue" id="foodAiStatus">AI: Mock 연결</div>
+  </div>
+
+  <!-- 1) 이미지 입력(촬영/업로드) + 미리보기 -->
+  <div style="display:flex; gap:10px; align-items:stretch; margin-top: 8px;">
+    <div style="width:56px; display:flex; flex-direction:column; gap:10px;">
+      <div class="label">음식 사진</div>
+
+      <!-- 버튼(클릭 시 hidden input 트리거) -->
+      <button type="button" class="btn-icon" id="btnAiCamera" aria-label="카메라로 촬영">📷</button>
+      <button type="button" class="btn-icon" id="btnAiUpload" aria-label="사진 업로드">🖼️</button>
+
+      <!-- hidden inputs -->
+      <input id="aiFileCamera" type="file" accept="image/*" capture="environment" style="display:none;" />
+      <input id="aiFileUpload" type="file" accept="image/*" style="display:none;" />
+    </div>
+
+    <div style="flex:1; min-width:0;">
+      <div class="label">미리보기</div>
+      <div
+        id="aiPreviewBox"
+        class="value-box"
+        style="height: 140px; display:flex; align-items:center; justify-content:center; overflow:hidden; padding: 0;"
+      >
+        <div style="opacity:0.6; font-size: 13px;">이미지를 선택하세요</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="primary-btn" id="btnAiAnalyze" style="margin-top: 10px;">분석</button>
+
+  <div class="divider"></div>
+
+  <!-- 2) (Mock) 분석 결과 → DB 매칭 UI -->
+  <div class="label" style="margin-bottom: 8px;">음식 이름</div>
+
+  <div class="food-top-row">
+    <div class="food-top-name">
+      <select id="aiFoodSelect" aria-label="AI 추정 음식명">
+        <option value="">AI 추정 음식명</option>
+      </select>
+    </div>
+
+    <div class="food-top-weight">
+      <div class="volume-row volume-row-compact">
+        <div class="btn-icon" id="aiBtnMinus" aria-label="중량 감소">−</div>
+        <div class="volume-box" id="aiWeightBox">100</div>
+        <div class="btn-icon" id="aiBtnPlus" aria-label="중량 증가">+</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="food-row" style="margin-top: 12px;">
+    <div class="food-col food-moist">
+      <div class="label">수분(g/100g)</div>
+      <div class="value-box" id="aiMoistureBox">데이터 없음</div>
+    </div>
+
+    <div class="food-col food-est">
+      <div class="label">추정 수분(ml)</div>
+      <div class="value-box" id="aiEstimatedBox">0</div>
+    </div>
+  </div>
+
+  <div class="value-box" id="aiTotalBox"
+       style="margin-top: 10px; text-align:center; font-size: 18px; font-weight: 800;">
+    0
+  </div>
+
+  <button class="primary-btn" id="btnAiAdd" style="margin-top: 10px;" disabled>기록 추가</button>
+
+  <div class="hint" id="aiHint">
+    현재는 UI(Mocking) 단계입니다. “분석”을 누르면 DB 후보를 불러옵니다.
+  </div>
+</div>
+
 
       <!-- 오늘요약 탭 -->
 <div class="card" id="todayCard" style="display:none;">
