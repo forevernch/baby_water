@@ -52,7 +52,7 @@ export function initFoodAiTab(ctx) {
       const msg = document.createElement("div");
       msg.style.opacity = "0.6";
       msg.style.fontSize = "13px";
-      msg.textContent = "이미지를 선택하세요";
+      msg.textContent = "음식사진을 촬영 / 업로드 해주세요";
       previewBox.appendChild(msg);
       return;
     }
