@@ -1,20 +1,21 @@
 ﻿import { computeEstimatedMl } from "./utils.js";
 
-/**
- * 음식 AI 탭 (UI 우선 구성)
- * - index.html의 foodAiCard 내부 UI를 제어
- * - DB는 음식수동과 동일한 FoodDb 인스턴스를 공유(food_db.json)
- * - AI 연결은 추후(현재는 Mock: "분석" 클릭 시 DB 후보를 select에 채움)
- */
 export function initFoodAiTab(ctx) {
   const { foodDb, elFoodAiStatus } = ctx;
 
-  // ===== DOM (index.html: foodAiCard 내부) =====
-  const btnCamera = document.getElementById("btnAiCamera");
-  const btnUpload = document.getElementById("btnAiUpload");
-  const fileCamera = document.getElementById("aiFileCamera");
-  const fileUpload = document.getElementById("aiFileUpload");
-  const previewBox = document.getElementById("aiPreviewBox");
+  // ===== DOM =====
+  const btnCameraTop = document.getElementById("btnAiCameraTop");
+  const btnUploadTop = document.getElementById("btnAiUploadTop");
+  const btnCameraSide = document.getElementById("btnAiCameraSide");
+  const btnUploadSide = document.getElementById("btnAiUploadSide");
+
+  const fileCameraTop = document.getElementById("aiFileCameraTop");
+  const fileUploadTop = document.getElementById("aiFileUploadTop");
+  const fileCameraSide = document.getElementById("aiFileCameraSide");
+  const fileUploadSide = document.getElementById("aiFileUploadSide");
+
+  const previewTop = document.getElementById("aiPreviewTop");
+  const previewSide = document.getElementById("aiPreviewSide");
 
   const btnAnalyze = document.getElementById("btnAiAnalyze");
 
@@ -33,30 +34,28 @@ export function initFoodAiTab(ctx) {
   // ===== state =====
   let weightG = 100;
   let selected = null; // { name, moisture }
-  let imageSelected = false;
+
+  // 2장 상태
+  let topFile = null;
+  let sideFile = null;
 
   function setStatus(text) {
     if (elFoodAiStatus) elFoodAiStatus.textContent = text;
   }
-
   function setHint(text) {
     if (elHint) elHint.textContent = text;
   }
 
-  function setPreview(file) {
-    if (!previewBox) return;
-
-    previewBox.innerHTML = "";
+  function renderPreview(boxEl, file, placeholderText) {
+    if (!boxEl) return;
 
     if (!file) {
-      const msg = document.createElement("div");
-      msg.style.opacity = "0.6";
-      msg.style.fontSize = "13px";
-      msg.textContent = "음식사진을 촬영 / 업로드 해주세요";
-      previewBox.appendChild(msg);
+      // 기본 문구 유지/표시
+      boxEl.innerHTML = `<div style="opacity:0.6; font-size: 13px;">${placeholderText}</div>`;
       return;
     }
 
+    boxEl.innerHTML = "";
     const url = URL.createObjectURL(file);
     const img = document.createElement("img");
     img.src = url;
@@ -64,7 +63,7 @@ export function initFoodAiTab(ctx) {
     img.style.width = "100%";
     img.style.height = "100%";
     img.style.objectFit = "cover";
-    previewBox.appendChild(img);
+    boxEl.appendChild(img);
   }
 
   function setWeight(next) {
@@ -73,12 +72,10 @@ export function initFoodAiTab(ctx) {
     weightG = Math.max(0, snapped);
 
     if (elWeightBox) elWeightBox.textContent = String(weightG);
-
     if (elMinus) {
       if (weightG <= 0) elMinus.classList.add("disabled");
       else elMinus.classList.remove("disabled");
     }
-
     refreshEstimate();
   }
 
@@ -86,7 +83,6 @@ export function initFoodAiTab(ctx) {
     if (!elFoodSelect) return;
 
     elFoodSelect.innerHTML = "";
-
     const placeholder = document.createElement("option");
     placeholder.value = "";
     placeholder.textContent = "AI 추정 음식명";
@@ -103,18 +99,25 @@ export function initFoodAiTab(ctx) {
 
   function refreshEstimate() {
     const hasData = !!selected;
+    const hasTop = !!topFile;
+    const hasSide = !!sideFile;
 
-    if (elMoistureBox) {
-      elMoistureBox.textContent = hasData ? String(selected.moisture) : "데이터 없음";
-    }
+    if (elMoistureBox) elMoistureBox.textContent = hasData ? String(selected.moisture) : "데이터 없음";
 
     const estimated = hasData ? computeEstimatedMl(weightG, selected.moisture) : 0;
-
     if (elEstimatedBox) elEstimatedBox.textContent = String(estimated || 0);
     if (elTotalBox) elTotalBox.textContent = String(estimated || 0);
 
-    // Mock 단계: 이미지 + DB 선택이 모두 되어야만 활성화
-    if (btnAdd) btnAdd.disabled = !(imageSelected && hasData);
+    // ✅ 분석/저장 활성조건 (권장)
+    // - 분석 버튼: 사진이 1장 이상 있으면 가능 (2장이면 더 좋음)
+    // - 기록 추가: 사진 1장 이상 + 음식 선택이 있어야 가능
+    if (btnAnalyze) btnAnalyze.disabled = !(hasTop || hasSide);
+    if (btnAdd) btnAdd.disabled = !((hasTop || hasSide) && hasData);
+
+    // 힌트
+    if (!hasTop && !hasSide) setHint("윗면/옆면 사진 중 최소 1장을 넣어주세요. (2장이면 정확도↑)");
+    else if (hasTop && hasSide) setHint("사진 2장이 준비되었습니다. 이제 '분석' → 음식 선택이 가능합니다.");
+    else setHint("사진 1장이 준비되었습니다. 가능하면 2장을 넣으면 더 좋습니다.");
   }
 
   function getSomeDbItems(limit = 20) {
@@ -128,8 +131,9 @@ export function initFoodAiTab(ctx) {
   }
 
   function mockAnalyze() {
-    if (!imageSelected) {
-      setHint("먼저 음식 사진을 업로드/촬영해 주세요.");
+    const hasAny = !!topFile || !!sideFile;
+    if (!hasAny) {
+      setHint("먼저 음식 사진(윗면/옆면)을 업로드/촬영해 주세요.");
       return;
     }
 
@@ -139,85 +143,72 @@ export function initFoodAiTab(ctx) {
       return;
     }
 
-    // Mock: DB에서 임의 20개 후보를 채워넣습니다.
     const list = getSomeDbItems(20);
     populateSelect(list);
-
     setStatus("AI: Mock 연결 (후보 로드)");
     setHint("Mock 단계: DB 후보를 불러왔습니다. 음식명을 선택하면 수분 계산이 됩니다.");
   }
 
   // ===== events =====
-  if (btnCamera && fileCamera) {
-    btnCamera.addEventListener("click", () => fileCamera.click());
-  }
+  if (btnCameraTop && fileCameraTop) btnCameraTop.addEventListener("click", () => fileCameraTop.click());
+  if (btnUploadTop && fileUploadTop) btnUploadTop.addEventListener("click", () => fileUploadTop.click());
+  if (btnCameraSide && fileCameraSide) btnCameraSide.addEventListener("click", () => fileCameraSide.click());
+  if (btnUploadSide && fileUploadSide) btnUploadSide.addEventListener("click", () => fileUploadSide.click());
 
-  if (btnUpload && fileUpload) {
-    btnUpload.addEventListener("click", () => fileUpload.click());
-  }
-
-  function handleFileInput(inputEl) {
+  function onPickTop(inputEl) {
     const file = inputEl?.files?.[0];
     if (!file) return;
-
-    imageSelected = true;
-    setPreview(file);
+    topFile = file;
+    renderPreview(previewTop, topFile, "윗면 사진");
+    refreshEstimate();
+  }
+  function onPickSide(inputEl) {
+    const file = inputEl?.files?.[0];
+    if (!file) return;
+    sideFile = file;
+    renderPreview(previewSide, sideFile, "옆면 사진");
     refreshEstimate();
   }
 
-  if (fileCamera) {
-    fileCamera.addEventListener("change", () => handleFileInput(fileCamera));
-  }
+  if (fileCameraTop) fileCameraTop.addEventListener("change", () => onPickTop(fileCameraTop));
+  if (fileUploadTop) fileUploadTop.addEventListener("change", () => onPickTop(fileUploadTop));
+  if (fileCameraSide) fileCameraSide.addEventListener("change", () => onPickSide(fileCameraSide));
+  if (fileUploadSide) fileUploadSide.addEventListener("change", () => onPickSide(fileUploadSide));
 
-  if (fileUpload) {
-    fileUpload.addEventListener("change", () => handleFileInput(fileUpload));
-  }
-
-  if (btnAnalyze) {
-    btnAnalyze.addEventListener("click", mockAnalyze);
-  }
+  if (btnAnalyze) btnAnalyze.addEventListener("click", mockAnalyze);
 
   if (elFoodSelect) {
     elFoodSelect.addEventListener("change", () => {
       const opt = elFoodSelect.selectedOptions?.[0];
       const moisture = opt?.dataset ? Number(opt.dataset.moisture) : NaN;
 
-      if (opt && opt.value && Number.isFinite(moisture)) {
-        selected = { name: opt.value, moisture };
-      } else {
-        selected = null;
-      }
+      if (opt && opt.value && Number.isFinite(moisture)) selected = { name: opt.value, moisture };
+      else selected = null;
+
       refreshEstimate();
     });
   }
 
-  if (elMinus) {
-    elMinus.addEventListener("click", () => {
-      if (weightG <= 0) return;
-      setWeight(weightG - 5);
-    });
-  }
-
-  if (elPlus) {
-    elPlus.addEventListener("click", () => setWeight(weightG + 5));
-  }
+  if (elMinus) elMinus.addEventListener("click", () => { if (weightG > 0) setWeight(weightG - 5); });
+  if (elPlus) elPlus.addEventListener("click", () => setWeight(weightG + 5));
 
   if (btnAdd) {
     btnAdd.addEventListener("click", () => {
-      // 현재 app.js에서 Records ctx를 주지 않아서 저장은 다음 단계에서 연결
-      setHint("현재는 UI 단계입니다. 기록 저장/삭제는 다음 단계에서 연결할게요.");
+      setHint("‘기록 추가’ 저장 연결은 다음 단계에서 진행할게요. (현재는 2장 UI 먼저)");
     });
   }
 
   // ===== init =====
   setStatus("AI: Mock 연결");
   setWeight(100);
+
+  renderPreview(previewTop, null, "윗면 사진");
+  renderPreview(previewSide, null, "옆면 사진");
+
   refreshEstimate();
-  setPreview(null);
 
   return {
     render() {
-      // 탭 이동 시 가벼운 상태 갱신만
       if (foodDb?.loaded) setStatus("AI: Mock 연결");
       else setStatus("AI: Mock 연결 (DB 대기)");
       return 0;
