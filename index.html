@@ -140,62 +140,79 @@
 
   <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
     <!-- 윗면 프레임 -->
-    <div
-      id="aiPreviewTop"
-      class="value-box"
-      style="
-        height: 170px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        overflow:hidden;
-        padding:0;
-        position:relative;
-      "
-    >
-      <div style="opacity:0.6; font-size: 14px; font-weight:700;">윗면 사진</div>
-
-      <!-- 프레임 내부 버튼 바 -->
-      <div style="position:absolute; left:10px; right:10px; bottom:10px; display:flex; gap:10px;">
-        <button type="button" class="primary-btn" id="btnAiTopCamera" style="flex:1; height:40px; padding:0; font-weight:700;">카메라</button>
-        <button type="button" class="primary-btn" id="btnAiTopGallery" style="flex:1; height:40px; padding:0; font-weight:700;">갤러리</button>
-      </div>
-
-      <!-- hidden inputs -->
-      <input id="aiFileTopCamera" type="file" accept="image/*" capture="environment" style="display:none;" />
-      <input id="aiFileTopGallery" type="file" accept="image/*" style="display:none;" />
+   <div
+  id="aiPreviewTop"
+  class="value-box"
+  style="
+    height:170px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+  "
+>
+  <div
+    style="
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
+    "
+  >
+    <!-- 텍스트 -->
+    <div style="opacity:0.7; font-size:14px; font-weight:600;">
+      윗면 사진
     </div>
 
-    <!-- 옆면 프레임 -->
-    <div
-      id="aiPreviewSide"
-      class="value-box"
-      style="
-        height: 170px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        overflow:hidden;
-        padding:0;
-        position:relative;
-      "
-    >
-      <div style="opacity:0.6; font-size: 14px; font-weight:700;">옆면 사진</div>
-
-      <!-- 프레임 내부 버튼 바 -->
-      <div style="position:absolute; left:10px; right:10px; bottom:10px; display:flex; gap:10px;">
-        <button type="button" class="primary-btn" id="btnAiSideCamera" style="flex:1; height:40px; padding:0; font-weight:700;">카메라</button>
-        <button type="button" class="primary-btn" id="btnAiSideGallery" style="flex:1; height:40px; padding:0; font-weight:700;">갤러리</button>
-      </div>
-
-      <!-- hidden inputs -->
-      <input id="aiFileSideCamera" type="file" accept="image/*" capture="environment" style="display:none;" />
-      <input id="aiFileSideGallery" type="file" accept="image/*" style="display:none;" />
+    <!-- 버튼 그룹 -->
+    <div style="display:flex; gap:16px;">
+      <button id="btnAiTopCamera" class="icon-btn">📷</button>
+      <button id="btnAiTopGallery" class="icon-btn">🖼️</button>
     </div>
   </div>
 
+  <input id="aiFileTopCamera" type="file" accept="image/*" capture="environment" style="display:none;">
+  <input id="aiFileTopGallery" type="file" accept="image/*" style="display:none;">
+</div>
+
+
+    <!-- 옆면 프레임 -->
+    <div
+  id="aiPreviewSide"
+  class="value-box"
+  style="
+    height:170px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+  "
+>
+  <div
+    style="
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
+    "
+  >
+    <div style="opacity:0.7; font-size:14px; font-weight:600;">
+      옆면 사진
+    </div>
+
+    <div style="display:flex; gap:16px;">
+      <button id="btnAiSideCamera" class="icon-btn">📷</button>
+      <button id="btnAiSideGallery" class="icon-btn">🖼️</button>
+    </div>
+  </div>
+
+  <input id="aiFileSideCamera" type="file" accept="image/*" capture="environment" style="display:none;">
+  <input id="aiFileSideGallery" type="file" accept="image/*" style="display:none;">
+</div>
+
+
   <div class="hint" style="margin-top:10px;">
-    2장(윗면/옆면)을 모두 넣으면 정확도가 좋아집니다. (현재는 UI 단계)
+    2장(윗면/옆면)을 모두 넣으면 정확도가 좋아집니다
   </div>
 </div>
 
