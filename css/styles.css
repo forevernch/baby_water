@@ -685,9 +685,10 @@ input, select{
 /* 80% width, height same ratio */
 .month-modal{
   width: min(80vw, 360px);
-  aspect-ratio: 1 / 1;           /* ✅ 세로를 가로 비율과 동일하게 */
-  max-height: 80vh;              /* 작은 화면 안전장치 */
-  overflow: auto;
+  height: 75vh;          /* ✅ 세로 여유 확보 */
+  max-height: 90vh;      /* 안전장치 */
+  overflow-y: auto;
+}
 
   border-radius: 18px;
   padding: 16px;
@@ -753,5 +754,4 @@ input, select{
   width: 0%;
   border-radius: 999px;
   background: linear-gradient(180deg, #6fb6ff, #2f6bff);
-
 }
