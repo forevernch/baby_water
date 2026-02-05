@@ -1,171 +1,518 @@
-﻿/* 기본 리셋 및 변수 */
-:root {
-  --primary-color: #3b82f6;
-  --bg-color: #f8fafc;
-  --card-bg: #ffffff;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
+﻿/* ============================================================
+   styles.css (ver1.2) — FIXED / THEME / LAYOUT split
+   목표: UI 흔들림 방지 + 모바일 2×2 확정 + 텍스트 검정화 방지
+   ============================================================ */
+
+/* =========================
+   0) TOKENS (Theme variables)
+   ========================= */
+:root{
+  --bg0: #070b16;
+  --bg1: #0b1020;
+  --bg2: rgba(255,255,255,0.06);
+  --bg3: rgba(255,255,255,0.02);
+
+  --panel: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  --panel2: rgba(0,0,0,0.25);
+
+  --bd0: rgba(255,255,255,0.10);
+  --bd1: rgba(255,255,255,0.08);
+
+  --txt0: rgba(233,236,241,1);
+  --txt1: rgba(233,236,241,0.78);
+  --txt2: rgba(233,236,241,0.65);
+
+  --blue0: #2f6bff;
+  --blue1: #1f4fd6;
+
+  --teal0: rgba(0,180,200,0.25);
+  --teal1: rgba(0,120,160,0.15);
+
+  --danger0: rgba(255,80,80,0.80);
+  --danger1: rgba(255,80,80,0.20);
+
+  --r12: 12px;
+  --r14: 14px;
+  --r18: 18px;
+
+  --shadow0: 0 18px 60px rgba(0,0,0,0.35);
 }
 
-* {
-  box-sizing: border-box;
+/* =========================
+   1) BASE (Reset + text color lock)
+   ========================= */
+*{ box-sizing: border-box; }
+
+html, body{
   margin: 0;
   padding: 0;
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 20% -10%, #1c2b5a 0%, #0b1020 40%, #070b16 100%);
+  color: var(--txt0);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  -webkit-text-size-adjust: 100%;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-main);
-  line-height: 1.5;
+a{ color: var(--txt0); }
+button, input, select, textarea{ color: var(--txt0); font-family: inherit; }
+
+/* iOS/Safari select 글자 검정화 방지 */
+select{
+  color: var(--txt0);
+  background: rgba(0,0,0,0.25);
 }
 
-/* 전체 레이아웃 - 100vh 대신 min-height 권장 */
-.page {
-  max-width: 480px;
-  margin: 0 auto;
-  background: #fff;
-  min-height: 100vh; 
+/* =========================
+   2) 🔒 FIXED UI (DO NOT TOUCH)
+   - 여기 블록은 "고정 계약(Contract)" 영역
+   - GPT에게 수정 요청할 때: 이 블록은 절대 수정 금지라고 명시하세요.
+   ========================= */
+
+/* Layout frame */
+.page{
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+}
+.container{
+  width: 100%;
+  max-width: 420px;
+  padding: 20px 14px 40px;
 }
 
-.container {
-  padding: 20px;
-  flex: 1;
+/* Header */
+.header{
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 14px;
+}
+.title{
+  font-size: 22px;
+  font-weight: 700;
+}
+.subtitle{
+  font-size: 12px;
+  opacity: 0.7;
 }
 
-/* 헤더 & 탭 */
-.header { margin-bottom: 20px; }
-.title { font-size: 20px; font-weight: 800; }
-.subtitle { font-size: 13px; color: var(--text-muted); }
-
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  overflow-x: auto;
-  padding-bottom: 4px;
+/* Tabs */
+.tabs{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
 }
-
-.tab {
-  padding: 8px 12px;
-  background: #f1f5f9;
-  border-radius: 20px;
-  font-size: 13px;
-  white-space: nowrap;
+.tab{
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 14px;
   cursor: pointer;
-  color: var(--text-muted);
+  user-select: none;
+}
+.tab.active{ font-weight: 700; }
+.tab.coming{ cursor: default; }
+
+/* Card shells */
+.card{
+  border-radius: var(--r18);
+  padding: 16px;
+  margin-bottom: 18px;
 }
 
-.tab.active {
-  background: var(--primary-color);
-  color: #fff;
+/* Section title row */
+.section-title-row{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.section-title{
+  font-size: 16px;
   font-weight: 600;
 }
-
-/* 카드 공통 */
-.card {
-  background: var(--card-bg);
-  border-radius: 16px;
-  display: none; /* JS에서 제어 */
-}
-
-/* ✅ 오늘요약: 2x2 그리드 레이아웃 핵심 코드 */
-.summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* 2열 구조 */
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.summary-box {
-  background: #f8fafc;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  text-align: center;
-}
-
-.summary-label {
+.status{
   font-size: 12px;
-  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* Labels / inputs */
+.label{
+  font-size: 12px;
+  opacity: 0.75;
   margin-bottom: 4px;
 }
-
-.summary-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-/* 강조 타일 (오늘 총합) */
-.summary-total {
-  background: #eff6ff;
-  border-color: #bfdbfe;
-}
-.summary-total .summary-value {
-  color: var(--primary-color);
-}
-
-/* 공통 UI 요소 */
-.section-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.primary-btn {
+input, select{
   width: 100%;
+  border-radius: var(--r12);
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  outline: none;
+}
+select{ appearance: none; }
+
+/* Primary button */
+.primary-btn{
+  width: 100%;
+  margin-top: 14px;
   padding: 14px;
-  background: var(--primary-color);
-  color: #fff;
+  border-radius: var(--r14);
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  margin: 16px 0;
   cursor: pointer;
 }
 
-.divider {
-  height: 1px;
-  background: var(--border-color);
-  margin: 20px 0;
+/* 🔒 STEP PER ( - 100 + ) — 고정 핵심 */
+.volume-row{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+}
+.volume-row.volume-row-compact{ gap: 8px; }
+
+.btn-icon{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
+  font-size: 18px;
+  line-height: 1;
+  flex: 0 0 36px;         /* ✅ 폭 고정 */
+}
+.volume-box{
+  min-width: 64px;         /* ✅ 숫자 박스 폭 고정 */
+  height: 36px;            /* ✅ 버튼과 높이 통일 */
+  border-radius: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0 10px;
+  flex: 0 0 auto;
 }
 
-/* 기록 리스트 스타일 */
-.records-card {
-  margin-top: 10px;
+/* Water row fixed: one line */
+.water-row{
+  display:flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.water-col{ flex: 1; min-width: 0; }
+
+/* Food manual fixed: name+weight one line, then others */
+.food-top-row{
+  display:flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.food-top-name{ flex: 1.6; min-width: 0; }
+.food-top-weight{ flex: 1; min-width: 0; }
+
+.food-row{
+  display:flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.food-col{ flex: 1; min-width: 0; }
+
+.value-box{
+  padding: 12px;
+  border-radius: var(--r12);
+  font-size: 14px;
 }
 
-.records-card-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.records-list {
-  display: flex;
+/* Candidates list (food search results) */
+.food-cand-row{ margin-top: 10px; }
+.candidates{
+  display:flex;
   flex-direction: column;
   gap: 8px;
 }
+.candidates > div{
+  padding: 10px 12px;
+  border-radius: var(--r12);
+  cursor: pointer;
+  font-size: 14px;
+}
 
-/* 개별 기록 아이템 */
-.record-item {
-  display: flex;
+/* Records fixed */
+.records-card{
+  border-radius: var(--r14);
+  padding: 12px;
+}
+.records-card-head{
+  display:flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  background: #fff;
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.records-card-title{
+  font-size: 14px;
+  font-weight: 600;
+}
+.records-list{
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.record-item{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  border-radius: var(--r12);
+  padding: 10px 12px;
 }
 
-.hint {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 8px;
+/* ✅ 기존 JS가 record-left/right를 만들 때 */
+.record-left{ font-size: 13px; color: var(--txt1); }
+.record-right{ display:flex; align-items:center; gap: 10px; }
+
+/* ✅ 다른 버전에서 record-time/title/ml 구조를 쓰더라도 깨지지 않게 보정 */
+.record-time{ font-size: 12px; color: var(--txt2); }
+.record-title{ font-size: 14px; font-weight: 600; color: var(--txt0); max-width: 220px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+.record-ml{ font-size: 14px; font-weight: 700; color: var(--txt0); }
+
+.trash{
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex: 0 0 32px;
 }
+
+/* Pills / hint / divider */
+.pill{
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.hint{
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.65;
+}
+.divider{
+  height: 1px;
+  margin: 14px 0;
+}
+
+/* Summary fixed (2×2 base) */
+.summary-grid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.summary-box{
+  border-radius: var(--r14);
+  padding: 14px;
+  min-width: 0;
+}
+.summary-label{
+  font-size: 12px;
+  opacity: 0.7;
+}
+.summary-value{
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.drop{ margin-left: 4px; }
+
+/* ✅ index.html 구조상 divider/records-card가 summary-grid 안에 들어가도 망가지지 않게 */
+.summary-grid > .divider{
+  grid-column: 1 / -1;
+}
+.summary-grid > .records-card{
+  grid-column: 1 / -1;
+}
+
+/* Modal fixed */
+.modal-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.modal{
+  width: 280px;
+  border-radius: 16px;
+  padding: 16px;
+}
+.modal-title{ font-size: 16px; font-weight: 600; }
+.modal-text{ font-size: 13px; opacity: 0.8; margin: 10px 0 14px; }
+.modal-btns{ display:flex; gap: 8px; }
+.modal-btn{
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+/* =========================
+   3) THEME (colors / backgrounds / borders)
+   - 여기서만 색/그라데이션/테두리 톤을 바꾸세요.
+   ========================= */
+
+/* Tabs */
+.tab{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.tab.active{
+  background: linear-gradient(180deg, var(--blue0), var(--blue1));
+  border-color: rgba(80,130,255,0.90);
+}
+.tab.coming{ opacity: 0.45; }
+
+/* Cards */
+.card{
+  background: var(--panel);
+  border: 1px solid var(--bd1);
+  box-shadow: none;
+}
+
+/* Inputs */
+input, select{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* Buttons */
+.primary-btn{
+  background: linear-gradient(180deg, #3b7cff, #2359e3);
+  color: #fff;
+}
+.btn-icon{
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.volume-box{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* value box */
+.value-box{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* candidates */
+.candidates > div{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* records */
+.records-card{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.record-item{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.trash{
+  background: rgba(255,80,80,0.20);
+}
+
+/* pills / divider */
+.pill{ background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); }
+.pill-blue{ background: rgba(80,130,255,0.25); border: 1px solid rgba(80,130,255,0.18); }
+.divider{ background: rgba(255,255,255,0.08); }
+
+/* summary */
+.summary-box{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.summary-box.summary-total{
+  background: linear-gradient(180deg, var(--teal0), var(--teal1));
+  border: 1px solid rgba(0,200,220,0.18);
+}
+
+/* modal */
+.modal{
+  background: #10142a;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+.modal-btn{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+.modal-btn.danger{
+  background: rgba(255,80,80,0.80);
+}
+
+/* =========================
+   4) LAYOUT (responsive tweaks only)
+   - 여기서만 gap/padding/폭/모바일 조정하세요.
+   ========================= */
+
+/* 모바일에서 한 줄 유지(줄바꿈 방지) */
+@media (max-width: 420px){
+  .container{ padding: 18px 12px 36px; }
+
+  /* water/food는 한 줄 유지 + 오른쪽 폭 고정 */
+  .water-row{ flex-wrap: nowrap; }
+  .food-top-row{ flex-wrap: nowrap; }
+  .food-row{ flex-wrap: nowrap; }
+
+  /* 오른쪽(용량/중량) 컬럼이 너무 줄어들지 않게 */
+  .water-col.water-volume{ flex: 0 0 150px; }
+  .food-top-weight{ flex: 0 0 150px; }
+
+  /* summary: 모바일에서도 2×2 확정 + 타일 높이 균일 */
+  .summary-grid{
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+  }
+  .summary-box{
+    min-height: 92px;
+    overflow: hidden;
+  }
+  .summary-label{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .summary-value{
+    white-space: nowrap;
+  }
+}
+
+/* 아주 작은 화면(360px급)에서 스텝퍼가 깨지지 않게 */
+@media (max-width: 360px){
+  .water-col.water-volume{ flex-basis: 142px; }
+  .food-top-weight{ flex-basis: 142px; }
+
+  .btn-icon{ width: 34px; height: 34px; flex-basis: 34px; border-radius: 11px; }
+  .volume-box{ height: 34px; min-width: 58px; border-radius: 11px; }
+}
+.icon-btn{
+  width:44px; height:44px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.05);
+  font-size:20px;
+  cursor:pointer;
+}
+.icon-btn.sm{ width:38px; height:38px; border-radius:11px; font-size:18px; }
+.icon-btn:active{ transform:scale(0.96); }
+
