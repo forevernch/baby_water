@@ -32,10 +32,16 @@ function main() {
     monthly: document.getElementById("monthlyCard"),
   };
 
-  // (필수 엘리먼트 누락 시 바로 알 수 있게 방어)
-  if (!tabsEl || !panelsByKey.water) {
-    console.error("필수 DOM이 누락되었습니다. index.html의 id를 확인하세요.");
-    return;
+    // ✅ 모든 패널 DOM 누락 검사 (네이밍 문제 즉시 식별)
+  const missingPanels = Object.entries(panelsByKey)
+    .filter(([, el]) => !el)
+    .map(([key]) => key);
+
+  if (missingPanels.length) {
+    console.error(
+      "탭 패널 DOM이 누락되었습니다. index.html의 id를 확인하세요. 누락:",
+      missingPanels
+    );
   }
 
   /* ================= 삭제 모달 ================= */
