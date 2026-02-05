@@ -755,3 +755,45 @@ input, select{
   border-radius: 999px;
   background: linear-gradient(180deg, #6fb6ff, #2f6bff);
 }
+
+/* ===== Settings tab ===== */
+.setting-box{
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.setting-title{
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.setting-row{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+}
+
+.setting-row input{
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--bd1);
+  background: rgba(255,255,255,0.06);
+  color: var(--txt0);
+  font-size: 16px;
+}
+
+.setting-row .unit{
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.setting-desc{
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.65;
+}
