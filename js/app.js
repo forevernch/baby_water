@@ -148,6 +148,8 @@ function main() {
 
   const monthlyTab = initMonthlyTab({
     elMonthlyStatus: document.getElementById("monthlyStatus"),
+    getRecords,
+    kindLabel,
   });
 
   /* ================= 렌더 ================= */

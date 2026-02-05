@@ -57,14 +57,18 @@ export function renderList(targetEl, items, { kindText, kindLabel, onDelete }) {
     ml.className = "record-ml";
     ml.textContent = `${Number(r.volume) || 0} ml`;
 
-    const del = document.createElement("button");
-    del.className = "record-del";
-    del.type = "button";
-    del.setAttribute("aria-label", "삭제");
-    del.appendChild(trashSvg());
-    del.addEventListener("click", () => onDelete(r.id));
-
-    right.append(ml, del);
+    // ✅ onDelete가 있을 때만 삭제 버튼 렌더
+    if (typeof onDelete === "function") {
+      const del = document.createElement("button");
+      del.className = "record-del";
+      del.type = "button";
+      del.setAttribute("aria-label", "삭제");
+      del.appendChild(trashSvg());
+      del.addEventListener("click", () => onDelete(r.id));
+      right.append(ml, del);
+    } else {
+      right.append(ml);
+    }
 
     item.append(left, right);
     targetEl.appendChild(item);
