@@ -2,7 +2,7 @@
 import { dateKeyLocal, pad2 } from "./utils.js";
 
 export function initMonthlyTab(ctx) {
-  const { elMonthlyStatus, getRecords, kindLabel } = ctx || {};
+const { elMonthlyStatus, getRecords, kindLabel, openDeleteModal, deleteRecordById, notifyUpdated } = ctx || {};
 
   // Calendar DOM
   const elTitle = document.getElementById("monthlyTitle");
@@ -109,11 +109,33 @@ export function initMonthlyTab(ctx) {
     if (mAllCountPill) mAllCountPill.textContent = `${sorted.length}건`;
 
     // ✅ 삭제 버튼 없이 렌더(onDelete 미전달)
-    renderList(mAllListBody, sorted, {
-      kindText: true,
-      kindLabel,
-      onDelete: undefined,
-    });
+ renderList(mAllListBody, sorted, {
+  kindText: true,
+  kindLabel,
+  onDelete: (id) => {
+    // 1) 기존 앱과 동일하게 "삭제 확인 모달" 사용
+    if (typeof openDeleteModal === "function") {
+      openDeleteModal(id, async () => {
+        if (typeof deleteRecordById === "function") {
+          await deleteRecordById(id);
+        }
+        // 2) 삭제 후: 팝업 내용 + 달력 합계 즉시 갱신
+        openModal(dateKey);
+        renderMonth();
+        if (typeof notifyUpdated === "function") notifyUpdated();
+      });
+      return;
+    }
+
+    // 모달이 없으면(최악 케이스) 즉시 삭제
+    if (typeof deleteRecordById === "function") {
+      deleteRecordById(id);
+      openModal(dateKey);
+      renderMonth();
+      if (typeof notifyUpdated === "function") notifyUpdated();
+    }
+  },
+});
 
     // 빈 상태
     if (mAllEmpty) mAllEmpty.style.display = sorted.length === 0 ? "block" : "none";
