@@ -624,9 +624,9 @@ input, select{
 /* 날짜: 우측 최상단 고정 */
 .month-cell .d{
   position: absolute;
-  top: 8px;
-  right: 10px;
-  font-size: 13px;
+  top: 6px;
+  right: 6px;
+  font-size: 10px;
   font-weight: 800;
   opacity: 0.95;
 }
@@ -634,11 +634,15 @@ input, select{
 /* 합계: 좌하단 영역(날짜랑 안 겹치게) */
 .month-cell .t{
   position: absolute;
-  left: 10px;
-  bottom: 8px;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
   font-size: 12px;
   opacity: 0.85;
   white-space: nowrap;
+  text-align: center;
+  width: calc(100% - 12px); /* 양쪽 여백 확보 */
+  pointer-events: none;      /* 클릭 방해 방지 */
 }
 
 .month-cell.is-empty{
