@@ -243,6 +243,23 @@ select{ appearance: none; }
   font-size: 14px;
 }
 
+/* ✅ food_manual 검색결과 선택 하이라이트 (ver2.2 추가) */
+.candidates > div{
+  background: var(--bg3);
+  border: 1px solid var(--bd1);
+}
+
+.candidates > div:hover{
+  border-color: var(--bd0);
+}
+
+.candidates > div.selected{
+  background: rgba(47,107,255,0.12);          /* --blue0 계열 하이라이트 */
+  border-color: rgba(47,107,255,0.85);
+  box-shadow: 0 0 0 2px rgba(47,107,255,0.25) inset;
+}
+
+
 /* Records fixed */
 .records-card{
   border-radius: var(--r14);
@@ -541,3 +558,4 @@ input, select{
   width:22px;
   height:22px;
 }
+
