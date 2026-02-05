@@ -661,11 +661,9 @@ input, select{
 .month-week > div:nth-child(1){ color: #ff5b5b; }  /* 일 */
 .month-week > div:nth-child(7){ color: #4ea1ff; }  /* 토 */
 
-.month-cell.is-sun .d,
-.month-cell.is-sun .t{ color: #ff5b5b; }
+.month-cell.is-sun .d{ color: #ff5b5b; }
 
-.month-cell.is-sat .d,
-.month-cell.is-sat .t{ color: #4ea1ff; }
+.month-cell.is-sat .d{ color: #4ea1ff; }
 
 /* ===== Popup / Overlay (blur background) ===== */
 .month-overlay{
