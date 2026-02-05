@@ -5,22 +5,19 @@
     activeTab = tabKey;
 
     // 탭 버튼 active 처리
-    tabsEl.querySelectorAll(".tab").forEach((tab) => {
+    tabsEl.querySelectorAll(".tab").forEach(tab => {
       tab.classList.toggle("active", tab.dataset.tab === tabKey);
     });
 
-    // 패널 표시/숨김 (✅ null 안전)
+    // 패널 표시/숨김
     Object.entries(panelsByKey).forEach(([key, panel]) => {
-      if (!panel) {
-        console.error(`[tabs] panel DOM이 없습니다: key="${key}" (id 확인 필요)`);
-        return;
-      }
       panel.style.display = key === tabKey ? "block" : "none";
     });
 
     if (onTabChanged) onTabChanged(tabKey);
   }
 
+  // 탭 클릭 이벤트
   tabsEl.addEventListener("click", (e) => {
     const tab = e.target.closest(".tab");
     if (!tab) return;
@@ -33,6 +30,6 @@
 
   return {
     setActiveTab,
-    getActiveTab: () => activeTab,
+    getActiveTab: () => activeTab
   };
 }
