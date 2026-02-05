@@ -91,6 +91,11 @@ export function initMonthlyTab(ctx) {
       }
 
       const dKey = `${y}-${pad2(m0 + 1)}-${pad2(day)}`;
+
+      const dow = new Date(y, m0, day).getDay(); // 0=일 ... 6=토
+      if (dow === 0) btn.classList.add("is-sun");
+      if (dow === 6) btn.classList.add("is-sat");
+
       const total = sumByDate[dKey] || 0;
 
       if (dKey === todayKey) btn.classList.add("is-today");
