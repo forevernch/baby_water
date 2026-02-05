@@ -129,9 +129,16 @@ export function initFoodManualTab(ctx) {
   // 이벤트 바인딩
   if (elFoodName) {
     elFoodName.addEventListener("input", () => {
-      // 입력이 바뀌면 기존 선택은 무효 처리(새 검색 기준)
-      selected = null;
+      const q = elFoodName.value.trim();
+
+      // ✅ "실제로 검색어가 바뀐 경우에만" 선택을 해제
+      // (한글 IME 조합 종료로 input 이벤트가 한 번 더 와도 선택 유지)
+      if (q !== lastQuery) {
+        selected = null;
+      }
+
       refreshSearchAndEstimate();
+      lastQuery = q; // 현재 검색어를 기준값으로 갱신
     });
   }
 
@@ -246,4 +253,5 @@ export function initFoodManualTab(ctx) {
     },
   };
 }
+
 
