@@ -1,4 +1,4 @@
-﻿import { initTabs } from "./tabs.js";
+﻿﻿import { initTabs } from "./tabs.js";
 import { createDeleteModal } from "./modal.js";
 import { loadRecords, saveRecords } from "./storage.js";
 import { dateKeyLocal, formatTime12h } from "./utils.js";
@@ -120,6 +120,18 @@ function main() {
   const foodAiTab = initFoodAiTab({
     foodDb,
     elFoodAiStatus: document.getElementById("foodAiStatus"),
+
+    // ✅ 오늘 기록-음식AI (음식수동과 동일 구조)
+    elFoodAiListBody: document.getElementById("foodAiListBody"),
+    elFoodAiTotal: document.getElementById("foodAiTotalPill"),
+
+    getRecords,
+    setRecords,
+    saveRecords,
+    renderAll,
+    openDeleteModal,
+    dateKeyLocal,
+    formatTime12h,
   });
 
   const todayTab = initTodayTab({
@@ -149,9 +161,10 @@ function main() {
 
     const sumWater = waterTab.render(waterRecords);
     const sumFoodManual = foodManualTab.render(foodManualRecords);
-    const sumFoodAI = foodAIRecords.reduce((s, r) => s + (Number(r.volume) || 0), 0);
 
-    foodAiTab.render();
+    // ✅ 음식AI 탭 자체 렌더(리스트/합계)에서 합계 반환
+    const sumFoodAI = foodAiTab.render(foodAIRecords);
+
     todayTab.render(todayRecords, { sumWater, sumFoodManual, sumFoodAI });
     monthlyTab.render();
   }

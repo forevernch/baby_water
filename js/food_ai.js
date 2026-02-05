@@ -1,7 +1,26 @@
-﻿import { computeEstimatedMl } from "./utils.js";
+﻿﻿import { computeEstimatedMl, dateKeyLocal, formatTime12h } from "./utils.js";
+import { renderList } from "./ui.js";
 
 export function initFoodAiTab(ctx) {
-  const { foodDb, elFoodAiStatus } = ctx;
+  const {
+    foodDb,
+    elFoodAiStatus,
+
+    // ✅ 음식수동과 동일한 저장/렌더 구조
+    elFoodAiListBody,
+    elFoodAiTotal,
+    getRecords,
+    setRecords,
+    saveRecords,
+    renderAll,
+    openDeleteModal,
+    dateKeyLocal: dateKeyLocalFromCtx,
+    formatTime12h: formatTime12hFromCtx,
+  } = ctx;
+
+  // app.js에서 주입한 유틸이 있으면 그걸 우선 사용(테스트/일관성)
+  const _dateKeyLocal = dateKeyLocalFromCtx || dateKeyLocal;
+  const _formatTime12h = formatTime12hFromCtx || formatTime12h;
 
   // ===== DOM (기존) =====
   const btnTopCamera = document.getElementById("btnAiTopCamera");
@@ -23,7 +42,7 @@ export function initFoodAiTab(ctx) {
 
   const elMoistureBox = document.getElementById("aiMoistureBox");
   const elEstimatedBox = document.getElementById("aiEstimatedBox");
-  const elTotalBox = document.getElementById("aiTotalBox");
+  const elTotalBox = document.getElementById("aiTotalBox"); // (없어도 무해)
 
   const btnAdd = document.getElementById("btnAiAdd");
   const elHint = document.getElementById("aiHint");
@@ -119,6 +138,20 @@ export function initFoodAiTab(ctx) {
       opt.dataset.moisture = String(it.moisture);
       elFoodSelect.appendChild(opt);
     });
+  }
+
+  function clearPhotos() {
+    topFile = null;
+    sideFile = null;
+
+    // 같은 파일을 다시 선택할 수 있도록 input value도 비워줌
+    if (fileTopCamera) fileTopCamera.value = "";
+    if (fileTopGallery) fileTopGallery.value = "";
+    if (fileSideCamera) fileSideCamera.value = "";
+    if (fileSideGallery) fileSideGallery.value = "";
+
+    renderPreview("top");
+    renderPreview("side");
   }
 
   function refreshEstimate() {
@@ -225,10 +258,52 @@ export function initFoodAiTab(ctx) {
   if (elMinus) elMinus.addEventListener("click", () => { if (weightG > 0) setWeight(weightG - 5); });
   if (elPlus) elPlus.addEventListener("click", () => setWeight(weightG + 5));
 
-  // ===== events: add (저장은 다음 단계) =====
+  // ===== events: add (✅ 로컬 저장 연결 완료) =====
   if (btnAdd) {
     btnAdd.addEventListener("click", () => {
-      setHint("‘기록 추가’ 저장 연결은 다음 단계에서 진행할게요. (지금은 UI/2장 입력 + 재선택 UX 먼저)");
+      const hasAnyPhoto = !!topFile || !!sideFile;
+      if (!hasAnyPhoto) {
+        setHint("윗면/옆면 사진 중 최소 1장을 넣어주세요.");
+        return;
+      }
+      if (!selected) {
+        setHint("‘분석’ 후 음식명을 선택해 주세요.");
+        return;
+      }
+
+      const estimated = computeEstimatedMl(weightG, selected.moisture);
+
+      const now = new Date();
+      const item = {
+        id: `${now.getTime()}_${Math.random().toString(16).slice(2)}`,
+        ts: now.toISOString(),
+        dateKey: _dateKeyLocal(now),
+        timeLabel: _formatTime12h(now),
+        kind: "foodAI",
+        name: selected.name,
+        weightG,
+        moisturePer100: selected.moisture,
+        hasData: true,
+        photoCount: (topFile ? 1 : 0) + (sideFile ? 1 : 0),
+        volume: estimated,
+      };
+
+      const next = [item, ...getRecords()];
+      setRecords(next);
+      saveRecords(next);
+
+      // ✅ 입력 상태 초기화 (음식수동과 동일 UX)
+      selected = null;
+      populateSelect([]);
+      if (elFoodSelect) elFoodSelect.value = "";
+
+      setWeight(100);
+      clearPhotos();
+      refreshEstimate();
+      setStatus(foodDb?.loaded ? "AI: Mock 연결" : "AI: Mock 연결 (DB 대기)");
+      setHint("저장되었습니다.");
+
+      renderAll();
     });
   }
 
@@ -243,9 +318,19 @@ export function initFoodAiTab(ctx) {
   refreshEstimate();
 
   return {
-    render() {
+    render(recordsToday) {
       setStatus(foodDb?.loaded ? "AI: Mock 연결" : "AI: Mock 연결 (DB 대기)");
-      return 0;
+
+      const sum = (recordsToday || []).reduce((s, r) => s + (Number(r.volume) || 0), 0);
+      if (elFoodAiTotal) elFoodAiTotal.textContent = `${sum} ml`;
+
+      renderList(elFoodAiListBody, recordsToday, {
+        kindText: false,
+        kindLabel: () => "",
+        onDelete: openDeleteModal,
+      });
+
+      return sum;
     },
   };
 }
