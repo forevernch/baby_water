@@ -29,7 +29,8 @@ export function initFoodManualTab(ctx) {
 
   // ✅ 사용자가 선택한 DB 항목
   let selected = null; // { name, moisture }
-
+  let lastQuery = ""; // ✅ IME input 이벤트로 인한 선택 초기화 방지용
+  
   function setFoodDbStatus(text) {
     if (elFoodDbStatus) elFoodDbStatus.textContent = text;
   }
@@ -245,3 +246,4 @@ export function initFoodManualTab(ctx) {
     },
   };
 }
+
