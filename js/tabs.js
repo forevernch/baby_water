@@ -11,7 +11,13 @@
 
     // 패널 표시/숨김
     Object.entries(panelsByKey).forEach(([key, panel]) => {
-      panel.style.display = key === tabKey ? "block" : "none";
+if (!panel) {
+    console.warn(`[tabs] panel missing: ${key}`);
+    return;
+  }     
+
+
+ panel.style.display = key === tabKey ? "block" : "none";
     });
 
     if (onTabChanged) onTabChanged(tabKey);
