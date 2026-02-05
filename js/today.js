@@ -10,6 +10,9 @@ export function initTodayTab(ctx) {
     elAllListBody,
     kindLabel,
     openDeleteModal,
+    elGoal,
+    elRate,
+    elGoalFill,
   } = ctx;
 
   return {
@@ -21,6 +24,14 @@ export function initTodayTab(ctx) {
       if (elSumFoodManual) elSumFoodManual.textContent = `${sumFoodManual} ml`;
       if (elSumFoodAI) elSumFoodAI.textContent = `${sumFoodAI} ml`;
       if (elSumAll) elSumAll.textContent = `${sumAll} ml`;
+
+const DAILY_GOAL = 1500;
+      const rate = DAILY_GOAL > 0 ? Math.round((sumAll / DAILY_GOAL) * 100) : 0;
+      const clamped = Math.max(0, Math.min(100, rate));
+
+      if (elGoal) elGoal.textContent = String(DAILY_GOAL);
+      if (elRate) elRate.textContent = String(rate);
+      if (elGoalFill) elGoalFill.style.width = `${clamped}%`;
 
       if (elAllCount) elAllCount.textContent = `${todayRecords.length}건`;
 

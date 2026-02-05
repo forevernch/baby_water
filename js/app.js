@@ -142,6 +142,11 @@ function main() {
     elAllCount: document.getElementById("allCountPill"),
     elAllListBody: document.getElementById("allListBody"),
 
+ // ✅ 목표/달성률
+    elGoal: document.getElementById("tGoal"),
+    elRate: document.getElementById("tRate"),
+    elGoalFill: document.getElementById("tGoalFill"),
+
     kindLabel,
     openDeleteModal,
   });
