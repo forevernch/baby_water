@@ -605,7 +605,7 @@ input, select{
 .month-grid{
   display:grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  gap: 6px;
   margin-top: 10px;
 }
 
@@ -615,7 +615,7 @@ input, select{
   border: 1px solid var(--bd1);
   background: rgba(0,0,0,0.18);
   padding: 10px 10px 10px 10px;       /* 기본 패딩 */
-  min-height: 64px;
+  aspect-ratio: 1 / 1;
   text-align:left;
   cursor:pointer;
   color: var(--txt0);
