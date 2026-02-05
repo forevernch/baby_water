@@ -10,6 +10,8 @@ import { initFoodAiTab } from "./food_ai.js";
 import { initTodayTab } from "./today.js";
 import { initMonthlyTab } from "./monthly.js";
 
+import { loadGoal, saveGoal } from "./storage.js";
+
 function kindLabel(record) {
   if (record.kind === "water") return `물/음료 · ${record.type}`;
   if (record.kind === "foodManual") {
@@ -176,6 +178,29 @@ function main() {
     todayTab.render(todayRecords, { sumWater, sumFoodManual, sumFoodAI });
     monthlyTab.render();
   }
+
+// ✅ 설정 탭: 목표 로드/저장
+const goalInput = document.getElementById("settingGoalInput");
+const btnSaveGoal = document.getElementById("btnSaveGoal");
+
+// 초기값 로드
+if (goalInput) {
+  goalInput.value = loadGoal(2000);
+}
+
+// 저장 버튼
+if (btnSaveGoal) {
+  btnSaveGoal.addEventListener("click", () => {
+    const n = Math.round(Number(goalInput.value));
+    if (!Number.isFinite(n) || n <= 0) {
+      alert("올바른 목표 수분량(ml)을 입력하세요.");
+      return;
+    }
+    saveGoal(n);
+    renderAll(); // 오늘요약 / 월별요약 즉시 반영
+    alert("저장되었습니다.");
+  });
+}
 
   /* ================= 탭 ================= */
   const tabs = initTabs({
