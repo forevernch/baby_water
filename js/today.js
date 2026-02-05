@@ -30,9 +30,8 @@ export function initTodayTab(ctx) {
       if (elAllCount) elAllCount.textContent = `${list.length}건`;
 
       // ===== 빈 상태 표시/숨김 =====
-      if (elAllEmpty) {
-        elAllEmpty.style.display = list.length === 0 ? "block" : "none";
-      }
+      if (elAllEmpty) elAllEmpty.style.display = list.length === 0 ? "block" : "none";
+      
 
       // ===== 리스트 렌더 =====
       const sorted = [...list].sort((a, b) => (a.ts < b.ts ? 1 : -1));
