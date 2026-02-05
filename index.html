@@ -22,7 +22,7 @@
           <div class="tab" data-tab="foodManual">✍️ 음식 수동</div>
           <div class="tab" data-tab="foodAI">🤖 음식 AI</div>
           <div class="tab" data-tab="today">📌 오늘요약</div>
-          <div class="tab coming" data-tab="monthly" title="준비중">🗓️ 월별요약</div>
+          <div class="tab" data-tab="monthly">🗓️ 월별요약</div>
         </div>
 
         <!-- 물/음료 탭 -->
@@ -217,7 +217,9 @@
 
 
 
-
+  <div class="hint" style="margin-top:10px;">
+    2장(윗면/옆면)을 모두 넣으면 정확도가 좋아집니다
+  </div>
 </div>
 
 
@@ -275,8 +277,7 @@
               <div class="records-empty" id="foodAiEmpty" style="display:none;">아직 기록이 없습니다.</div>
             </div>
           </div>
-   </div>
-
+</div>
 
       <!-- 오늘요약 탭 -->
 <div class="card" id="todayCard" style="display:none;">
@@ -323,20 +324,107 @@
 </div>
 
 
-        <!-- 월별요약 탭 -->
-        <div class="card" id="monthlyCard" style="display:none;">
-          <div class="section-title-row">
-            <div class="section-title">월별요약</div>
-            <div class="status" id="monthlyStatus">아직 준비중입니다.</div>
-          </div>
-          <div class="coming-box">
-            아직 준비중입니다.<br />
-            - 탭 이동은 가능<br />
-            - 추후 월 선택 → 합계/추이/리스트로 확장
-          </div>
-        </div>
+<!-- 월별요약 탭 -->
+<div class="card" id="monthlyCard" style="display:none;">
+  <div class="section-title-row">
+    <div class="section-title">월별요약</div>
+    <div class="status" id="monthlyStatus">날짜를 선택하세요</div>
+  </div>
+
+  <!-- 월 이동 헤더 -->
+  <div class="month-head">
+    <button class="month-nav" id="btnMonthPrev" type="button" aria-label="이전 달">‹</button>
+    <div class="month-title" id="monthlyTitle">2026년 2월</div>
+    <button class="month-nav" id="btnMonthNext" type="button" aria-label="다음 달">›</button>
+  </div>
+
+  <!-- 요일 -->
+  <div class="month-week">
+    <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+  </div>
+
+  <!-- 달력 그리드 -->
+  <div class="month-grid" id="monthGrid">
+    <!--
+      JS 붙이면 여기 안에 날짜 셀들이 들어감
+      예시(구조 참고):
+      <button class="month-cell" data-date="2026-02-05">
+        <div class="d">5</div>
+        <div class="t">730ml</div>
+      </button>
+    -->
+  </div>
+
+  <div class="hint">각 날짜 칸에 해당 날짜의 총합(summary-total)이 표시됩니다.</div>
+</div>
+
+<!-- ✅ 월별요약: 날짜 상세 팝업 (오늘요약 내용을 그대로 보여줄 자리) -->
+<div class="month-overlay" id="monthOverlay" style="display:none" aria-hidden="true">
+  <div class="month-modal" role="dialog" aria-modal="true">
+    <div class="month-modal-head">
+      <div>
+        <div class="month-modal-title">수분 섭취 기록</div>
+        <div class="month-modal-sub" id="monthModalDate">2026년 2월 5일</div>
       </div>
     </div>
+
+    <!-- 오늘요약(2×2 타일) 그대로 -->
+    <div class="summary-grid" style="margin-top:10px;">
+      <div class="summary-box">
+        <div class="summary-label">물/음료 합계</div>
+        <div class="summary-value" id="mSumWater">0 ml</div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-label">음식수동 합계</div>
+        <div class="summary-value" id="mSumFoodManual">0 ml</div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-label">음식AI 합계</div>
+        <div class="summary-value" id="mSumFoodAI">0 ml</div>
+      </div>
+
+      <div class="summary-box summary-total">
+        <div class="summary-label">오늘💧</div>
+        <div class="summary-value" id="mSumAll">0 ml</div>
+      </div>
+    </div>
+
+    <!-- 목표/달성률(그래프) UI 자리 -->
+    <div class="goal-box">
+      <div class="goal-row">
+        <div class="goal-left">
+          <div class="goal-label">오늘 목표</div>
+          <div class="goal-value"><span id="mGoal">2000</span> ml</div>
+        </div>
+        <div class="goal-right">
+          <div class="goal-label">달성률</div>
+          <div class="goal-value"><span id="mRate">0</span>%</div>
+        </div>
+      </div>
+      <div class="goal-bar">
+        <div class="goal-fill" id="mGoalFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 오늘 기록-전체 리스트(오늘요약 탭의 리스트 그대로 보여줄 자리) -->
+    <div class="records-card" style="margin-top:0;">
+      <div class="records-card-head">
+        <div class="records-card-title">오늘 기록-전체</div>
+        <div class="pill" id="mAllCountPill">0건</div>
+      </div>
+      <div class="records-list" id="mAllListBody"></div>
+      <div class="records-empty" id="mAllEmpty" style="display:none;">아직 기록이 없습니다.</div>
+    </div>
+
+    <!-- 닫기 버튼 (X 버튼은 제거) -->
+    <button class="primary-btn" id="btnMonthClose" type="button">닫기</button>
+  </div>
+</div>
+ 
 
     <!-- Delete modal -->
     <div class="modal-overlay" id="modalOverlay" style="display:none" aria-hidden="true">
@@ -353,5 +441,3 @@
     <script type="module" src="./js/app.js"></script>
   </body>
 </html>
-
-
