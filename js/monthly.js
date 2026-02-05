@@ -107,7 +107,7 @@ export function initMonthlyTab(ctx) {
       const tDiv = document.createElement("div");
       tDiv.className = "t";
       // ✅ 기록 없으면 빈칸(0ml 표시 원하면 여기만 바꾸면 됨)
-      tDiv.textContent = total > 0 ? `${total}ml` : "";
+      tDiv.textContent = total > 0 ? `${total}` : "";
 
       btn.appendChild(dDiv);
       btn.appendChild(tDiv);
