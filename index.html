@@ -18,17 +18,18 @@
         </div>
 
         <div class="tabs" id="tabs">
-          <div class="tab active" data-tab="water">💧 물/음료</div>
+          <div class="tab active" data-tab="water">💧 물 / 음료</div>
           <div class="tab" data-tab="foodManual">✍️ 음식 수동</div>
           <div class="tab" data-tab="foodAI">🤖 음식 AI</div>
           <div class="tab" data-tab="today">📌 오늘요약</div>
           <div class="tab" data-tab="monthly">🗓️ 월별요약</div>
+          <div class="tab" data-tab="settings">⚙️ 설정 ⚙️</div>
         </div>
 
         <!-- 물/음료 탭 -->
         <div class="card" id="waterCard">
           <div class="section-title-row">
-            <div class="section-title">물/음료</div>
+            <div class="section-title">💧 물 / 음료</div>
           </div>
 
           <!-- ✅ 물/음료: 한 줄 레이아웃 -->
@@ -69,7 +70,7 @@
         <!-- 음식 수동 탭 -->
         <div class="card" id="foodManualCard" style="display:none;">
           <div class="section-title-row">
-            <div class="section-title">음식 수동</div>
+            <div class="section-title">✍️ 음식 수동</div>
             <div class="status" id="foodDbStatus">식품DB: 로딩중</div>
           </div>
 
@@ -130,7 +131,7 @@
        <!-- 음식 AI 탭 -->
 <div class="card" id="foodAiCard" style="display:none;">
   <div class="section-title-row">
-    <div class="section-title">음식 AI</div>
+    <div class="section-title">🤖 음식 AI</div>
     <div class="pill pill-blue" id="foodAiStatus">AI: Mock 연결</div>
   </div>
 
@@ -282,7 +283,7 @@
       <!-- 오늘요약 탭 -->
 <div class="card" id="todayCard" style="display:none;">
   <div class="section-title-row">
-    <div class="section-title">오늘요약</div>
+    <div class="section-title">📌 오늘요약</div>
   </div>
 
   <!-- ✅ 1) 요약 타일(2×2)만 summary-grid 안에 둠 -->
@@ -344,7 +345,7 @@
 <!-- 월별요약 탭 -->
 <div class="card" id="monthlyCard" style="display:none;">
   <div class="section-title-row">
-    <div class="section-title">월별요약</div>
+    <div class="section-title">🗓️ 월별요약</div>
     <div class="status" id="monthlyStatus">날짜를 선택하세요</div>
   </div>
 
@@ -442,6 +443,35 @@
   </div>
 </div>
  
+<!-- 설정 탭 -->
+<div class="card" id="settingsCard" style="display:none;">
+  <div class="section-title-row">
+    <div class="section-title">⚙️ 설정 ⚙️</div>
+  </div>
+
+  <!-- 목표 설정 -->
+  <div class="setting-box">
+    <div class="setting-title">하루 수분 목표</div>
+
+    <div class="setting-row">
+      <input
+        type="number"
+        id="settingGoalInput"
+        inputmode="numeric"
+        min="500"
+        step="100"
+        placeholder="예: 2000"
+      />
+      <span class="unit">ml</span>
+    </div>
+
+    <button class="primary-btn" id="btnSaveGoal">
+      저장
+    </button>
+
+
+  </div>
+</div>
 
     <!-- Delete modal -->
     <div class="modal-overlay" id="modalOverlay" style="display:none" aria-hidden="true">
