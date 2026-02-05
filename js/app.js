@@ -151,8 +151,6 @@ function main() {
     getRecords,
     kindLabel,
     openDeleteModal,      // ✅ 기존 삭제 모달 재사용
-    deleteRecordById,     // ✅ 기존 삭제 함수(앱에 이미 있음)
-     notifyUpdated,        // ✅ 삭제 후 전체 탭 리렌더 트리거(있으면 전달)
   });
 
   /* ================= 렌더 ================= */

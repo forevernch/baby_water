@@ -109,31 +109,13 @@ const { elMonthlyStatus, getRecords, kindLabel, openDeleteModal, deleteRecordByI
     if (mAllCountPill) mAllCountPill.textContent = `${sorted.length}건`;
 
     // ✅ 삭제 버튼 없이 렌더(onDelete 미전달)
- renderList(mAllListBody, sorted, {
+renderList(mAllListBody, sorted, {
   kindText: true,
   kindLabel,
   onDelete: (id) => {
-    // 1) 기존 앱과 동일하게 "삭제 확인 모달" 사용
-    if (typeof openDeleteModal === "function") {
-      openDeleteModal(id, async () => {
-        if (typeof deleteRecordById === "function") {
-          await deleteRecordById(id);
-        }
-        // 2) 삭제 후: 팝업 내용 + 달력 합계 즉시 갱신
-        openModal(dateKey);
-        renderMonth();
-        if (typeof notifyUpdated === "function") notifyUpdated();
-      });
-      return;
-    }
-
-    // 모달이 없으면(최악 케이스) 즉시 삭제
-    if (typeof deleteRecordById === "function") {
-      deleteRecordById(id);
-      openModal(dateKey);
-      renderMonth();
-      if (typeof notifyUpdated === "function") notifyUpdated();
-    }
+    // ✅ 팝업 리스트가 “삭제 전 상태”로 남아 보일 수 있으니 팝업을 먼저 닫고 모달 오픈
+    closeModal();
+    openDeleteModal(id);
   },
 });
 
