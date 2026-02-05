@@ -10,6 +10,7 @@ import { initFoodAiTab } from "./food_ai.js";
 import { initTodayTab } from "./today.js";
 import { initMonthlyTab } from "./monthly.js";
 
+// 기록의 종류에 따라 화면에 표시될 라벨을 생성하는 함수
 function kindLabel(record) {
   if (record.kind === "water") return `물/음료 · ${record.type}`;
   if (record.kind === "foodManual") {
@@ -21,7 +22,7 @@ function kindLabel(record) {
 }
 
 function main() {
-  /* ================= DOM ================= */
+  /* ================= 1. DOM 요소 확보 ================= */
   const tabsEl = document.getElementById("tabs");
 
   const panelsByKey = {
@@ -32,19 +33,16 @@ function main() {
     monthly: document.getElementById("monthlyCard"),
   };
 
-    // ✅ 모든 패널 DOM 누락 검사 (네이밍 문제 즉시 식별)
+  // DOM 누락 검사
   const missingPanels = Object.entries(panelsByKey)
     .filter(([, el]) => !el)
     .map(([key]) => key);
 
   if (missingPanels.length) {
-    console.error(
-      "탭 패널 DOM이 누락되었습니다. index.html의 id를 확인하세요. 누락:",
-      missingPanels
-    );
+    console.error("탭 패널 DOM이 누락되었습니다:", missingPanels);
   }
 
-  /* ================= 삭제 모달 ================= */
+  /* ================= 2. 모달 및 데이터 설정 ================= */
   const modal = createDeleteModal({
     overlayEl: document.getElementById("modalOverlay"),
     modalEl: document.getElementById("modal"),
@@ -52,21 +50,10 @@ function main() {
     confirmBtn: document.getElementById("btnConfirm"),
   });
 
-  /* ================= 데이터 ================= */
   let records = loadRecords();
 
-  function getRecords() {
-    return records;
-  }
-
-  // ✅ 상태만 갱신 (저장은 호출한 곳에서 명시적으로)
-  function setRecords(next) {
-    records = next;
-  }
-
-  function openDeleteModal(id) {
-    modal.open(id);
-  }
+  const getRecords = () => records;
+  const setRecords = (next) => { records = next; };
 
   modal.bindConfirm((id) => {
     if (!id) return;
@@ -74,13 +61,12 @@ function main() {
     setRecords(next);
     saveRecords(next);
     modal.close();
-    renderAll();
+    renderAll(); // 삭제 후 전체 다시 렌더링
   });
 
-  /* ================= 공용 Food DB ================= */
   const foodDb = new FoodDb();
 
-  /* ================= 탭별 초기화 ================= */
+  /* ================= 3. 탭별 초기화 ================= */
 
   const waterTab = initWaterTab({
     elDrinkType: document.getElementById("drinkType"),
@@ -90,17 +76,15 @@ function main() {
     elAdd: document.getElementById("btnAdd"),
     elWaterListBody: document.getElementById("waterListBody"),
     elWaterTotal: document.getElementById("waterTotalPill"),
-
     getRecords,
     setRecords,
     saveRecords,
     renderAll,
-    openDeleteModal,
+    openDeleteModal: (id) => modal.open(id),
   });
 
   const foodManualTab = initFoodManualTab({
     foodDb,
-
     elFoodDbStatus: document.getElementById("foodDbStatus"),
     elFoodName: document.getElementById("foodName"),
     elFoodWeightBox: document.getElementById("foodWeightBox"),
@@ -113,12 +97,11 @@ function main() {
     elFoodManualListBody: document.getElementById("foodManualListBody"),
     elFoodManualTotal: document.getElementById("foodManualTotalPill"),
     elFoodCandidates: document.getElementById("foodCandidates"),
-
     getRecords,
     setRecords,
     saveRecords,
     renderAll,
-    openDeleteModal,
+    openDeleteModal: (id) => modal.open(id),
     dateKeyLocal,
     formatTime12h,
   });
@@ -126,8 +109,10 @@ function main() {
   const foodAiTab = initFoodAiTab({
     foodDb,
     elFoodAiStatus: document.getElementById("foodAiStatus"),
+    // AI 탭 관련 추가 엘리먼트들 전달 필요 (생략된 경우 전달 로직 추가)
   });
 
+  // ✅ 오늘요약 탭 초기화 (elAllEmpty 누락 수정)
   const todayTab = initTodayTab({
     elSumWater: document.getElementById("sumWater"),
     elSumFoodManual: document.getElementById("sumFoodManual"),
@@ -135,46 +120,57 @@ function main() {
     elSumAll: document.getElementById("sumAll"),
     elAllCount: document.getElementById("allCountPill"),
     elAllListBody: document.getElementById("allListBody"),
-
+    elAllEmpty: document.getElementById("allEmpty"), // 이 부분이 추가되어야 today.js에서 에러가 안 납니다.
     kindLabel,
-    openDeleteModal,
+    openDeleteModal: (id) => modal.open(id),
   });
 
   const monthlyTab = initMonthlyTab({
     elMonthlyStatus: document.getElementById("monthlyStatus"),
   });
 
-  /* ================= 렌더 ================= */
+  /* ================= 4. 통합 렌더링 함수 ================= */
   function renderAll() {
     const todayKey = dateKeyLocal(new Date());
     const todayRecords = records.filter((r) => r.dateKey === todayKey);
 
+    // 1) 데이터 분류
     const waterRecords = todayRecords.filter((r) => r.kind === "water");
     const foodManualRecords = todayRecords.filter((r) => r.kind === "foodManual");
     const foodAIRecords = todayRecords.filter((r) => r.kind === "foodAI");
 
-    const sumWater = waterTab.render(waterRecords);
-    const sumFoodManual = foodManualTab.render(foodManualRecords);
-    const sumFoodAI = foodAIRecords.reduce((s, r) => s + (Number(r.volume) || 0), 0);
+    // 2) 합계 계산 (가장 확실한 방법으로 직접 계산)
+    const sumWater = waterRecords.reduce((acc, r) => acc + (Number(r.volume) || 0), 0);
+    const sumFoodManual = foodManualRecords.reduce((acc, r) => acc + (Number(r.volume) || 0), 0);
+    const sumFoodAI = foodAIRecords.reduce((acc, r) => acc + (Number(r.volume) || 0), 0);
 
-    foodAiTab.render();
+    // 3) 각 탭 화면 업데이트
+    waterTab.render(waterRecords);
+    foodManualTab.render(foodManualRecords);
+    if (foodAiTab && foodAiTab.render) foodAiTab.render();
+    
+    // 4) ✅ 오늘요약 탭 업데이트 (계산된 합계 전달)
     todayTab.render(todayRecords, { sumWater, sumFoodManual, sumFoodAI });
-    monthlyTab.render();
+    
+    if (monthlyTab && monthlyTab.render) monthlyTab.render();
   }
 
-  /* ================= 탭 ================= */
+  /* ================= 5. 이벤트 바인딩 및 시작 ================= */
   const tabs = initTabs({
     tabsEl,
     panelsByKey,
-    onTabChanged: renderAll,
+    onTabChanged: (tabKey) => {
+      renderAll(); // 탭 전환 시마다 데이터 최신화
+    },
   });
 
-  /* ================= 시작 ================= */
+  // 초기 탭 설정 및 첫 렌더링
   tabs.setActiveTab("water");
   renderAll();
 
-  // food DB 로드 (공용)
-  foodManualTab.loadDb();
+  // 식품 DB 로드
+  if (foodManualTab.loadDb) foodManualTab.loadDb();
 }
 
+// 실행
 main();
