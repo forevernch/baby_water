@@ -624,8 +624,8 @@ input, select{
 /* 날짜: 우측 최상단 고정 */
 .month-cell .d{
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 4px;
+  right: 4px;
   font-size: 10px;
   font-weight: 800;
   opacity: 0.95;
@@ -635,7 +635,7 @@ input, select{
 .month-cell .t{
   position: absolute;
   left: 50%;
-  bottom: 6px;
+  bottom: 4px;
   transform: translateX(-50%);
   font-size: 12px;
   opacity: 0.85;
@@ -753,4 +753,5 @@ input, select{
   width: 0%;
   border-radius: 999px;
   background: linear-gradient(180deg, #6fb6ff, #2f6bff);
+
 }
