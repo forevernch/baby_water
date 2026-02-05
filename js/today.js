@@ -8,14 +8,15 @@ export function initTodayTab(ctx) {
     elSumAll,
     elAllCount,
     elAllListBody,
+    elAllEmpty,
     kindLabel,
     openDeleteModal,
   } = ctx;
 
   return {
     render(todayRecords, sums) {
-      const { sumWater, sumFoodManual, sumFoodAI } = sums;
-      const sumAll = sumWater + sumFoodManual + sumFoodAI;
+      const { SumWater, SumFoodManual, SumFoodAI } = sums;
+      const SumAll = SumWater + SumFoodManual + SumFoodAI;
 
       if (elSumWater) elSumWater.textContent = `${sumWater} ml`;
       if (elSumFoodManual) elSumFoodManual.textContent = `${sumFoodManual} ml`;
@@ -23,7 +24,7 @@ export function initTodayTab(ctx) {
       if (elSumAll) elSumAll.textContent = `${sumAll} ml`;
 
       if (elAllCount) elAllCount.textContent = `${todayRecords.length}건`;
-
+      if (elAllEmpty) elAllEmpty.style.display = list.length === 0 ? "block" : "none";
       const sorted = [...todayRecords].sort((a, b) => (a.ts < b.ts ? 1 : -1));
 
       renderList(elAllListBody, sorted, {
