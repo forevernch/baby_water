@@ -29,14 +29,37 @@ export function initWaterTab(ctx) {
 
   let volume = 100;
 
-  function setVolume(next) {
-    volume = Math.max(5, Number(next) || 5);
-    elVolumeBox.textContent = String(volume);
+  const STEP = 5;
+  const MIN = 5;
+  const MAX = 5000;
 
-    if (volume <= 5) elMinus.classList.add("disabled");
+  function setVolume(next) {
+    const n = Number(next);
+
+    // 1) 숫자 아니면 MIN으로
+    let v = Number.isFinite(n) ? n : MIN;
+
+    // 2) 5단위 스냅(반올림)
+    v = Math.round(v / STEP) * STEP;
+
+    // 3) 최소/최대 클램프
+    v = Math.max(MIN, Math.min(MAX, v));
+
+    volume = v;
+    elVolumeBox.value = String(volume);
+
+    if (volume <= MIN) elMinus.classList.add("disabled");
     else elMinus.classList.remove("disabled");
   }
 
+  // ✅ 직접 입력 지원(blur/Enter) — value 기반
+  elVolumeBox.addEventListener("blur", () => {
+    setVolume(elVolumeBox.value);
+  });
+
+  elVolumeBox.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") elVolumeBox.blur();
+  });
   elMinus.addEventListener("click", () => {
     if (volume <= 5) return;
     setVolume(volume - 5);

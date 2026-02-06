@@ -107,12 +107,12 @@ export function initFoodAiTab(ctx) {
     overlay.style.display = "flex";
   }
 
-  function setWeight(next) {
+   function setWeight(next) {
     const n = Number(next);
     const snapped = Number.isFinite(n) ? Math.round(n / 5) * 5 : 100;
     weightG = Math.max(0, snapped);
 
-    if (elWeightBox) elWeightBox.textContent = String(weightG);
+    if (elWeightBox) elWeightBox.value = String(weightG);
 
     if (elMinus) {
       if (weightG <= 0) elMinus.classList.add("disabled");
@@ -257,6 +257,14 @@ export function initFoodAiTab(ctx) {
   // ===== events: weight +/- =====
   if (elMinus) elMinus.addEventListener("click", () => { if (weightG > 0) setWeight(weightG - 5); });
   if (elPlus) elPlus.addEventListener("click", () => setWeight(weightG + 5));
+
+  // ✅ 직접 입력 지원(blur/Enter)
+  if (elWeightBox) {
+    elWeightBox.addEventListener("blur", () => setWeight(elWeightBox.value));
+    elWeightBox.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") elWeightBox.blur();
+    });
+  }
 
   // ===== events: add (✅ 로컬 저장 연결 완료) =====
   if (btnAdd) {

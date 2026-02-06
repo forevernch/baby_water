@@ -40,7 +40,7 @@ export function initFoodManualTab(ctx) {
     const snapped = Number.isFinite(n) ? Math.round(n / 5) * 5 : 100;
     foodWeightG = Math.max(0, snapped);
 
-    if (elFoodWeightBox) elFoodWeightBox.textContent = String(foodWeightG);
+    if (elFoodWeightBox) elFoodWeightBox.value = String(foodWeightG);
 
     if (elFoodMinus) {
       if (foodWeightG <= 0) elFoodMinus.classList.add("disabled");
@@ -166,6 +166,14 @@ export function initFoodManualTab(ctx) {
       } else {
         setFoodPreview(null, 0, false);
       }
+    });
+  }
+
+  // ✅ 직접 입력 지원(blur/Enter)
+  if (elFoodWeightBox) {
+    elFoodWeightBox.addEventListener("blur", () => setFoodWeight(elFoodWeightBox.value));
+    elFoodWeightBox.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") elFoodWeightBox.blur();
     });
   }
 
