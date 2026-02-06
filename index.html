@@ -14,7 +14,6 @@
           <div>
             <div class="title">수분 섭취 기록</div>
           </div>
-          <div class="subtitle">MVP · 오프라인(로컬 저장)</div>
         </div>
 
         <div class="tabs" id="tabs">
@@ -97,6 +96,8 @@
             <div class="candidates" id="foodCandidates"></div>
           </div>
 
+          <div class="divider"></div>
+
           <!-- ✅ 3행: DB수분 + 추정수분(같은 줄) -->
           <div class="food-row" style="margin-top:12px;">
             <div class="food-col food-moist">
@@ -150,6 +151,8 @@
               </div>
             </div>
           </div>
+
+          <div class="divider"></div>
 
           <!-- 1) 이미지 입력 + 미리보기 (2장: 윗면/옆면) -->
           <div style="margin-top: 8px;">
@@ -234,26 +237,7 @@
 
           <div class="divider"></div>
 
-          <!-- 2) (Mock) 분석 결과 → DB 매칭 UI -->
-          <div class="label" style="margin-bottom: 8px;">음식 이름</div>
-
-          <div class="food-top-row">
-            <div class="food-top-name">
-              <select id="aiFoodSelect" aria-label="AI 추정 음식명">
-                <option value="">AI 추정 음식명</option>
-              </select>
-            </div>
-
-            <div class="food-top-weight">
-              <div class="volume-row volume-row-compact">
-                <div class="btn-icon" id="aiBtnMinus" aria-label="중량 감소">−</div>
-                <input class="volume-box volume-input" id="aiWeightBox" type="number" inputmode="numeric" min="0" step="5" value="100" />
-                <div class="btn-icon" id="aiBtnPlus" aria-label="중량 증가">+</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="food-row" style="margin-top: 12px;">
+            <div class="food-row" style="margin-top: 12px;">
             <div class="food-col food-moist">
               <div class="label">수분(g/100g)</div>
               <div class="value-box" id="aiMoistureBox">데이터 없음</div>
