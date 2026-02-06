@@ -34,6 +34,7 @@
   --r12: 12px;
   --r14: 14px;
   --r18: 18px;
+  --ctl-h: 44px;
 
   --shadow0: 0 18px 60px rgba(0,0,0,0.35);
 }
@@ -800,4 +801,57 @@ input, select{
   padding: 10px 16px;       /* 세로 패딩 제거 */
   border-radius: 12px;
   min-width: 76px;
+}
+
+/* =========================
+   Control height unify (ver2.6+)
+   - 입력창/셀렉트/스텝퍼(-100+)/주요 버튼(기록추가/분석/저장)만
+   - 나머지 UI 영향 최소화
+   ========================= */
+
+/* 1) inputs / selects: 동일 높이 */
+input,
+select{
+  height: var(--ctl-h);
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: calc(var(--ctl-h) - 2px);
+}
+
+/* 2) stepper (- / 100 / +) */
+.btn-icon{
+  width: var(--ctl-h);
+  height: var(--ctl-h);
+  flex: 0 0 var(--ctl-h);
+}
+
+.volume-box{
+  height: var(--ctl-h);
+  line-height: var(--ctl-h);
+}
+
+/* 3) 주요 액션 버튼: 기록추가 / 분석 / 저장 */
+.primary-btn{
+  height: var(--ctl-h);
+  padding: 0 14px;                  /* 기존 14px(상하) 제거 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 4) 설정 저장 버튼(옆에 붙는 작은 버튼)도 동일 높이 */
+.setting-simple-row input{
+  height: var(--ctl-h);
+}
+
+.setting-save{
+  height: var(--ctl-h);
+  padding: 0 16px;                  /* 버튼만 조금 더 여유 */
+  min-width: 76px;
+}
+
+/* (선택) 큰 아이콘 버튼도 같은 높이 유지 */
+.icon-btn{
+  width: var(--ctl-h);
+  height: var(--ctl-h);
 }
