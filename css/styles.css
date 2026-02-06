@@ -913,3 +913,39 @@ select{
 @media (max-width: 360px){
   :root{ --step-mid: 58px; }
 }
+
+/* =========================================================
+   [PATCH] settings row vertical align fix
+   - input / ml / 저장 버튼 세로 정렬 통일
+   ========================================================= */
+
+.setting-simple-row{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  column-gap: 10px;
+  align-items: center;           /* ✅ 세로 중앙 정렬 */
+}
+
+.setting-simple-row input{
+  height: var(--ctl-h, 44px);
+  line-height: calc(var(--ctl-h, 44px) - 2px);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.setting-simple-row .unit{
+  display: flex;                 /* ✅ 텍스트도 세로 중앙 */
+  align-items: center;
+  height: var(--ctl-h, 44px);
+  line-height: var(--ctl-h, 44px);
+}
+
+.setting-save{
+  height: var(--ctl-h, 44px);
+  padding: 0 16px;
+  line-height: var(--ctl-h, 44px);
+  display: inline-flex;          /* ✅ 버튼 내부 텍스트도 중앙 */
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;                 /* 혹시 기존 primary-btn margin-top 영향 제거 */
+}
