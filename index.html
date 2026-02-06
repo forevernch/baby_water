@@ -448,13 +448,13 @@
 <div class="card" id="settingsCard" style="display:none;">
   <div class="section-title-row">
     <div class="section-title">⚙️ 설정 ⚙️</div>
+    <div class="status" id="settingsStatus"></div>
   </div>
 
-  <!-- 목표 설정 -->
-  <div class="setting-box">
-    <div class="setting-title">하루 수분 목표</div>
+  <div class="setting-simple">
+    <div class="setting-simple-title">하루 수분 목표</div>
 
-    <div class="setting-row">
+    <div class="setting-simple-row">
       <input
         type="number"
         id="settingGoalInput"
@@ -464,13 +464,11 @@
         placeholder="예: 2000"
       />
       <span class="unit">ml</span>
+
+      <button class="primary-btn setting-save" id="btnSaveGoal" type="button">
+        저장
+      </button>
     </div>
-
-    <button class="primary-btn" id="btnSaveGoal">
-      저장
-    </button>
-
-  </div>
   </div>
 </div>
 
