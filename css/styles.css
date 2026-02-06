@@ -756,8 +756,8 @@ input, select{
   background: linear-gradient(180deg, #6fb6ff, #2f6bff);
 }
 
-/* ===== Settings tab ===== */
-.setting-box{
+/* ===== Settings: simple inline layout ===== */
+.setting-simple{
   margin-top: 12px;
   padding: 14px;
   border-radius: 16px;
@@ -765,20 +765,21 @@ input, select{
   border: 1px solid rgba(255,255,255,0.08);
 }
 
-.setting-title{
+.setting-simple-title{
   font-size: 14px;
   font-weight: 700;
   margin-bottom: 10px;
 }
 
-.setting-row{
+.setting-simple-row{
   display:flex;
   align-items:center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.setting-row input{
+.setting-simple-row input{
   flex: 1;
+  min-width: 0;
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid var(--bd1);
@@ -787,13 +788,14 @@ input, select{
   font-size: 16px;
 }
 
-.setting-row .unit{
+.setting-simple-row .unit{
   font-size: 14px;
   opacity: 0.7;
+  white-space: nowrap;
 }
 
-.setting-desc{
-  margin-top: 8px;
-  font-size: 12px;
-  opacity: 0.65;
+.setting-save{
+  padding: 10px 14px;
+  border-radius: 12px;
+  min-width: 76px;
 }
