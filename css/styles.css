@@ -909,6 +909,20 @@ select{
   width: var(--step-mid);
 }
 
+/* ✅ volume-box를 <input>으로 바꿔도 기존 박스처럼 보이게 */
+input.volume-box{
+  display: block;          /* div용 flex 스타일 무력화 */
+  text-align: center;
+  padding: 0 10px;
+  appearance: textfield;
+  -webkit-appearance: none;
+}
+input.volume-box::-webkit-outer-spin-button,
+input.volume-box::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* ✅ 아주 작은 화면(360px급)에서만 숫자폭을 살짝 줄여서 한 줄 유지 */
 @media (max-width: 360px){
   :root{ --step-mid: 58px; }
@@ -948,4 +962,23 @@ select{
   align-items: center;
   justify-content: center;
   margin-top: 0;                 /* 혹시 기존 primary-btn margin-top 영향 제거 */
+
+/* volume-box가 input으로 바뀌어도 기존 박스처럼 보이게 */
+.volume-input{
+  appearance: textfield;
+  -webkit-appearance: none;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.25);
+  color: var(--txt0);
+  text-align: center;
+  padding: 0 10px;
+  outline: none;
+}
+
+/* number input 화살표 제거(크롬) */
+.volume-input::-webkit-outer-spin-button,
+.volume-input::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
 }
