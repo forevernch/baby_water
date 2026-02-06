@@ -778,8 +778,9 @@ input, select{
 }
 
 .setting-simple-row input{
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 auto;        /* ✅ 가능한 최대 폭 차지 */
+  min-width: 140px;      /* 너무 작아지지 않게 */
+  height: 42px;          /* 버튼과 높이 통일 */
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid var(--bd1);
@@ -795,7 +796,8 @@ input, select{
 }
 
 .setting-save{
-  padding: 10px 14px;
+  height: 42px;          /* 입력칸과 동일 */
+  padding: 10px 16px;       /* 세로 패딩 제거 */
   border-radius: 12px;
   min-width: 76px;
 }
