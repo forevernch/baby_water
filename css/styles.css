@@ -1,4 +1,4 @@
-﻿﻿/* ============================================================
+﻿/* ============================================================
    styles.css (ver1.2) — FIXED / THEME / LAYOUT split
    목표: UI 흔들림 방지 + 모바일 2×2 확정 + 텍스트 검정화 방지
    ============================================================ */
@@ -34,15 +34,7 @@
   --r12: 12px;
   --r14: 14px;
   --r18: 18px;
-
-  /* ✅ 컨트롤 공통 높이 */
   --ctl-h: 44px;
-
-  /* ✅ 스텝퍼( - 100 + ) 공통 폭(가로 삐져나감 방지용) */
-  --step-btn: var(--ctl-h); /* -/+ 버튼 한 칸 */
-  --step-mid: 64px;         /* 숫자 박스 폭 */
-  --step-gap: 8px;          /* 기존 gap 유지 */
-  --step-w: calc(var(--step-btn) * 2 + var(--step-mid) + var(--step-gap) * 2);
 
   --shadow0: 0 18px 60px rgba(0,0,0,0.35);
 }
@@ -74,6 +66,7 @@ select{
 /* =========================
    2) 🔒 FIXED UI (DO NOT TOUCH)
    - 여기 블록은 "고정 계약(Contract)" 영역
+   - GPT에게 수정 요청할 때: 이 블록은 절대 수정 금지라고 명시하세요.
    ========================= */
 
 /* Layout frame */
@@ -191,11 +184,11 @@ select{ appearance: none; }
   user-select:none;
   font-size: 18px;
   line-height: 1;
-  flex: 0 0 36px;
+  flex: 0 0 36px;         /* ✅ 폭 고정 */
 }
 .volume-box{
-  min-width: 64px;
-  height: 36px;
+  min-width: 64px;         /* ✅ 숫자 박스 폭 고정 */
+  height: 36px;            /* ✅ 버튼과 높이 통일 */
   border-radius: 12px;
   display:flex;
   align-items:center;
@@ -256,9 +249,13 @@ select{ appearance: none; }
   background: var(--bg3);
   border: 1px solid var(--bd1);
 }
-.candidates > div:hover{ border-color: var(--bd0); }
+
+.candidates > div:hover{
+  border-color: var(--bd0);
+}
+
 .candidates > div.selected{
-  background: rgba(47,107,255,0.12);
+  background: rgba(47,107,255,0.12);          /* --blue0 계열 하이라이트 */
   border-color: rgba(47,107,255,0.85);
   box-shadow: 0 0 0 2px rgba(47,107,255,0.25) inset;
 }
@@ -350,8 +347,12 @@ select{ appearance: none; }
 .drop{ margin-left: 4px; }
 
 /* ✅ index.html 구조상 divider/records-card가 summary-grid 안에 들어가도 망가지지 않게 */
-.summary-grid > .divider{ grid-column: 1 / -1; }
-.summary-grid > .records-card{ grid-column: 1 / -1; }
+.summary-grid > .divider{
+  grid-column: 1 / -1;
+}
+.summary-grid > .records-card{
+  grid-column: 1 / -1;
+}
 
 /* Modal fixed */
 .modal-overlay{
@@ -380,6 +381,7 @@ select{ appearance: none; }
 
 /* =========================
    3) THEME (colors / backgrounds / borders)
+   - 여기서만 색/그라데이션/테두리 톤을 바꾸세요.
    ========================= */
 
 /* Tabs */
@@ -441,7 +443,9 @@ input, select{
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.05);
 }
-.trash{ background: rgba(255,80,80,0.20); }
+.trash{
+  background: rgba(255,80,80,0.20);
+}
 
 /* pills / divider */
 .pill{ background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); }
@@ -467,66 +471,27 @@ input, select{
   background: rgba(255,255,255,0.10);
   color: #fff;
 }
-.modal-btn.danger{ background: rgba(255,80,80,0.80); }
+.modal-btn.danger{
+  background: rgba(255,80,80,0.80);
+}
 
 /* =========================
    4) LAYOUT (responsive tweaks only)
+   - 여기서만 gap/padding/폭/모바일 조정하세요.
    ========================= */
-
-/* ✅ 핵심: 3개 탭 한 줄 통일(삐져나감 방지)
-   [입력칸]  [-][100][+]
-   - 좌측: 1fr (남는 폭)
-   - 우측: 고정 폭(--step-w)
-*/
-.water-row,
-.food-top-row{
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--step-w);
-  column-gap: 10px;
-  align-items: end;
-}
-.water-col,
-.food-top-name,
-.food-top-weight{ min-width: 0; }
-
-/* 우측 스텝퍼는 항상 오른쪽 정렬 */
-.water-col.water-volume,
-.food-top-weight{
-  justify-self: end;
-}
-
-/* 입력/셀렉트/스텝퍼 높이 44px 통일 */
-input, select{
-  height: var(--ctl-h);
-  padding-top: 0;
-  padding-bottom: 0;
-  line-height: calc(var(--ctl-h) - 2px);
-}
-
-.btn-icon{
-  width: var(--step-btn);
-  height: var(--step-btn);
-  flex: 0 0 var(--step-btn);
-}
-
-.volume-box{
-  min-width: var(--step-mid);
-  height: var(--ctl-h);
-  line-height: var(--ctl-h);
-}
-
-/* primary 버튼도 높이 통일(기록추가/분석/저장) */
-.primary-btn{
-  height: var(--ctl-h);
-  padding: 0 14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
 
 /* 모바일에서 한 줄 유지(줄바꿈 방지) */
 @media (max-width: 420px){
   .container{ padding: 18px 12px 36px; }
+
+  /* water/food는 한 줄 유지 + 오른쪽 폭 고정 */
+  .water-row{ flex-wrap: nowrap; }
+  .food-top-row{ flex-wrap: nowrap; }
+  .food-row{ flex-wrap: nowrap; }
+
+  /* 오른쪽(용량/중량) 컬럼이 너무 줄어들지 않게 */
+  .water-col.water-volume{ flex: 0 0 150px; }
+  .food-top-weight{ flex: 0 0 150px; }
 
   /* summary: 모바일에서도 2×2 확정 + 타일 높이 균일 */
   .summary-grid{
@@ -544,19 +509,29 @@ input, select{
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .summary-value{ white-space: nowrap; }
+  .summary-value{
+    white-space: nowrap;
+  }
 }
 
-/* 아주 작은 화면(360px급)에서 스텝퍼가 깨지지 않게(폭만 살짝 축소) */
+/* 아주 작은 화면(360px급)에서 스텝퍼가 깨지지 않게 */
 @media (max-width: 360px){
-  :root{ --step-mid: 58px; } /* 숫자 박스 폭만 줄여서 전체 폭 감소 */
-  .btn-icon{ border-radius: 11px; }
-  .volume-box{ border-radius: 11px; }
-}
+  .water-col.water-volume{ flex-basis: 142px; }
+  .food-top-weight{ flex-basis: 142px; }
 
-/* =========================
-   Icon buttons (AI)
-   ========================= */
+  .btn-icon{ width: 34px; height: 34px; flex-basis: 34px; border-radius: 11px; }
+  .volume-box{ height: 34px; min-width: 58px; border-radius: 11px; }
+}
+.icon-btn{
+  width:44px; height:44px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.05);
+  font-size:20px;
+  cursor:pointer;
+}
+.icon-btn.sm{ width:38px; height:38px; border-radius:11px; font-size:18px; }
+.icon-btn:active{ transform:scale(0.96); }
 .icon-btn{
   width:44px; height:44px;
   border-radius:12px;
@@ -568,7 +543,9 @@ input, select{
   justify-content:center;
   padding:0;
 }
+
 .icon-btn.sm{ width:38px; height:38px; border-radius:11px; }
+
 .icon-btn:active{ transform:scale(0.96); }
 
 .icon-img{
@@ -576,6 +553,7 @@ input, select{
   height:24px;
   display:block;
 }
+
 .icon-btn.sm .icon-img{
   width:22px;
   height:22px;
@@ -584,6 +562,7 @@ input, select{
 /* =========================
    Monthly (Calendar) UI — ver2.3
    ========================= */
+
 .month-head{
   display:flex;
   align-items:center;
@@ -632,17 +611,18 @@ input, select{
 }
 
 .month-cell{
-  position: relative;
+  position: relative;                 /* ✅ 날짜 고정 배치 */
   border-radius: 14px;
   border: 1px solid var(--bd1);
   background: rgba(0,0,0,0.18);
-  padding: 10px;
+  padding: 10px 10px 10px 10px;       /* 기본 패딩 */
   aspect-ratio: 1 / 1;
   text-align:left;
   cursor:pointer;
   color: var(--txt0);
 }
 
+/* 날짜: 우측 최상단 고정 */
 .month-cell .d{
   position: absolute;
   top: 4px;
@@ -652,6 +632,7 @@ input, select{
   opacity: 0.95;
 }
 
+/* 합계: 좌하단 영역(날짜랑 안 겹치게) */
 .month-cell .t{
   position: absolute;
   left: 50%;
@@ -661,8 +642,8 @@ input, select{
   opacity: 0.85;
   white-space: nowrap;
   text-align: center;
-  width: calc(100% - 12px);
-  pointer-events: none;
+  width: calc(100% - 12px); /* 양쪽 여백 확보 */
+  pointer-events: none;      /* 클릭 방해 방지 */
 }
 
 .month-cell.is-empty{
@@ -681,10 +662,12 @@ input, select{
   box-shadow: 0 0 0 2px rgba(47,107,255,0.25) inset;
 }
 
-/* ✅ 주말 컬러 (요일/날짜만) */
+/* ✅ 주말 컬러 */
 .month-week > div:nth-child(1){ color: #ff5b5b; }  /* 일 */
 .month-week > div:nth-child(7){ color: #4ea1ff; }  /* 토 */
+
 .month-cell.is-sun .d{ color: #ff5b5b; }
+
 .month-cell.is-sat .d{ color: #4ea1ff; }
 
 /* ===== Popup / Overlay (blur background) ===== */
@@ -700,12 +683,13 @@ input, select{
   z-index: 50;
 }
 
-/* ✅ (문법 에러 수정) month-modal 블록 정상화 */
+/* 80% width, height same ratio */
 .month-modal{
   width: min(80vw, 360px);
-  height: 75vh;
-  max-height: 90vh;
+  height: 75vh;          /* ✅ 세로 여유 확보 */
+  max-height: 90vh;      /* 안전장치 */
   overflow-y: auto;
+}
 
   border-radius: 18px;
   padding: 16px;
@@ -773,9 +757,7 @@ input, select{
   background: linear-gradient(180deg, #6fb6ff, #2f6bff);
 }
 
-/* =========================
-   Settings: simple inline layout
-   ========================= */
+/* ===== Settings: simple inline layout ===== */
 .setting-simple{
   margin-top: 12px;
   padding: 14px;
@@ -797,10 +779,10 @@ input, select{
 }
 
 .setting-simple-row input{
-  flex: 1 1 auto;
-  min-width: 140px;
-  height: var(--ctl-h);
-  padding: 0 12px;
+  flex: 1 1 auto;        /* ✅ 가능한 최대 폭 차지 */
+  min-width: 140px;      /* 너무 작아지지 않게 */
+  height: 42px;          /* 버튼과 높이 통일 */
+  padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid var(--bd1);
   background: rgba(255,255,255,0.06);
@@ -815,8 +797,119 @@ input, select{
 }
 
 .setting-save{
-  height: var(--ctl-h);
-  padding: 0 16px;
+  height: 42px;          /* 입력칸과 동일 */
+  padding: 10px 16px;       /* 세로 패딩 제거 */
   border-radius: 12px;
   min-width: 76px;
+}
+
+/* =========================
+   Control height unify (ver2.6+)
+   - 입력창/셀렉트/스텝퍼(-100+)/주요 버튼(기록추가/분석/저장)만
+   - 나머지 UI 영향 최소화
+   ========================= */
+
+/* 1) inputs / selects: 동일 높이 */
+input,
+select{
+  height: var(--ctl-h);
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: calc(var(--ctl-h) - 2px);
+}
+
+/* 2) stepper (- / 100 / +) */
+.btn-icon{
+  width: var(--ctl-h);
+  height: var(--ctl-h);
+  flex: 0 0 var(--ctl-h);
+}
+
+.volume-box{
+  height: var(--ctl-h);
+  line-height: var(--ctl-h);
+}
+
+/* 3) 주요 액션 버튼: 기록추가 / 분석 / 저장 */
+.primary-btn{
+  height: var(--ctl-h);
+  padding: 0 14px;                  /* 기존 14px(상하) 제거 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 4) 설정 저장 버튼(옆에 붙는 작은 버튼)도 동일 높이 */
+.setting-simple-row input{
+  height: var(--ctl-h);
+}
+
+.setting-save{
+  height: var(--ctl-h);
+  padding: 0 16px;                  /* 버튼만 조금 더 여유 */
+  min-width: 76px;
+}
+
+/* (선택) 큰 아이콘 버튼도 같은 높이 유지 */
+.icon-btn{
+  width: var(--ctl-h);
+  height: var(--ctl-h);
+}
+
+/* =========================================================
+   [PATCH] 3개 탭 입력줄 통일 (물/음료, 음식수동, 음식AI)
+   목표:
+   [입력칸(1fr)] [ - ][ 100 ][ + ]  (항상 1줄, 삐져나감 방지)
+   ========================================================= */
+
+/* 스텝퍼 폭(고정): 버튼36 + 숫자64 + gap8*2 = 36+36+64+16 = 152px */
+:root{
+  --step-btn: 36px;
+  --step-mid: 64px;
+  --step-gap: 8px;
+  --step-w: calc(var(--step-btn) * 2 + var(--step-mid) + var(--step-gap) * 2);
+}
+
+/* ✅ 공통: 한 줄 grid로 강제 */
+.water-row,
+.food-top-row{
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) var(--step-w) !important;
+  column-gap: 10px;
+  align-items: end;
+}
+
+/* 왼쪽 입력칸(셀렉트/인풋)이 grid에서 줄어들 수 있게 */
+.water-col,
+.food-top-name{
+  min-width: 0;
+}
+
+/* 오른쪽 스텝퍼 컬럼은 고정폭 + 우측 정렬 */
+.water-col.water-volume,
+.food-top-weight{
+  min-width: 0;
+  justify-self: end;
+}
+
+/* 오른쪽 스텝퍼 내부도 우측 정렬 */
+.water-col.water-volume .volume-row,
+.food-top-weight .volume-row{
+  justify-content: flex-end;
+}
+
+/* ✅ 스텝퍼 3개 요소 폭을 확실히 고정(삐져나감/늘어남 방지) */
+.btn-icon{
+  width: var(--step-btn);
+  flex: 0 0 var(--step-btn);
+}
+
+.volume-box{
+  min-width: var(--step-mid);
+  width: var(--step-mid);
+}
+
+/* ✅ 아주 작은 화면(360px급)에서만 숫자폭을 살짝 줄여서 한 줄 유지 */
+@media (max-width: 360px){
+  :root{ --step-mid: 58px; }
 }
