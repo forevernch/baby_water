@@ -1,4 +1,4 @@
-﻿﻿<!doctype html>
+﻿﻿﻿<!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
@@ -128,362 +128,348 @@
           </div>
         </div>
 
-       <!-- 음식 AI 탭 -->
-<div class="card" id="foodAiCard" style="display:none;">
-  <div class="section-title-row">
-    <div class="section-title">🤖 음식 AI</div>
-    <div class="pill pill-blue" id="foodAiStatus">AI: Mock 연결</div>
-  </div>
+        <!-- 음식 AI 탭 -->
+        <div class="card" id="foodAiCard" style="display:none;">
+          <div class="section-title-row">
+            <div class="section-title">🤖 음식 AI</div>
+            <div class="pill pill-blue" id="foodAiStatus">AI: Mock 연결</div>
+          </div>
 
-<!-- 1) 이미지 입력 + 미리보기 (2장: 윗면/옆면) -->
-<div style="margin-top: 8px;">
-  <div class="label">음식 사진</div>
+          <!-- 1) 이미지 입력 + 미리보기 (2장: 윗면/옆면) -->
+          <div style="margin-top: 8px;">
+            <div class="label">음식 사진</div>
 
-  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
-    <!-- 윗면 프레임 -->
-<div id="aiPreviewTop" class="value-box"
-     style="height:170px; position:relative; overflow:hidden; padding:0;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
+              <!-- 윗면 프레임 -->
+              <div id="aiPreviewTop" class="value-box" style="height:170px; position:relative; overflow:hidden; padding:0;">
+                <!-- 이미지 레이어 -->
+                <img id="aiTopImg" alt="top preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
 
-  <!-- 이미지 레이어 -->
-  <img id="aiTopImg" alt="top preview"
-       style="display:none; width:100%; height:100%; object-fit:cover;" />
+                <!-- 기본 안내 레이어 (가운데 정렬 + 줄바꿈) -->
+                <div
+                  id="aiTopLayer"
+                  style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;"
+                >
+                  <div style="opacity:0.7; font-size:14px; font-weight:600;">윗면 사진</div>
+                  <div style="display:flex; gap:16px;">
+                    <button type="button" id="btnAiTopCamera" class="icon-btn" aria-label="윗면 카메라">
+                      <img class="icon-img" src="./images/icons/ai_camera.png" alt="" />
+                    </button>
+                    <button type="button" id="btnAiTopGallery" class="icon-btn" aria-label="윗면 갤러리">
+                      <img class="icon-img" src="./images/icons/ai_gallery.png" alt="" />
+                    </button>
+                  </div>
+                </div>
 
-  <!-- 기본 안내 레이어 (가운데 정렬 + 줄바꿈) -->
-  <div id="aiTopLayer"
-       style="position:absolute; inset:0; display:flex; flex-direction:column;
-              align-items:center; justify-content:center; gap:14px;">
-    <div style="opacity:0.7; font-size:14px; font-weight:600;">윗면 사진</div>
-    <div style="display:flex; gap:16px;">
-     <button type="button" id="btnAiTopCamera" class="icon-btn" aria-label="윗면 카메라">
-      <img class="icon-img" src="./images/icons/ai_camera.png" alt="">
-     </button>
-     <button type="button" id="btnAiTopGallery" class="icon-btn" aria-label="윗면 갤러리">
-      <img class="icon-img" src="./images/icons/ai_gallery.png" alt="">
-     </button>
-    </div>
-  </div>
+                <!-- 이미지가 있을 때만 보이는 오버레이 -->
+                <div id="aiTopOverlay" style="display:none; position:absolute; top:10px; right:10px; gap:10px;">
+                  <button type="button" id="btnAiTopReCamera" class="icon-btn sm" aria-label="윗면 다시 촬영">
+                    <img class="icon-img" src="./images/icons/ai_camera.png" alt="" />
+                  </button>
+                  <button type="button" id="btnAiTopReGallery" class="icon-btn sm" aria-label="윗면 다시 선택">
+                    <img class="icon-img" src="./images/icons/ai_gallery.png" alt="" />
+                  </button>
+                </div>
 
-  <!-- 이미지가 있을 때만 보이는 오버레이 -->
-  <div id="aiTopOverlay"
-       style="display:none; position:absolute; top:10px; right:10px; gap:10px;">
-   <button type="button" id="btnAiTopReCamera" class="icon-btn sm" aria-label="윗면 다시 촬영">
-    <img class="icon-img" src="./images/icons/ai_camera.png" alt="">
-   </button>
-   <button type="button" id="btnAiTopReGallery" class="icon-btn sm" aria-label="윗면 다시 선택">
-    <img class="icon-img" src="./images/icons/ai_gallery.png" alt="">
-   </button>
-  </div>
+                <!-- hidden inputs -->
+                <input id="aiFileTopCamera" type="file" accept="image/*" capture="environment" style="display:none;" />
+                <input id="aiFileTopGallery" type="file" accept="image/*" style="display:none;" />
+              </div>
 
-  <!-- hidden inputs -->
-  <input id="aiFileTopCamera" type="file" accept="image/*" capture="environment" style="display:none;">
-  <input id="aiFileTopGallery" type="file" accept="image/*" style="display:none;">
-</div>
+              <!-- 옆면 프레임 -->
+              <div id="aiPreviewSide" class="value-box" style="height:170px; position:relative; overflow:hidden; padding:0;">
+                <img id="aiSideImg" alt="side preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
 
+                <div
+                  id="aiSideLayer"
+                  style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;"
+                >
+                  <div style="opacity:0.7; font-size:14px; font-weight:600;">옆면 사진</div>
+                  <div style="display:flex; gap:16px;">
+                    <button type="button" id="btnAiSideCamera" class="icon-btn" aria-label="옆면 카메라">
+                      <img class="icon-img" src="./images/icons/ai_camera.png" alt="" />
+                    </button>
+                    <button type="button" id="btnAiSideGallery" class="icon-btn" aria-label="옆면 갤러리">
+                      <img class="icon-img" src="./images/icons/ai_gallery.png" alt="" />
+                    </button>
+                  </div>
+                </div>
 
+                <div id="aiSideOverlay" style="display:none; position:absolute; top:10px; right:10px; gap:10px;">
+                  <button type="button" id="btnAiSideReCamera" class="icon-btn sm" aria-label="옆면 다시 촬영">
+                    <img class="icon-img" src="./images/icons/ai_camera.png" alt="" />
+                  </button>
+                  <button type="button" id="btnAiSideReGallery" class="icon-btn sm" aria-label="옆면 다시 선택">
+                    <img class="icon-img" src="./images/icons/ai_gallery.png" alt="" />
+                  </button>
+                </div>
 
-    <!-- 옆면 프레임 -->
-<div id="aiPreviewSide" class="value-box"
-     style="height:170px; position:relative; overflow:hidden; padding:0;">
+                <input id="aiFileSideCamera" type="file" accept="image/*" capture="environment" style="display:none;" />
+                <input id="aiFileSideGallery" type="file" accept="image/*" style="display:none;" />
+              </div>
+            </div>
 
-  <img id="aiSideImg" alt="side preview"
-       style="display:none; width:100%; height:100%; object-fit:cover;" />
+            <div class="hint" style="margin-top:10px;">
+              2장(윗면/옆면)을 모두 넣으면 정확도가 좋아집니다
+            </div>
+          </div>
 
-  <div id="aiSideLayer"
-       style="position:absolute; inset:0; display:flex; flex-direction:column;
-              align-items:center; justify-content:center; gap:14px;">
-    <div style="opacity:0.7; font-size:14px; font-weight:600;">옆면 사진</div>
-    <div style="display:flex; gap:16px;">
-     <button type="button" id="btnAiSideCamera" class="icon-btn" aria-label="옆면 카메라">
-      <img class="icon-img" src="./images/icons/ai_camera.png" alt="">
-     </button>
-     <button type="button" id="btnAiSideGallery" class="icon-btn" aria-label="옆면 갤러리">
-      <img class="icon-img" src="./images/icons/ai_gallery.png" alt="">
-     </button>
-    </div>
-  </div>
+          <button class="primary-btn" id="btnAiAnalyze" style="margin-top: 10px;">분석</button>
 
-  <div id="aiSideOverlay"
-       style="display:none; position:absolute; top:10px; right:10px; gap:10px;">
-    <button type="button" id="btnAiSideReCamera" class="icon-btn sm" aria-label="옆면 다시 촬영">
-      <img class="icon-img" src="./images/icons/ai_camera.png" alt="">
-    </button>
-    <button type="button" id="btnAiSideReGallery" class="icon-btn sm" aria-label="옆면 다시 선택">
-      <img class="icon-img" src="./images/icons/ai_gallery.png" alt="">
-    </button>
-  </div>
+          <div class="divider"></div>
 
-  <input id="aiFileSideCamera" type="file" accept="image/*" capture="environment" style="display:none;">
-  <input id="aiFileSideGallery" type="file" accept="image/*" style="display:none;">
-</div>
+          <!-- 2) (Mock) 분석 결과 → DB 매칭 UI -->
+          <div class="label" style="margin-bottom: 8px;">음식 이름</div>
 
+          <div class="food-top-row">
+            <div class="food-top-name">
+              <select id="aiFoodSelect" aria-label="AI 추정 음식명">
+                <option value="">AI 추정 음식명</option>
+              </select>
+            </div>
 
+            <div class="food-top-weight">
+              <div class="volume-row volume-row-compact">
+                <div class="btn-icon" id="aiBtnMinus" aria-label="중량 감소">−</div>
+                <div class="volume-box" id="aiWeightBox">100</div>
+                <div class="btn-icon" id="aiBtnPlus" aria-label="중량 증가">+</div>
+              </div>
+            </div>
+          </div>
 
-  <div class="hint" style="margin-top:10px;">
-    2장(윗면/옆면)을 모두 넣으면 정확도가 좋아집니다
-  </div>
-</div>
+          <div class="food-row" style="margin-top: 12px;">
+            <div class="food-col food-moist">
+              <div class="label">수분(g/100g)</div>
+              <div class="value-box" id="aiMoistureBox">데이터 없음</div>
+            </div>
 
+            <div class="food-col food-est">
+              <div class="label">추정 수분(ml)</div>
+              <div class="value-box" id="aiEstimatedBox">0</div>
+            </div>
+          </div>
 
+          <button class="primary-btn" id="btnAiAdd" style="margin-top: 10px;" disabled>기록 추가</button>
 
-  <button class="primary-btn" id="btnAiAnalyze" style="margin-top: 10px;">분석</button>
+          <div class="hint" id="aiHint">
+            현재는 UI(Mocking) 단계입니다. “분석”을 누르면 DB 후보를 불러옵니다.
+          </div>
 
-  <div class="divider"></div>
+          <div class="divider"></div>
 
-  <!-- 2) (Mock) 분석 결과 → DB 매칭 UI -->
-  <div class="label" style="margin-bottom: 8px;">음식 이름</div>
+          <!-- ✅ 오늘 기록-음식AI (음식수동과 동일 구조) -->
+          <div class="records-card">
+            <div class="records-card-head">
+              <div class="records-card-title">오늘 기록-음식AI</div>
+              <div class="pill pill-blue" id="foodAiTotalPill">0 ml</div>
+            </div>
+            <div class="records-list" id="foodAiListBody"></div>
+            <div class="records-empty" id="foodAiEmpty" style="display:none;">아직 기록이 없습니다.</div>
+          </div>
+        </div>
 
-  <div class="food-top-row">
-    <div class="food-top-name">
-      <select id="aiFoodSelect" aria-label="AI 추정 음식명">
-        <option value="">AI 추정 음식명</option>
-      </select>
-    </div>
+        <!-- 오늘요약 탭 -->
+        <div class="card" id="todayCard" style="display:none;">
+          <div class="section-title-row">
+            <div class="section-title">📌 오늘요약</div>
+          </div>
 
-    <div class="food-top-weight">
-      <div class="volume-row volume-row-compact">
-        <div class="btn-icon" id="aiBtnMinus" aria-label="중량 감소">−</div>
-        <div class="volume-box" id="aiWeightBox">100</div>
-        <div class="btn-icon" id="aiBtnPlus" aria-label="중량 증가">+</div>
-      </div>
-    </div>
-  </div>
+          <!-- ✅ 1) 요약 타일(2×2)만 summary-grid 안에 둠 -->
+          <div class="summary-grid">
+            <div class="summary-box">
+              <div class="summary-label">물/음료 합계</div>
+              <div class="summary-value" id="sumWater">0 ml</div>
+            </div>
 
-  <div class="food-row" style="margin-top: 12px;">
-    <div class="food-col food-moist">
-      <div class="label">수분(g/100g)</div>
-      <div class="value-box" id="aiMoistureBox">데이터 없음</div>
-    </div>
+            <div class="summary-box">
+              <div class="summary-label">음식수동 합계</div>
+              <div class="summary-value" id="sumFoodManual">0 ml</div>
+            </div>
 
-    <div class="food-col food-est">
-      <div class="label">추정 수분(ml)</div>
-      <div class="value-box" id="aiEstimatedBox">0</div>
-    </div>
-  </div>
+            <div class="summary-box">
+              <div class="summary-label">음식AI 합계</div>
+              <div class="summary-value" id="sumFoodAI">0 ml</div>
+            </div>
 
-  <button class="primary-btn" id="btnAiAdd" style="margin-top: 10px;" disabled>기록 추가</button>
+            <div class="summary-box summary-total">
+              <div class="summary-label">
+                오늘<span class="drop">💧</span>
+              </div>
+              <div class="summary-value" id="sumAll">0 ml</div>
+            </div>
+          </div>
 
-  <div class="hint" id="aiHint">
-    현재는 UI(Mocking) 단계입니다. “분석”을 누르면 DB 후보를 불러옵니다.
-  </div>
+          <!-- ✅ 목표/달성률 -->
+          <div class="goal-box">
+            <div class="goal-row">
+              <div class="goal-left">
+                <div class="goal-label">오늘 목표</div>
+                <div class="goal-value"><span id="tGoal">2000</span> ml</div>
+              </div>
+              <div class="goal-right">
+                <div class="goal-label">달성률</div>
+                <div class="goal-value"><span id="tRate">0</span>%</div>
+              </div>
+            </div>
+            <div class="goal-bar">
+              <div class="goal-fill" id="tGoalFill" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- ✅ 2) divider + records-card는 grid 밖으로 분리 -->
+          <div class="divider"></div>
+
+          <div class="records-card">
+            <div class="records-card-head">
+              <div class="records-card-title">오늘 기록-전체</div>
+              <div class="pill" id="allCountPill">0건</div>
+            </div>
+            <div class="records-list" id="allListBody"></div>
+            <div class="records-empty" id="allEmpty" style="display:none;">아직 기록이 없습니다.</div>
+          </div>
+        </div>
+
+        <!-- 월별요약 탭 -->
+        <div class="card" id="monthlyCard" style="display:none;">
+          <div class="section-title-row">
+            <div class="section-title">🗓️ 월별요약</div>
+            <div class="status" id="monthlyStatus">날짜를 선택하세요</div>
+          </div>
+
+          <!-- 월 이동 헤더 -->
+          <div class="month-head">
+            <button class="month-nav" id="btnMonthPrev" type="button" aria-label="이전 달">‹</button>
+            <div class="month-title" id="monthlyTitle">2026년 2월</div>
+            <button class="month-nav" id="btnMonthNext" type="button" aria-label="다음 달">›</button>
+          </div>
+
+          <!-- 요일 -->
+          <div class="month-week">
+            <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+          </div>
+
+          <!-- 달력 그리드 -->
+          <div class="month-grid" id="monthGrid">
+            <!--
+              JS 붙이면 여기 안에 날짜 셀들이 들어감
+              예시(구조 참고):
+              <button class="month-cell" data-date="2026-02-05">
+                <div class="d">5</div>
+                <div class="t">730ml</div>
+              </button>
+            -->
+          </div>
+        </div>
+
+        <!-- 설정 탭 -->
+        <div class="card" id="settingsCard" style="display:none;">
+          <div class="section-title-row">
+            <div class="section-title">⚙️ 설정 ⚙️</div>
+            <div class="status" id="settingsStatus"></div>
+          </div>
+
+          <div class="setting-simple">
+            <div class="setting-simple-title">하루 수분 목표</div>
+
+            <div class="setting-simple-row">
+              <input
+                type="number"
+                id="settingGoalInput"
+                inputmode="numeric"
+                min="500"
+                step="100"
+                placeholder="예: 2000"
+              />
+              <span class="unit">ml</span>
+
+              <button class="primary-btn setting-save" id="btnSaveGoal" type="button">
+                저장
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ 월별요약: 날짜 상세 팝업 (오늘요약 내용을 그대로 보여줄 자리) -->
+        <div class="month-overlay" id="monthOverlay" style="display:none" aria-hidden="true">
+          <div class="month-modal" role="dialog" aria-modal="true">
+            <div class="month-modal-head">
+              <div>
+                <div class="month-modal-title">수분 섭취 기록</div>
+                <div class="month-modal-sub" id="monthModalDate">2026년 2월 5일</div>
+              </div>
+            </div>
+
+            <!-- 오늘요약(2×2 타일) 그대로 -->
+            <div class="summary-grid" style="margin-top:10px;">
+              <div class="summary-box">
+                <div class="summary-label">물/음료 합계</div>
+                <div class="summary-value" id="mSumWater">0 ml</div>
+              </div>
+
+              <div class="summary-box">
+                <div class="summary-label">음식수동 합계</div>
+                <div class="summary-value" id="mSumFoodManual">0 ml</div>
+              </div>
+
+              <div class="summary-box">
+                <div class="summary-label">음식AI 합계</div>
+                <div class="summary-value" id="mSumFoodAI">0 ml</div>
+              </div>
+
+              <div class="summary-box summary-total">
+                <div class="summary-label">오늘💧</div>
+                <div class="summary-value" id="mSumAll">0 ml</div>
+              </div>
+            </div>
+
+            <!-- 목표/달성률(그래프) UI 자리 -->
+            <div class="goal-box">
+              <div class="goal-row">
+                <div class="goal-left">
+                  <div class="goal-label">오늘 목표</div>
+                  <div class="goal-value"><span id="mGoal">2000</span> ml</div>
+                </div>
+                <div class="goal-right">
+                  <div class="goal-label">달성률</div>
+                  <div class="goal-value"><span id="mRate">0</span>%</div>
+                </div>
+              </div>
+              <div class="goal-bar">
+                <div class="goal-fill" id="mGoalFill" style="width:0%"></div>
+              </div>
+            </div>
 
             <div class="divider"></div>
 
-            <!-- ✅ 오늘 기록-음식AI (음식수동과 동일 구조) -->
-            <div class="records-card">
+            <!-- 오늘 기록-전체 리스트(오늘요약 탭의 리스트 그대로 보여줄 자리) -->
+            <div class="records-card" style="margin-top:0;">
               <div class="records-card-head">
-                <div class="records-card-title">오늘 기록-음식AI</div>
-                <div class="pill pill-blue" id="foodAiTotalPill">0 ml</div>
+                <div class="records-card-title">오늘 기록-전체</div>
+                <div class="pill" id="mAllCountPill">0건</div>
               </div>
-              <div class="records-list" id="foodAiListBody"></div>
-              <div class="records-empty" id="foodAiEmpty" style="display:none;">아직 기록이 없습니다.</div>
+              <div class="records-list" id="mAllListBody"></div>
+              <div class="records-empty" id="mAllEmpty" style="display:none;">아직 기록이 없습니다.</div>
+            </div>
+
+            <!-- 닫기 버튼 (X 버튼은 제거) -->
+            <button class="primary-btn" id="btnMonthClose" type="button">닫기</button>
+          </div>
+        </div>
+
+        <!-- Delete modal -->
+        <div class="modal-overlay" id="modalOverlay" style="display:none" aria-hidden="true">
+          <div class="modal" id="modal" role="dialog" aria-modal="true">
+            <div class="modal-title">기록을 삭제할까요?</div>
+            <div class="modal-text">선택한 항목이 즉시 삭제됩니다. 계속 진행하시겠습니까?</div>
+            <div class="modal-btns">
+              <button class="modal-btn" id="btnCancel">취소</button>
+              <button class="modal-btn danger" id="btnConfirm">삭제</button>
             </div>
           </div>
-</div>
-
-      <!-- 오늘요약 탭 -->
-<div class="card" id="todayCard" style="display:none;">
-  <div class="section-title-row">
-    <div class="section-title">📌 오늘요약</div>
-  </div>
-
-  <!-- ✅ 1) 요약 타일(2×2)만 summary-grid 안에 둠 -->
-  <div class="summary-grid">
-    <div class="summary-box">
-      <div class="summary-label">물/음료 합계</div>
-      <div class="summary-value" id="sumWater">0 ml</div>
-    </div>
-
-    <div class="summary-box">
-      <div class="summary-label">음식수동 합계</div>
-      <div class="summary-value" id="sumFoodManual">0 ml</div>
-    </div>
-
-    <div class="summary-box">
-      <div class="summary-label">음식AI 합계</div>
-      <div class="summary-value" id="sumFoodAI">0 ml</div>
-    </div>
-
-    <div class="summary-box summary-total">
-      <div class="summary-label">
-        오늘<span class="drop">💧</span>
-      </div>
-      <div class="summary-value" id="sumAll">0 ml</div>
-    </div>
-  </div>
-
-  <!-- ✅ 목표/달성률 -->
-  <div class="goal-box">
-    <div class="goal-row">
-      <div class="goal-left">
-        <div class="goal-label">오늘 목표</div>
-        <div class="goal-value"><span id="tGoal">2000</span> ml</div>
-      </div>
-      <div class="goal-right">
-        <div class="goal-label">달성률</div>
-        <div class="goal-value"><span id="tRate">0</span>%</div>
-      </div>
-    </div>
-    <div class="goal-bar">
-      <div class="goal-fill" id="tGoalFill" style="width:0%"></div>
-    </div>
-  </div>
-
-  <!-- ✅ 2) divider + records-card는 grid 밖으로 분리 -->
-  <div class="divider"></div>
-
-  <div class="records-card">
-    <div class="records-card-head">
-      <div class="records-card-title">오늘 기록-전체</div>
-      <div class="pill" id="allCountPill">0건</div>
-    </div>
-    <div class="records-list" id="allListBody"></div>
-    <div class="records-empty" id="allEmpty" style="display:none;">아직 기록이 없습니다.</div>
-  </div>
-</div>
-
-
-<!-- 월별요약 탭 -->
-<div class="card" id="monthlyCard" style="display:none;">
-  <div class="section-title-row">
-    <div class="section-title">🗓️ 월별요약</div>
-    <div class="status" id="monthlyStatus">날짜를 선택하세요</div>
-  </div>
-
-  <!-- 월 이동 헤더 -->
-  <div class="month-head">
-    <button class="month-nav" id="btnMonthPrev" type="button" aria-label="이전 달">‹</button>
-    <div class="month-title" id="monthlyTitle">2026년 2월</div>
-    <button class="month-nav" id="btnMonthNext" type="button" aria-label="다음 달">›</button>
-  </div>
-
-  <!-- 요일 -->
-  <div class="month-week">
-    <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
-  </div>
-
-  <!-- 달력 그리드 -->
-  <div class="month-grid" id="monthGrid">
-    <!--
-      JS 붙이면 여기 안에 날짜 셀들이 들어감
-      예시(구조 참고):
-      <button class="month-cell" data-date="2026-02-05">
-        <div class="d">5</div>
-        <div class="t">730ml</div>
-      </button>
-    -->
-  </div>
-
-  <div class="hint">각 날짜 칸에 해당 날짜의 총합(summary-total)이 표시됩니다.</div>
-</div>
-
-<!-- ✅ 월별요약: 날짜 상세 팝업 (오늘요약 내용을 그대로 보여줄 자리) -->
-<div class="month-overlay" id="monthOverlay" style="display:none" aria-hidden="true">
-  <div class="month-modal" role="dialog" aria-modal="true">
-    <div class="month-modal-head">
-      <div>
-        <div class="month-modal-title">수분 섭취 기록</div>
-        <div class="month-modal-sub" id="monthModalDate">2026년 2월 5일</div>
-      </div>
-    </div>
-
-    <!-- 오늘요약(2×2 타일) 그대로 -->
-    <div class="summary-grid" style="margin-top:10px;">
-      <div class="summary-box">
-        <div class="summary-label">물/음료 합계</div>
-        <div class="summary-value" id="mSumWater">0 ml</div>
-      </div>
-
-      <div class="summary-box">
-        <div class="summary-label">음식수동 합계</div>
-        <div class="summary-value" id="mSumFoodManual">0 ml</div>
-      </div>
-
-      <div class="summary-box">
-        <div class="summary-label">음식AI 합계</div>
-        <div class="summary-value" id="mSumFoodAI">0 ml</div>
-      </div>
-
-      <div class="summary-box summary-total">
-        <div class="summary-label">오늘💧</div>
-        <div class="summary-value" id="mSumAll">0 ml</div>
-      </div>
-    </div>
-
-    <!-- 목표/달성률(그래프) UI 자리 -->
-    <div class="goal-box">
-      <div class="goal-row">
-        <div class="goal-left">
-          <div class="goal-label">오늘 목표</div>
-          <div class="goal-value"><span id="mGoal">2000</span> ml</div>
         </div>
-        <div class="goal-right">
-          <div class="goal-label">달성률</div>
-          <div class="goal-value"><span id="mRate">0</span>%</div>
-        </div>
-      </div>
-      <div class="goal-bar">
-        <div class="goal-fill" id="mGoalFill" style="width:0%"></div>
+
+        <script type="module" src="./js/app.js"></script>
       </div>
     </div>
-
-    <div class="divider"></div>
-
-    <!-- 오늘 기록-전체 리스트(오늘요약 탭의 리스트 그대로 보여줄 자리) -->
-    <div class="records-card" style="margin-top:0;">
-      <div class="records-card-head">
-        <div class="records-card-title">오늘 기록-전체</div>
-        <div class="pill" id="mAllCountPill">0건</div>
-      </div>
-      <div class="records-list" id="mAllListBody"></div>
-      <div class="records-empty" id="mAllEmpty" style="display:none;">아직 기록이 없습니다.</div>
-    </div>
-
-    <!-- 닫기 버튼 (X 버튼은 제거) -->
-    <button class="primary-btn" id="btnMonthClose" type="button">닫기</button>
-  </div>
-</div>
-</div>
- 
-<!-- 설정 탭 -->
-<div class="card" id="settingsCard" style="display:none;">
-  <div class="section-title-row">
-    <div class="section-title">⚙️ 설정 ⚙️</div>
-    <div class="status" id="settingsStatus"></div>
-  </div>
-
-  <div class="setting-simple">
-    <div class="setting-simple-title">하루 수분 목표</div>
-
-    <div class="setting-simple-row">
-      <input
-        type="number"
-        id="settingGoalInput"
-        inputmode="numeric"
-        min="500"
-        step="100"
-        placeholder="예: 2000"
-      />
-      <span class="unit">ml</span>
-
-      <button class="primary-btn setting-save" id="btnSaveGoal" type="button">
-        저장
-      </button>
-    </div>
-  </div>
-</div>
-
-    <!-- Delete modal -->
-    <div class="modal-overlay" id="modalOverlay" style="display:none" aria-hidden="true">
-      <div class="modal" id="modal" role="dialog" aria-modal="true">
-        <div class="modal-title">기록을 삭제할까요?</div>
-        <div class="modal-text">선택한 항목이 즉시 삭제됩니다. 계속 진행하시겠습니까?</div>
-        <div class="modal-btns">
-          <button class="modal-btn" id="btnCancel">취소</button>
-          <button class="modal-btn danger" id="btnConfirm">삭제</button>
-        </div>
-      </div>
-    </div>
-
-    <script type="module" src="./js/app.js"></script>
   </body>
 </html>
