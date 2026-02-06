@@ -982,3 +982,18 @@ input.volume-box::-webkit-inner-spin-button{
   margin: 0;
 }
 }
+
+/* =========================
+   Settings goal input: spin button 제거
+   ========================= */
+#settingsCard input[type="number"]{
+  appearance: textfield;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+#settingsCard input[type="number"]::-webkit-outer-spin-button,
+#settingsCard input[type="number"]::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
