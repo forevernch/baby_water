@@ -26,198 +26,163 @@
   --blue1: #1f4fd6;
 
   --teal0: rgba(0,180,200,0.25);
-  --teal1: rgba(0,180,200,0.18);
+  --teal1: rgba(0,120,160,0.15);
 
-  --danger0: rgba(255, 80, 80, 0.92);
+  --danger0: rgba(255,80,80,0.80);
+  --danger1: rgba(255,80,80,0.20);
 
   --r12: 12px;
   --r14: 14px;
   --r18: 18px;
 
-  --shadow0: 0 18px 60px rgba(0,0,0,0.35);
-
+  /* ✅ 컨트롤 공통 높이 */
   --ctl-h: 44px;
-  --step-gap: 6px;
-  --step-num: 56px;
-  --step-w: calc(var(--ctl-h) * 2 + var(--step-num) + var(--step-gap) * 2);
+
+  /* ✅ 스텝퍼( - 100 + ) 공통 폭(가로 삐져나감 방지용) */
+  --step-btn: var(--ctl-h); /* -/+ 버튼 한 칸 */
+  --step-mid: 64px;         /* 숫자 박스 폭 */
+  --step-gap: 8px;          /* 기존 gap 유지 */
+  --step-w: calc(var(--step-btn) * 2 + var(--step-mid) + var(--step-gap) * 2);
+
+  --shadow0: 0 18px 60px rgba(0,0,0,0.35);
 }
 
 /* =========================
-   1) BASE
+   1) BASE (Reset + text color lock)
    ========================= */
 *{ box-sizing: border-box; }
-html, body{ height: 100%; }
 
-body{
+html, body{
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  padding: 0;
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 20% -10%, #1c2b5a 0%, #0b1020 40%, #070b16 100%);
   color: var(--txt0);
-  background: radial-gradient(1200px 700px at 20% 0%, rgba(47,107,255,0.25), transparent 60%),
-              radial-gradient(900px 520px at 100% 10%, rgba(0,180,200,0.16), transparent 55%),
-              linear-gradient(180deg, var(--bg0), var(--bg1));
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+a{ color: var(--txt0); }
+button, input, select, textarea{ color: var(--txt0); font-family: inherit; }
+
+/* iOS/Safari select 글자 검정화 방지 */
+select{
+  color: var(--txt0);
+  background: rgba(0,0,0,0.25);
 }
 
 /* =========================
-   2) PAGE LAYOUT
+   2) 🔒 FIXED UI (DO NOT TOUCH)
+   - 여기 블록은 "고정 계약(Contract)" 영역
    ========================= */
+
+/* Layout frame */
 .page{
-  display:flex;
-  justify-content:center;
-  padding: 18px 10px 40px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
 }
-
 .container{
-  width: min(420px, 100%);
+  width: 100%;
+  max-width: 420px;
+  padding: 20px 14px 40px;
 }
 
-/* =========================
-   3) HEADER
-   ========================= */
+/* Header */
 .header{
   display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  padding: 10px 2px 14px;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 14px;
 }
-
 .title{
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-}
-
-.subtitle{
-  font-size: 13px;
-  color: var(--txt2);
-}
-
-/* =========================
-   4) TABS
-   ========================= */
-.tabs{
-  display:grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin: 12px 0 16px;
-}
-
-.tab{
-  padding: 12px 10px;
-  text-align:center;
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
-  border: 1px solid rgba(255,255,255,0.08);
-  color: var(--txt1);
+  font-size: 22px;
   font-weight: 700;
+}
+.subtitle{
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Tabs */
+.tabs{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.tab{
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 14px;
   cursor: pointer;
-  user-select:none;
-  box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+  user-select: none;
 }
+.tab.active{ font-weight: 700; }
+.tab.coming{ cursor: default; }
 
-.tab.active{
-  background: linear-gradient(180deg, rgba(47,107,255,0.95), rgba(31,79,214,0.95));
-  border: 1px solid rgba(255,255,255,0.16);
-  color: white;
-}
-
-/* =========================
-   5) CARDS
-   ========================= */
+/* Card shells */
 .card{
-  border-radius: 22px;
-  background: var(--panel);
-  border: 1px solid var(--bd1);
-  box-shadow: var(--shadow0);
-  padding: 18px 16px;
+  border-radius: var(--r18);
+  padding: 16px;
+  margin-bottom: 18px;
 }
 
+/* Section title row */
 .section-title-row{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom: 10px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
-
 .section-title{
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 16px;
+  font-weight: 600;
 }
-
 .status{
   font-size: 12px;
-  color: var(--txt2);
-  opacity: 0.9;
+  opacity: 0.7;
 }
 
-/* =========================
-   6) COMMON UI
-   ========================= */
+/* Labels / inputs */
 .label{
   font-size: 12px;
-  color: var(--txt2);
-  margin-bottom: 6px;
+  opacity: 0.75;
+  margin-bottom: 4px;
 }
-
-select, input{
+input, select{
   width: 100%;
-  padding: 12px 12px;
   border-radius: var(--r12);
+  padding: 10px 12px;
+  font-size: 14px;
   border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.18);
-  color: var(--txt0);
   outline: none;
-  box-shadow: inset 0 8px 30px rgba(0,0,0,0.35);
 }
+select{ appearance: none; }
 
-select option{ background: #0b1020; }
-
-.hint{
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--txt2);
-}
-
-/* =========================
-   7) BUTTONS / CONTROLS
-   ========================= */
+/* Primary button */
 .primary-btn{
   width: 100%;
   margin-top: 14px;
-  height: var(--ctl-h);
-  padding: 0 14px;
+  padding: 14px;
   border-radius: var(--r14);
   border: none;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.primary-btn{
-  background: linear-gradient(180deg, rgba(47,107,255,0.98), rgba(31,79,214,0.98));
-  color: white;
-  box-shadow: 0 16px 38px rgba(31,79,214,0.35);
-}
-
-.primary-btn:disabled{
-  opacity: 0.45;
-  cursor: not-allowed;
-  box-shadow: none;
 }
 
 /* 🔒 STEP PER ( - 100 + ) — 고정 핵심 */
 .volume-row{
   display:flex;
   align-items:center;
-  gap: var(--step-gap);
+  gap: 8px;
 }
-.volume-row.volume-row-compact{ gap: var(--step-gap); }
+.volume-row.volume-row-compact{ gap: 8px; }
 
 .btn-icon{
-  width: var(--ctl-h);
-  height: var(--ctl-h);
+  width: 36px;
+  height: 36px;
   border-radius: 12px;
   display:flex;
   align-items:center;
@@ -226,19 +191,11 @@ select option{ background: #0b1020; }
   user-select:none;
   font-size: 18px;
   line-height: 1;
-  flex: 0 0 var(--ctl-h);         /* ✅ 폭 고정 */
+  flex: 0 0 36px;
 }
-
-.btn-icon{
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-}
-
 .volume-box{
-  width: var(--step-num);        /* ✅ 숫자 박스 폭 고정 */
-  min-width: var(--step-num);
-  height: var(--ctl-h);            /* ✅ 버튼과 높이 통일 */
+  min-width: 64px;
+  height: 36px;
   border-radius: 12px;
   display:flex;
   align-items:center;
@@ -250,28 +207,22 @@ select option{ background: #0b1020; }
   flex: 0 0 auto;
 }
 
-/* =========================
-   8) WATER / FOOD LAYOUT
-   ========================= */
-
 /* Water row fixed: one line */
 .water-row{
-  display:grid;
-  grid-template-columns: minmax(0, 1fr) var(--step-w);
-  column-gap: 10px;
+  display:flex;
+  gap: 10px;
   align-items: flex-end;
 }
-.water-col{ min-width: 0; }
+.water-col{ flex: 1; min-width: 0; }
 
 /* Food manual fixed: name+weight one line, then others */
 .food-top-row{
-  display:grid;
-  grid-template-columns: minmax(0, 1fr) var(--step-w);
-  column-gap: 10px;
+  display:flex;
+  gap: 10px;
   align-items: flex-end;
 }
-.food-top-name{ min-width: 0; }
-.food-top-weight{ min-width: 0; }
+.food-top-name{ flex: 1.6; min-width: 0; }
+.food-top-weight{ flex: 1; min-width: 0; }
 
 .food-row{
   display:flex;
@@ -290,303 +241,374 @@ select option{ background: #0b1020; }
 .food-cand-row{ margin-top: 10px; }
 .candidates{
   display:flex;
-  flex-direction:column;
+  flex-direction: column;
   gap: 8px;
 }
-
-.candidate-item{
-  padding: 12px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  cursor:pointer;
-  user-select:none;
+.candidates > div{
+  padding: 10px 12px;
+  border-radius: var(--r12);
+  cursor: pointer;
+  font-size: 14px;
 }
 
-.candidate-item .n{
-  font-weight: 800;
-  margin-bottom: 4px;
+/* ✅ food_manual 검색결과 선택 하이라이트 (ver2.2 추가) */
+.candidates > div{
+  background: var(--bg3);
+  border: 1px solid var(--bd1);
 }
-
-.candidate-item .m{
-  font-size: 12px;
-  color: var(--txt2);
-}
-
-.candidate-item.active{
-  outline: 2px solid rgba(47,107,255,0.75);
+.candidates > div:hover{ border-color: var(--bd0); }
+.candidates > div.selected{
   background: rgba(47,107,255,0.12);
+  border-color: rgba(47,107,255,0.85);
+  box-shadow: 0 0 0 2px rgba(47,107,255,0.25) inset;
 }
 
-/* Divider */
+/* Records fixed */
+.records-card{
+  border-radius: var(--r14);
+  padding: 12px;
+}
+.records-card-head{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.records-card-title{
+  font-size: 14px;
+  font-weight: 600;
+}
+.records-list{
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.record-item{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  border-radius: var(--r12);
+  padding: 10px 12px;
+}
+
+/* ✅ 기존 JS가 record-left/right를 만들 때 */
+.record-left{ font-size: 13px; color: var(--txt1); }
+.record-right{ display:flex; align-items:center; gap: 10px; }
+
+/* ✅ 다른 버전에서 record-time/title/ml 구조를 쓰더라도 깨지지 않게 보정 */
+.record-time{ font-size: 12px; color: var(--txt2); }
+.record-title{ font-size: 14px; font-weight: 600; color: var(--txt0); max-width: 220px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+.record-ml{ font-size: 14px; font-weight: 700; color: var(--txt0); }
+
+.trash{
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex: 0 0 32px;
+}
+
+/* Pills / hint / divider */
+.pill{
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.hint{
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.65;
+}
 .divider{
   height: 1px;
-  background: rgba(255,255,255,0.08);
   margin: 14px 0;
 }
 
-/* =========================
-   9) RECORD LIST (TODAY)
-   ========================= */
-.records-card{
-  background: rgba(0,0,0,0.22);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  padding: 12px;
-}
-
-.records-card-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom: 10px;
-}
-
-.records-card-title{
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.pill{
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.08);
-  font-size: 12px;
-  color: var(--txt1);
-}
-
-.pill-blue{
-  background: rgba(47,107,255,0.18);
-  border: 1px solid rgba(47,107,255,0.35);
-  color: rgba(220,232,255,1);
-}
-
-.records-list{
-  display:flex;
-  flex-direction:column;
-  gap: 10px;
-}
-
-.record-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding: 10px 10px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.07);
-}
-
-.record-left{
-  display:flex;
-  flex-direction:column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.record-time{
-  font-size: 12px;
-  color: var(--txt2);
-}
-
-.record-kind{
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--txt1);
-  overflow:hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 240px;
-}
-
-.record-right{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-}
-
-.record-ml{
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.record-del{
-  width: 28px;
-  height: 28px;
-  border-radius: 10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  user-select:none;
-  background: rgba(255,80,80,0.12);
-  border: 1px solid rgba(255,80,80,0.18);
-  color: rgba(255,150,150,1);
-  font-weight: 900;
-}
-
-.records-empty{
-  font-size: 12px;
-  color: var(--txt2);
-  padding: 8px 4px;
-}
-
-/* =========================
-   10) TODAY SUMMARY GRID
-   ========================= */
+/* Summary fixed (2×2 base) */
 .summary-grid{
   display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.summary-box{
-  background: rgba(0,0,0,0.22);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  padding: 12px;
-}
-
-.summary-label{
-  font-size: 12px;
-  color: var(--txt2);
-  margin-bottom: 8px;
-}
-
-.summary-value{
-  font-size: 18px;
-  font-weight: 900;
-}
-
-.summary-total{
-  background: linear-gradient(180deg, rgba(47,107,255,0.18), rgba(47,107,255,0.08));
-  border: 1px solid rgba(47,107,255,0.28);
-}
-
-/* Goal box */
-.goal-box{
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 20px;
-  background: rgba(0,0,0,0.22);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-.goal-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
-.goal-label{
+.summary-box{
+  border-radius: var(--r14);
+  padding: 14px;
+  min-width: 0;
+}
+.summary-label{
   font-size: 12px;
-  color: var(--txt2);
+  opacity: 0.7;
 }
-.goal-value{
-  font-size: 16px;
-  font-weight: 900;
-  margin-top: 4px;
+.summary-value{
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 6px;
 }
-.goal-bar{
-  margin-top: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
-  overflow:hidden;
-}
-.goal-fill{
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, rgba(47,107,255,1), rgba(0,180,200,0.85));
-  border-radius: 999px;
-}
+.drop{ margin-left: 4px; }
 
-/* =========================
-   11) MODAL
-   ========================= */
+/* ✅ index.html 구조상 divider/records-card가 summary-grid 안에 들어가도 망가지지 않게 */
+.summary-grid > .divider{ grid-column: 1 / -1; }
+.summary-grid > .records-card{ grid-column: 1 / -1; }
+
+/* Modal fixed */
 .modal-overlay{
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.5);
   display:flex;
   align-items:center;
   justify-content:center;
-  padding: 18px;
-  z-index: 100;
 }
-
 .modal{
-  width: min(360px, 100%);
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25));
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
-  padding: 16px 16px 14px;
+  width: 280px;
+  border-radius: 16px;
+  padding: 16px;
 }
-
-.modal-title{
-  font-size: 16px;
-  font-weight: 900;
-  margin-bottom: 8px;
-}
-
-.modal-text{
-  font-size: 13px;
-  color: var(--txt1);
-  margin-bottom: 14px;
-  line-height: 1.35;
-}
-
-.modal-btns{
-  display:flex;
-  gap: 10px;
-}
-
+.modal-title{ font-size: 16px; font-weight: 600; }
+.modal-text{ font-size: 13px; opacity: 0.8; margin: 10px 0 14px; }
+.modal-btns{ display:flex; gap: 8px; }
 .modal-btn{
-  flex:1;
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.06);
-  color: var(--txt0);
-  font-weight: 800;
-  cursor:pointer;
-}
-
-.modal-btn.danger{
-  background: rgba(255,80,80,0.18);
-  border: 1px solid rgba(255,80,80,0.25);
-  color: rgba(255,190,190,1);
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
 }
 
 /* =========================
-   12) MONTHLY CALENDAR
+   3) THEME (colors / backgrounds / borders)
+   ========================= */
+
+/* Tabs */
+.tab{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.tab.active{
+  background: linear-gradient(180deg, var(--blue0), var(--blue1));
+  border-color: rgba(80,130,255,0.90);
+}
+.tab.coming{ opacity: 0.45; }
+
+/* Cards */
+.card{
+  background: var(--panel);
+  border: 1px solid var(--bd1);
+  box-shadow: none;
+}
+
+/* Inputs */
+input, select{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* Buttons */
+.primary-btn{
+  background: linear-gradient(180deg, #3b7cff, #2359e3);
+  color: #fff;
+}
+.btn-icon{
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.volume-box{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* value box */
+.value-box{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* candidates */
+.candidates > div{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* records */
+.records-card{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.record-item{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.trash{ background: rgba(255,80,80,0.20); }
+
+/* pills / divider */
+.pill{ background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); }
+.pill-blue{ background: rgba(80,130,255,0.25); border: 1px solid rgba(80,130,255,0.18); }
+.divider{ background: rgba(255,255,255,0.08); }
+
+/* summary */
+.summary-box{
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.summary-box.summary-total{
+  background: linear-gradient(180deg, var(--teal0), var(--teal1));
+  border: 1px solid rgba(0,200,220,0.18);
+}
+
+/* modal */
+.modal{
+  background: #10142a;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+.modal-btn{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+.modal-btn.danger{ background: rgba(255,80,80,0.80); }
+
+/* =========================
+   4) LAYOUT (responsive tweaks only)
+   ========================= */
+
+/* ✅ 핵심: 3개 탭 한 줄 통일(삐져나감 방지)
+   [입력칸]  [-][100][+]
+   - 좌측: 1fr (남는 폭)
+   - 우측: 고정 폭(--step-w)
+*/
+.water-row,
+.food-top-row{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--step-w);
+  column-gap: 10px;
+  align-items: end;
+}
+.water-col,
+.food-top-name,
+.food-top-weight{ min-width: 0; }
+
+/* 우측 스텝퍼는 항상 오른쪽 정렬 */
+.water-col.water-volume,
+.food-top-weight{
+  justify-self: end;
+}
+
+/* 입력/셀렉트/스텝퍼 높이 44px 통일 */
+input, select{
+  height: var(--ctl-h);
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: calc(var(--ctl-h) - 2px);
+}
+
+.btn-icon{
+  width: var(--step-btn);
+  height: var(--step-btn);
+  flex: 0 0 var(--step-btn);
+}
+
+.volume-box{
+  min-width: var(--step-mid);
+  height: var(--ctl-h);
+  line-height: var(--ctl-h);
+}
+
+/* primary 버튼도 높이 통일(기록추가/분석/저장) */
+.primary-btn{
+  height: var(--ctl-h);
+  padding: 0 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* 모바일에서 한 줄 유지(줄바꿈 방지) */
+@media (max-width: 420px){
+  .container{ padding: 18px 12px 36px; }
+
+  /* summary: 모바일에서도 2×2 확정 + 타일 높이 균일 */
+  .summary-grid{
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+  }
+  .summary-box{
+    min-height: 92px;
+    overflow: hidden;
+  }
+  .summary-label{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .summary-value{ white-space: nowrap; }
+}
+
+/* 아주 작은 화면(360px급)에서 스텝퍼가 깨지지 않게(폭만 살짝 축소) */
+@media (max-width: 360px){
+  :root{ --step-mid: 58px; } /* 숫자 박스 폭만 줄여서 전체 폭 감소 */
+  .btn-icon{ border-radius: 11px; }
+  .volume-box{ border-radius: 11px; }
+}
+
+/* =========================
+   Icon buttons (AI)
+   ========================= */
+.icon-btn{
+  width:44px; height:44px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.05);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+}
+.icon-btn.sm{ width:38px; height:38px; border-radius:11px; }
+.icon-btn:active{ transform:scale(0.96); }
+
+.icon-img{
+  width:24px;
+  height:24px;
+  display:block;
+}
+.icon-btn.sm .icon-img{
+  width:22px;
+  height:22px;
+}
+
+/* =========================
+   Monthly (Calendar) UI — ver2.3
    ========================= */
 .month-head{
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content: space-between;
   gap: 10px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .month-title{
-  font-weight: 900;
   font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  opacity: 0.95;
 }
 
 .month-nav{
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid var(--bd1);
   background: rgba(255,255,255,0.06);
   color: var(--txt0);
   cursor:pointer;
-  font-size: 18px;
-  font-weight: 900;
+  font-size: 20px;
+  line-height: 1;
 }
 
 .month-week{
@@ -594,143 +616,165 @@ select option{ background: #0b1020; }
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
   margin-top: 12px;
-  padding: 0 6px;
+  opacity: 0.75;
   font-size: 12px;
-  color: var(--txt2);
 }
-
-.month-week div{
+.month-week > div{
   text-align:center;
-  padding: 4px 0;
+  padding: 6px 0;
 }
 
 .month-grid{
   display:grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  margin-top: 8px;
+  gap: 6px;
+  margin-top: 10px;
 }
 
 .month-cell{
   position: relative;
-  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--bd1);
+  background: rgba(0,0,0,0.18);
+  padding: 10px;
   aspect-ratio: 1 / 1;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.04);
-  color: var(--txt0);
+  text-align:left;
   cursor:pointer;
-  overflow:hidden;
+  color: var(--txt0);
 }
 
 .month-cell .d{
-  position:absolute;
-  top: 8px;
-  right: 8px;
-  font-weight: 900;
-  font-size: 13px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  opacity: 0.95;
 }
 
 .month-cell .t{
-  position:absolute;
-  bottom: 8px;
+  position: absolute;
   left: 50%;
+  bottom: 4px;
   transform: translateX(-50%);
   font-size: 12px;
-  color: var(--txt2);
-  font-weight: 700;
+  opacity: 0.85;
+  white-space: nowrap;
+  text-align: center;
+  width: calc(100% - 12px);
+  pointer-events: none;
 }
 
-.month-cell.dim{
-  opacity: 0.35;
+.month-cell.is-empty{
+  opacity: 0.28;
+  cursor: default;
 }
 
-.month-cell.selected{
-  outline: 2px solid rgba(47,107,255,0.75);
+.month-cell.is-today{
+  border-color: rgba(47,107,255,0.9);
+  box-shadow: 0 0 0 2px rgba(47,107,255,0.18) inset;
+}
+
+.month-cell.is-selected{
   background: rgba(47,107,255,0.12);
+  border-color: rgba(47,107,255,0.85);
+  box-shadow: 0 0 0 2px rgba(47,107,255,0.25) inset;
 }
 
-.month-week div:nth-child(1),
-.month-cell:nth-child(7n+1) .d{
-  color: rgba(255,110,110,1);
-}
+/* ✅ 주말 컬러 (요일/날짜만) */
+.month-week > div:nth-child(1){ color: #ff5b5b; }  /* 일 */
+.month-week > div:nth-child(7){ color: #4ea1ff; }  /* 토 */
+.month-cell.is-sun .d{ color: #ff5b5b; }
+.month-cell.is-sat .d{ color: #4ea1ff; }
 
-.month-week div:nth-child(7),
-.month-cell:nth-child(7n) .d{
-  color: rgba(120,170,255,1);
-}
-
-/* Monthly overlay */
+/* ===== Popup / Overlay (blur background) ===== */
 .month-overlay{
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px);
   display:flex;
   align-items:center;
   justify-content:center;
-  padding: 16px;
-  z-index: 120;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 50;
 }
 
+/* ✅ (문법 에러 수정) month-modal 블록 정상화 */
 .month-modal{
-  width: min(380px, 80vw);
-  max-height: 86vh;
-  overflow:auto;
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25));
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
-  padding: 14px;
+  width: min(80vw, 360px);
+  height: 75vh;
+  max-height: 90vh;
+  overflow-y: auto;
+
+  border-radius: 18px;
+  padding: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  border: 1px solid var(--bd1);
+  box-shadow: var(--shadow0);
 }
 
 .month-modal-head{
   display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .month-modal-title{
-  font-size: 16px;
-  font-weight: 900;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
 }
 
 .month-modal-sub{
-  font-size: 12px;
-  color: var(--txt2);
-  margin-top: 4px;
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: 0.75;
 }
 
-/* =========================
-   13) ICON BUTTONS (AI)
-   ========================= */
-.icon-btn{
-  width: 42px;
-  height: 42px;
+/* Goal / progress bar */
+.goal-box{
+  margin-top: 12px;
+  padding: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.goal-row{
   display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.icon-btn.sm{
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
+.goal-label{
+  font-size: 12px;
+  opacity: 0.7;
 }
 
-.icon-img{
-  width: 18px;
-  height: 18px;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35));
+.goal-value{
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.goal-bar{
+  margin-top: 10px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+
+.goal-fill{
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #6fb6ff, #2f6bff);
 }
 
 /* =========================
-   14) SETTINGS TAB
+   Settings: simple inline layout
    ========================= */
 .setting-simple{
   margin-top: 12px;
@@ -747,17 +791,16 @@ select option{ background: #0b1020; }
 }
 
 .setting-simple-row{
-  display:grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  column-gap: 10px;
+  display:flex;
   align-items:center;
+  gap: 10px;
 }
 
 .setting-simple-row input{
-  flex: 1 1 auto;        /* ✅ 가능한 최대 폭 차지 */
-  min-width: 140px;      /* 너무 작아지지 않게 */
-  height: var(--ctl-h);          /* 버튼과 높이 통일 */
-  padding: 10px 12px;
+  flex: 1 1 auto;
+  min-width: 140px;
+  height: var(--ctl-h);
+  padding: 0 12px;
   border-radius: 12px;
   border: 1px solid var(--bd1);
   background: rgba(255,255,255,0.06);
@@ -773,43 +816,7 @@ select option{ background: #0b1020; }
 
 .setting-save{
   height: var(--ctl-h);
-  width: auto;
-  margin-top: 0;
   padding: 0 16px;
   border-radius: 12px;
   min-width: 76px;
-}
-
-
-/* =========================
-   Layout unify: input vs stepper widths (water / food manual / food AI)
-   - 좌측 입력칸 폭 동일(남는 폭 1fr)
-   - 우측 스텝퍼 폭 동일(var(--step-w))
-   - 오버플로우 방지
-   ========================= */
-
-/* 스텝퍼 컨테이너는 항상 우측 정렬 */
-.water-volume .volume-row,
-.food-top-weight .volume-row{
-  justify-content: flex-end;
-}
-
-/* 입력/셀렉트 높이 통일(세로만) */
-.water-drink select,
-.food-top-name input,
-.food-top-name select{
-  height: var(--ctl-h);
-  padding-top: 0;
-  padding-bottom: 0;
-  box-sizing: border-box;
-}
-
-/* 스텝퍼 숫자 박스 정렬 안정화 */
-.volume-box{
-  line-height: var(--ctl-h);
-}
-
-/* settings 저장 버튼은 full-width primary-btn 영향 제거 */
-.setting-save.primary-btn{
-  width: auto;
 }
