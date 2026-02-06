@@ -1,5 +1,27 @@
 ﻿export const STORAGE_KEY = "hydration_html_records_v1_stable";
+export const GOAL_KEY = "hydration_daily_goal_ml_v1";
 
+/** @returns {number} */
+export function loadGoal(defaultGoal = 2000) {
+  try {
+    const raw = localStorage.getItem(GOAL_KEY);
+    const n = Number(raw);
+    return Number.isFinite(n) && n > 0 ? Math.round(n) : defaultGoal;
+  } catch {
+    return defaultGoal;
+  }
+}
+
+/** @param {number} goalMl */
+export function saveGoal(goalMl) {
+  try {
+    const n = Math.round(Number(goalMl));
+    if (!Number.isFinite(n) || n <= 0) return;
+    localStorage.setItem(GOAL_KEY, String(n));
+  } catch {
+    // 저장 실패해도 앱은 죽지 않게
+  }
+}
 /** @returns {any[]} */
 export function loadRecords() {
   try {

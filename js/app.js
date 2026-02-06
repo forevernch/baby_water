@@ -1,6 +1,6 @@
 ﻿﻿import { initTabs } from "./tabs.js";
 import { createDeleteModal } from "./modal.js";
-import { loadRecords, saveRecords } from "./storage.js";
+import { loadRecords, saveRecords, loadGoal, saveGoal } from "./storage.js";
 import { dateKeyLocal, formatTime12h } from "./utils.js";
 import { FoodDb } from "./fooddb.js";
 
@@ -10,7 +10,7 @@ import { initFoodAiTab } from "./food_ai.js";
 import { initTodayTab } from "./today.js";
 import { initMonthlyTab } from "./monthly.js";
 
-import { loadGoal, saveGoal } from "./storage.js";
+
 
 function kindLabel(record) {
   if (record.kind === "water") return `물/음료 · ${record.type}`;
