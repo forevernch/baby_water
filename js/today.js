@@ -27,10 +27,10 @@ export function initTodayTab(ctx) {
       if (elSumAll) elSumAll.textContent = `${sumAll} ml`;
 
       const goal = loadGoal(2000);
-      const rate = DAILY_GOAL > 0 ? Math.round((sumAll / DAILY_GOAL) * 100) : 0;
+      const rate = goal > 0 ? Math.round((sumAll / goal) * 100) : 0;
       const clamped = Math.max(0, Math.min(100, rate));
 
-      if (elGoal) elGoal.textContent = String(DAILY_GOAL);
+      if (elGoal) elGoal.textContent = String(goal);
       if (elRate) elRate.textContent = String(rate);
       if (elGoalFill) elGoalFill.style.width = `${clamped}%`;
 
