@@ -29,7 +29,7 @@ const { elMonthlyStatus, getRecords, kindLabel, openDeleteModal, deleteRecordByI
   const mAllEmpty = document.getElementById("mAllEmpty");
   const mAllCountPill = document.getElementById("mAllCountPill");
 
-const goal = loadGoal(2000);
+   const goal = loadGoal(2000);
 
   let view = new Date();
   view.setDate(1);
