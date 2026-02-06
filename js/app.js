@@ -199,6 +199,15 @@ if (btnSaveGoal) {
     saveGoal(n);
     if (settingsStatus) settingsStatus.textContent = "저장됨";
     renderAll(); // 오늘요약/월별요약 목표 즉시 반영
+    // ✅ 저장됨 1초 표시 후 자동 삭제(중복 클릭 대비)
+    if (settingsStatus) {
+      settingsStatus.textContent = "저장됨";
+      if (settingsStatusTimer) clearTimeout(settingsStatusTimer);
+      settingsStatusTimer = setTimeout(() => {
+        settingsStatus.textContent = "";
+        settingsStatusTimer = null;
+      }, 1000);
+    }
   });
 }
 
