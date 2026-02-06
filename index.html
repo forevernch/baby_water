@@ -43,7 +43,7 @@
               <div class="label">용량</div>
               <div class="volume-row volume-row-compact">
                 <div class="btn-icon" id="btnMinus" aria-label="용량 감소">−</div>
-                <div class="volume-box" id="volumeBox">100</div>
+                <input class="volume-box volume-input" id="volumeBox" type="number" inputmode="numeric" min="5" step="5" value="100" />
                 <div class="btn-icon" id="btnPlus" aria-label="용량 증가">+</div>
               </div>
             </div>
@@ -85,7 +85,7 @@
               <div class="label">중량(g)</div>
               <div class="volume-row volume-row-compact">
                 <div class="btn-icon" id="foodBtnMinus" aria-label="중량 감소">−</div>
-                <div class="volume-box" id="foodWeightBox">100</div>
+                 <input class="volume-box volume-input" id="foodWeightBox" type="number" inputmode="numeric" min="0" step="5" value="100" />
                 <div class="btn-icon" id="foodBtnPlus" aria-label="중량 증가">+</div>
               </div>
             </div>
@@ -133,6 +133,22 @@
           <div class="section-title-row">
             <div class="section-title">🤖 음식 AI</div>
             <div class="pill pill-blue" id="foodAiStatus">AI: Mock 연결</div>
+          </div>
+
+          <div class="food-top-row">
+            <div class="food-top-name">
+              <select id="aiFoodSelect" aria-label="AI 추정 음식명">
+                <option value="">AI 추정 음식명</option>
+              </select>
+            </div>
+
+            <div class="food-top-weight">
+              <div class="volume-row volume-row-compact">
+                <div class="btn-icon" id="aiBtnMinus" aria-label="중량 감소">−</div>
+                <input class="volume-box volume-input" id="aiWeightBox" type="number" inputmode="numeric" min="0" step="5" value="100" />
+                <div class="btn-icon" id="aiBtnPlus" aria-label="중량 증가">+</div>
+              </div>
+            </div>
           </div>
 
           <!-- 1) 이미지 입력 + 미리보기 (2장: 윗면/옆면) -->
@@ -231,7 +247,7 @@
             <div class="food-top-weight">
               <div class="volume-row volume-row-compact">
                 <div class="btn-icon" id="aiBtnMinus" aria-label="중량 감소">−</div>
-                <div class="volume-box" id="aiWeightBox">100</div>
+                <input class="volume-box volume-input" id="aiWeightBox" type="number" inputmode="numeric" min="0" step="5" value="100" />
                 <div class="btn-icon" id="aiBtnPlus" aria-label="중량 증가">+</div>
               </div>
             </div>
