@@ -32,6 +32,7 @@ function main() {
     foodAI: document.getElementById("foodAiCard"),
     today: document.getElementById("todayCard"),
     monthly: document.getElementById("monthlyCard"),
+    settings: document.getElementById("settingsCard"),
   };
 
   // (필수 엘리먼트 누락 시 바로 알 수 있게 방어)
@@ -179,26 +180,25 @@ function main() {
     monthlyTab.render();
   }
 
-// ✅ 설정 탭: 목표 로드/저장
+/* ================= 설정 탭 초기화 ================= */
 const goalInput = document.getElementById("settingGoalInput");
 const btnSaveGoal = document.getElementById("btnSaveGoal");
+const settingsStatus = document.getElementById("settingsStatus");
 
 // 초기값 로드
-if (goalInput) {
-  goalInput.value = loadGoal(2000);
-}
+if (goalInput) goalInput.value = loadGoal(2000);
 
-// 저장 버튼
+// 저장
 if (btnSaveGoal) {
   btnSaveGoal.addEventListener("click", () => {
-    const n = Math.round(Number(goalInput.value));
+    const n = Math.round(Number(goalInput?.value));
     if (!Number.isFinite(n) || n <= 0) {
-      alert("올바른 목표 수분량(ml)을 입력하세요.");
+      alert("올바른 목표 수분량(ml)을 입력하세요. 예: 2000");
       return;
     }
     saveGoal(n);
-    renderAll(); // 오늘요약 / 월별요약 즉시 반영
-    alert("저장되었습니다.");
+    if (settingsStatus) settingsStatus.textContent = "저장됨";
+    renderAll(); // 오늘요약/월별요약 목표 즉시 반영
   });
 }
 

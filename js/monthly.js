@@ -1,5 +1,6 @@
 ﻿import { renderList } from "./ui.js";
 import { dateKeyLocal, pad2 } from "./utils.js";
+import { loadGoal } from "./storage.js";
 
 export function initMonthlyTab(ctx) {
 const { elMonthlyStatus, getRecords, kindLabel, openDeleteModal, deleteRecordById, notifyUpdated } = ctx || {};
@@ -28,7 +29,7 @@ const { elMonthlyStatus, getRecords, kindLabel, openDeleteModal, deleteRecordByI
   const mAllEmpty = document.getElementById("mAllEmpty");
   const mAllCountPill = document.getElementById("mAllCountPill");
 
-  const DAILY_GOAL = 2000;
+const goal = loadGoal(2000);
 
   let view = new Date();
   view.setDate(1);
@@ -97,7 +98,7 @@ const { elMonthlyStatus, getRecords, kindLabel, openDeleteModal, deleteRecordByI
     if (mSumAll) mSumAll.textContent = `${sums.sumAll} ml`;
 
     // 목표/달성률
-    const goal = DAILY_GOAL;
+    const goal = loadGoal(2000);
     const rate = goal > 0 ? Math.round((sums.sumAll / goal) * 100) : 0;
     const clamped = Math.max(0, Math.min(100, rate));
 

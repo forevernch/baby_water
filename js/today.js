@@ -1,4 +1,5 @@
 ﻿import { renderList } from "./ui.js";
+import { loadGoal } from "./storage.js";
 
 export function initTodayTab(ctx) {
   const {
@@ -25,7 +26,7 @@ export function initTodayTab(ctx) {
       if (elSumFoodAI) elSumFoodAI.textContent = `${sumFoodAI} ml`;
       if (elSumAll) elSumAll.textContent = `${sumAll} ml`;
 
-const DAILY_GOAL = 1500;
+      const goal = loadGoal(2000);
       const rate = DAILY_GOAL > 0 ? Math.round((sumAll / DAILY_GOAL) * 100) : 0;
       const clamped = Math.max(0, Math.min(100, rate));
 
